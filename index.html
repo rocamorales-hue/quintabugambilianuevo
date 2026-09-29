@@ -85,6 +85,7 @@
   .btn-secundario:hover { border-color: var(--ink-soft); background: #F1F5F9; }
   .btn-accion { background: transparent; border: none; padding: 4px 6px; border-radius: 6px; cursor: pointer; font-size: 1rem; transition: all 0.2s; }
   .btn-eliminar { color: #94A3B8; } .btn-eliminar:hover { background: #FEE2E2; color: #DC2626; }
+  .btn-editar { color: #94A3B8; } .btn-editar:hover { background: #E0F2FE; color: #0284C7; }
   
   .tabla-envoltura { width: 100%; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); box-shadow: 0 10px 30px var(--shadow); overflow-x: auto; }
   table { border-collapse: collapse; width: 100%; font-size: 0.82rem; text-align: left; min-width: 1500px; }
@@ -117,7 +118,7 @@
 
   .modal-dialog { border: none; border-radius: 16px; padding: 0; background: var(--surface); box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
   .modal-dialog::backdrop { background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(4px); }
-  .modal-content { padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem; min-width: 320px; max-width: 500px; }
+  .modal-content { padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem; min-width: 320px; max-width: 550px; }
   .modal-content h3 { margin: 0; color: var(--brand-green); font-family: var(--display); font-size: 1.2rem; }
   .modal-actions { display: flex; justify-content: flex-end; gap: 1rem; margin-top: 0.5rem; }
   
@@ -237,19 +238,19 @@
           <div class="campo"><label>Fecha de salida</label><input type="date" id="in-salida"></div>
         </div>
         <div class="fila-doble">
-          <div class="campo"><label>Total Venta ($)</label><input type="number" id="in-total" step="0.01" min="0" required></div>
-          <div class="campo"><label>Saldo ($)</label><input type="number" id="in-saldo" step="0.01" min="0"></div>
+          <div class="campo"><label>Total Venta ($)</label><input type="number" id="in-total" step="0.01" min="0" required oninput="calcularAutomaticosNuevo()"></div>
+          <div class="campo"><label>Saldo ($) (Automático)</label><input type="number" id="in-saldo" step="0.01" readonly style="background:#E2E8F0; cursor:not-allowed;"></div>
         </div>
         <div class="fila-doble">
-          <div class="campo"><label>Anticipo 1 ($)</label><input type="number" id="in-ant1" step="0.01" min="0"></div>
+          <div class="campo"><label>Anticipo 1 ($)</label><input type="number" id="in-ant1" step="0.01" min="0" value="0" oninput="calcularAutomaticosNuevo()"></div>
           <div class="campo"><label>Fecha anticipo 1</label><input type="date" id="in-fecant1"></div>
         </div>
         <div class="fila-doble">
-          <div class="campo"><label>Anticipo 2 ($)</label><input type="number" id="in-ant2" step="0.01" min="0"></div>
+          <div class="campo"><label>Anticipo 2 ($)</label><input type="number" id="in-ant2" step="0.01" min="0" value="0" oninput="calcularAutomaticosNuevo()"></div>
           <div class="campo"><label>Fecha anticipo 2</label><input type="date" id="in-fecant2"></div>
         </div>
         <div class="fila-doble">
-          <div class="campo"><label>Comisión ($)</label><input type="number" id="in-comision" step="0.01" min="0"></div>
+          <div class="campo"><label>Comisión ($) (20% Automático)</label><input type="number" id="in-comision" step="0.01" readonly style="background:#E2E8F0; cursor:not-allowed;"></div>
           <div class="campo"><label>Fecha Cobrado</label><input type="date" id="in-feccobrado"></div>
         </div>
         <div class="campo"><label>COMISION NO.</label><input type="text" id="in-comisionno" placeholder="Folio o referencia de comisión"></div>
@@ -259,7 +260,51 @@
   </section>
 </main>
 
-<!-- Modales -->
+<!-- Modal Editar Renta -->
+<dialog id="modal-editar" class="modal-dialog">
+  <div class="modal-content" style="max-width: 600px; width: 100%;">
+    <h3>Editar Renta <span id="edit-folio-title" style="color:var(--brand-gold);"></span></h3>
+    <div class="fila-doble">
+      <div class="campo"><label>Mes de renta</label><select id="edit-mes"><option value="ENERO">Enero</option><option value="FEBRERO">Febrero</option><option value="MARZO">Marzo</option><option value="ABRIL">Abril</option><option value="MAYO">Mayo</option><option value="JUNIO">Junio</option><option value="JULIO">Julio</option><option value="AGOSTO">Agosto</option><option value="SEPTIEMBRE">Septiembre</option><option value="OCTUBRE">Octubre</option><option value="NOVIEMBRE">Noviembre</option><option value="DICIEMBRE">Diciembre</option></select></div>
+      <div class="campo"><label>Nombre del cliente</label><input type="text" id="edit-nombre"></div>
+    </div>
+    <div class="fila-doble">
+      <div class="campo"><label>Teléfono principal</label><input type="text" id="edit-telefono"></div>
+      <div class="campo"><label>Teléfono 2</label><input type="text" id="edit-telefono2"></div>
+    </div>
+    <div class="fila-doble">
+      <div class="campo"><label>Hospedaje</label><input type="text" id="edit-hospedaje"></div>
+      <div class="campo"><label>Evento</label><input type="text" id="edit-evento"></div>
+    </div>
+    <div class="fila-doble">
+      <div class="campo"><label>Fecha entrada</label><input type="date" id="edit-entrada"></div>
+      <div class="campo"><label>Fecha salida</label><input type="date" id="edit-salida"></div>
+    </div>
+    <div class="fila-doble">
+      <div class="campo"><label>Total Venta ($)</label><input type="number" id="edit-total" step="0.01" oninput="calcularAutomaticosEditar()"></div>
+      <div class="campo"><label>Saldo ($)</label><input type="number" id="edit-saldo" step="0.01" readonly style="background:#E2E8F0;"></div>
+    </div>
+    <div class="fila-doble">
+      <div class="campo"><label>Anticipo 1 ($)</label><input type="number" id="edit-ant1" step="0.01" oninput="calcularAutomaticosEditar()"></div>
+      <div class="campo"><label>Fecha anticipo 1</label><input type="date" id="edit-fecant1"></div>
+    </div>
+    <div class="fila-doble">
+      <div class="campo"><label>Anticipo 2 ($)</label><input type="number" id="edit-ant2" step="0.01" oninput="calcularAutomaticosEditar()"></div>
+      <div class="campo"><label>Fecha anticipo 2</label><input type="date" id="edit-fecant2"></div>
+    </div>
+    <div class="fila-doble">
+      <div class="campo"><label>Comisión ($) (20%)</label><input type="number" id="edit-comision" step="0.01" readonly style="background:#E2E8F0;"></div>
+      <div class="campo"><label>Fecha Cobrado</label><input type="date" id="edit-feccobrado"></div>
+    </div>
+    <div class="campo"><label>COMISION NO.</label><input type="text" id="edit-comisionno"></div>
+    <div class="modal-actions">
+      <button class="btn btn-secundario" id="btn-cancelar-editar">Cancelar</button>
+      <button class="btn btn-primario" id="btn-guardar-editar">Guardar Cambios</button>
+    </div>
+  </div>
+</dialog>
+
+<!-- Modales Reporte -->
 <dialog id="modal-reporte" class="modal-dialog">
   <div class="modal-content" style="max-width: 900px; width: 100%;">
     <div id="area-reporte">
@@ -282,7 +327,6 @@
 <div id="toast-container" class="toast-container"></div>
 
 <script>
-// Nuevo enlace actualizado de Apps Script
 const API_URL = "https://script.google.com/macros/s/AKfycbyUuSbd7XOIskwITU6wPbw7jDajpHvTHcOYaVSwWW83y9tOHzECOmk8yzMASq8eNJNT/exec";
 
 let rentasCache = [];
@@ -331,6 +375,11 @@ function formatearFecha(fechaIso) {
   } catch(e) { return fechaIso; }
 }
 
+function aislarFechaInput(fechaIso) {
+  if (!fechaIso) return '';
+  return String(fechaIso).trim().split(/[T ]/)[0];
+}
+
 const tabHistorial = document.getElementById('tab-historial'); const tabFormulario = document.getElementById('tab-formulario');
 const vistaHistorial = document.getElementById('vista-historial'); const vistaFormulario = document.getElementById('vista-formulario');
 function cambiarVista(nombre){
@@ -338,6 +387,32 @@ function cambiarVista(nombre){
   vistaHistorial.classList.toggle('activa', esHist); vistaFormulario.classList.toggle('activa', !esHist);
 }
 tabHistorial.addEventListener('click', () => cambiarVista('historial')); tabFormulario.addEventListener('click', () => cambiarVista('formulario'));
+
+// Cálculos automáticos para Nuevo Registro
+function calcularAutomaticosNuevo() {
+  const total = parseFloat(document.getElementById('in-total').value) || 0;
+  const ant1 = parseFloat(document.getElementById('in-ant1').value) || 0;
+  const ant2 = parseFloat(document.getElementById('in-ant2').value) || 0;
+  
+  const saldo = total - ant1 - ant2;
+  const comision = total * 0.20;
+
+  document.getElementById('in-saldo').value = saldo >= 0 ? saldo.toFixed(2) : '0.00';
+  document.getElementById('in-comision').value = comision.toFixed(2);
+}
+
+// Cálculos automáticos para Edición
+function calcularAutomaticosEditar() {
+  const total = parseFloat(document.getElementById('edit-total').value) || 0;
+  const ant1 = parseFloat(document.getElementById('edit-ant1').value) || 0;
+  const ant2 = parseFloat(document.getElementById('edit-ant2').value) || 0;
+  
+  const saldo = total - ant1 - ant2;
+  const comision = total * 0.20;
+
+  document.getElementById('edit-saldo').value = saldo >= 0 ? saldo.toFixed(2) : '0.00';
+  document.getElementById('edit-comision').value = comision.toFixed(2);
+}
 
 async function cargarHistorial(silencioso = false){
   if(!navigator.onLine) { setAppStatus('offline', 'Sin Internet'); return; }
@@ -399,7 +474,10 @@ function renderTabla(){
       <td class="num">${formatearFecha(r.fecha_cobrado)}</td>
       <td class="num">${r.comision_no || ''}</td>
       <td class="num">${r.telefono_2 || ''}</td>
-      <td style="text-align: center;"><button class="btn-accion btn-eliminar" onclick="eliminarRegistro('${r.folio}')" title="Eliminar renta">🗑</button></td>
+      <td style="text-align: center; white-space: nowrap;">
+        <button class="btn-accion btn-editar" onclick="abrirModalEditar('${r.folio}')" title="Editar renta">✏️</button>
+        <button class="btn-accion btn-eliminar" onclick="eliminarRegistro('${r.folio}')" title="Eliminar renta">🗑</button>
+      </td>
     `;
     tbody.appendChild(tr);
   });
@@ -410,6 +488,7 @@ function renderTabla(){
   document.getElementById('total-saldo').textContent = '$' + tSaldo.toLocaleString('es-MX',{minimumFractionDigits:2});
 }
 
+// Enviar Nuevo Registro
 document.getElementById('form-renta').addEventListener('submit', async function(e){
   e.preventDefault(); if(!navigator.onLine) return mostrarToast('Sin Internet', 'error');
   const btn = this.querySelector('button[type="submit"]'); btn.textContent = 'Guardando...'; btn.disabled = true;
@@ -440,6 +519,72 @@ document.getElementById('form-renta').addEventListener('submit', async function(
     mostrarToast('¡Renta guardada con éxito!', 'exito'); this.reset(); cargarHistorial(true); cambiarVista('historial');
   } catch(err) { mostrarToast('Error al registrar la renta', 'error'); }
   finally { btn.textContent = 'Guardar Renta en Quinta Bugambilia'; btn.disabled = false; }
+});
+
+// Modal de Edición
+let folioAEditar = null;
+const modalEditar = document.getElementById('modal-editar');
+
+window.abrirModalEditar = function(folio) {
+  const r = rentasCache.find(item => String(item.folio) === String(folio));
+  if(!r) return;
+  folioAEditar = folio;
+  document.getElementById('edit-folio-title').textContent = `#${folio}`;
+
+  document.getElementById('edit-mes').value = r.mes_renta || 'ENERO';
+  document.getElementById('edit-nombre').value = r.nombre || '';
+  document.getElementById('edit-telefono').value = r.telefono || '';
+  document.getElementById('edit-telefono2').value = r.telefono_2 || '';
+  document.getElementById('edit-hospedaje').value = r.hospedaje || '';
+  document.getElementById('edit-evento').value = r.evento || '';
+  document.getElementById('edit-entrada').value = aislarFechaInput(r.fecha_entrada);
+  document.getElementById('edit-salida').value = aislarFechaInput(r.fecha_salida);
+  document.getElementById('edit-total').value = r.total_venta || 0;
+  document.getElementById('edit-ant1').value = r.anticipo_1 || 0;
+  document.getElementById('edit-fecant1').value = aislarFechaInput(r.fecha_anticpo_1);
+  document.getElementById('edit-ant2').value = r.anticipo_2 || 0;
+  document.getElementById('edit-fecant2').value = aislarFechaInput(r.fecha_anticpo_2);
+  document.getElementById('edit-saldo').value = r.saldo || 0;
+  document.getElementById('edit-comision').value = r.comision || 0;
+  document.getElementById('edit-feccobrado').value = aislarFechaInput(r.fecha_cobrado);
+  document.getElementById('edit-comisionno').value = r.comision_no || '';
+
+  modalEditar.showModal();
+};
+
+document.getElementById('btn-cancelar-editar').addEventListener('click', () => { modalEditar.close(); folioAEditar = null; });
+
+document.getElementById('btn-guardar-editar').addEventListener('click', async () => {
+  if(!folioAEditar) return;
+  const cambios = {
+    mes_renta: document.getElementById('edit-mes').value,
+    nombre: document.getElementById('edit-nombre').value,
+    telefono: document.getElementById('edit-telefono').value,
+    telefono_2: document.getElementById('edit-telefono2').value,
+    hospedaje: document.getElementById('edit-hospedaje').value,
+    evento: document.getElementById('edit-evento').value,
+    fecha_entrada: document.getElementById('edit-entrada').value,
+    fecha_salida: document.getElementById('edit-salida').value,
+    total_venta: parseFloat(document.getElementById('edit-total').value) || 0,
+    saldo: parseFloat(document.getElementById('edit-saldo').value) || 0,
+    anticipo_1: parseFloat(document.getElementById('edit-ant1').value) || 0,
+    fecha_anticpo_1: document.getElementById('edit-fecant1').value,
+    anticipo_2: parseFloat(document.getElementById('edit-ant2').value) || 0,
+    fecha_anticpo_2: document.getElementById('edit-fecant2').value,
+    comision: parseFloat(document.getElementById('edit-comision').value) || 0,
+    fecha_cobrado: document.getElementById('edit-feccobrado').value,
+    comision_no: document.getElementById('edit-comisionno').value
+  };
+
+  modalEditar.close();
+  mostrarToast('Actualizando...', 'info');
+  try {
+    const res = await fetchConTimeout(API_URL, { method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify({ action: 'actualizar', folio: Number(folioAEditar), cambios }) });
+    const data = await res.json(); if(!data.ok) throw new Error();
+    mostrarToast('Renta actualizada con éxito', 'exito');
+    cargarHistorial(true);
+  } catch(err) { mostrarToast('Error al actualizar', 'error'); }
+  finally { folioAEditar = null; }
 });
 
 async function eliminarRegistro(folio) {
