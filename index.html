@@ -1,0 +1,563 @@
+<!DOCTYPE html> 
+ <html lang="es"> 
+ <head> 
+ <meta charset="UTF-8"> 
+ <meta name="viewport" content="width=device-width, initial-scale=1"> 
+ <title>Café Sierra Escondida - Pedidos</title> 
+ <link rel="preconnect" href="https://fonts.googleapis.com"> 
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@500;700;800&display=swap" rel="stylesheet"> 
+ <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script> 
+ <style> 
+   :root { 
+     --brand-orange: #F3A022; 
+     --brand-orange-dark: #D98918; 
+     --brand-green: #0F6343; 
+     --brand-dark: #1C1C1C; 
+     
+     --bg: #F8FAFC; 
+     --surface: #FFFFFF; 
+     --ink: #1E293B; 
+     --ink-soft: #64748B; 
+     
+     --line: #E2E8F0; 
+     --shadow: rgba(15, 23, 42, 0.08); 
+     
+     --state-amber: #B45309; 
+     --state-amber-bg: #FEF3C7; 
+     --state-slate: #0F766E; 
+     --state-slate-bg: #CCFBF1; 
+     --state-sage: #15803D; 
+     --state-sage-bg: #DCFCE7; 
+
+     --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace; 
+     --sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
+     --display: 'Montserrat', sans-serif; 
+   } 
+   
+   * { box-sizing: border-box; } 
+   body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; } 
+
+   /* --- Header --- */ 
+   header { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); padding: 0.8rem 2rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid rgba(226, 232, 240, 0.8); position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04); } 
+   .brand-container { display: flex; align-items: center; gap: 1rem; } 
+   .logo { max-height: 55px; width: auto; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.05)); } 
+   header h1 { font-family: var(--display); font-size: 1.35rem; font-weight: 800; margin: 0; color: var(--brand-green); letter-spacing: -0.02em; } 
+   header p { margin: 0.1rem 0 0; font-size: 0.7rem; color: var(--ink-soft); font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; } 
+
+   /* --- Píldora de Resumen --- */ 
+   .notification-pill { display: inline-flex; align-items: center; background: linear-gradient(135deg, var(--brand-green) 0%, #0d4f35 100%); color: #ffffff; padding: 8px 16px; border-radius: 50px; font-size: 0.88rem; gap: 12px; box-shadow: 0 4px 15px rgba(15, 99, 67, 0.2); font-family: var(--display); min-height: 38px; } 
+   .pill-item { display: flex; align-items: center; gap: 6px; } 
+   .pill-divider { width: 1px; height: 14px; background-color: rgba(255, 255, 255, 0.3); } 
+   .notification-pill strong { color: var(--brand-orange); font-weight: 800; } 
+   .highlight-money { color: #ffd166; font-weight: bold; } 
+   
+   .skeleton-line { height: 12px; background: rgba(255, 255, 255, 0.2); border-radius: 6px; animation: pulse-skel 1.5s infinite ease-in-out; } 
+   @keyframes pulse-skel { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } } 
+
+   /* --- Navegación --- */ 
+   .header-actions { display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap; } 
+   .btn-reporte { display: flex; align-items: center; gap: 6px; background: transparent; border: 1px solid var(--line); color: var(--ink-soft); padding: 0.5rem 0.8rem; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.3s; } 
+   .btn-reporte:hover { background: rgba(15, 99, 67, 0.05); color: var(--brand-green); border-color: var(--brand-green); } 
+
+   nav { display: flex; gap: 0.4rem; background: var(--bg); padding: 0.25rem; border-radius: 10px; border: 1px solid var(--line); } 
+   nav button { background: transparent; border: none; color: var(--ink-soft); padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.3s; } 
+   nav button:hover:not(.active) { color: var(--brand-green); background: rgba(15, 99, 67, 0.05); } 
+   nav button.active { background: var(--surface); color: var(--brand-green); box-shadow: 0 2px 6px var(--shadow); } 
+
+   .status-btn { display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 50%; background: var(--surface); border: 1px solid var(--line); cursor: help; transition: all 0.3s; box-shadow: 0 2px 6px rgba(0,0,0,0.04); } 
+   .btn-online { color: var(--brand-green); } 
+   .btn-sync { color: var(--brand-orange); animation: pulse-border 1.5s infinite; } 
+   .btn-error { color: #EF4444; background: #FEF2F2; border-color: #FECACA; } 
+   .btn-offline { color: var(--ink-soft); opacity: 0.7; } 
+   @keyframes pulse-border { 0% { box-shadow: 0 0 0 0 rgba(243, 160, 34, 0.4); } 70% { box-shadow: 0 0 0 8px rgba(243, 160, 34, 0); } 100% { box-shadow: 0 0 0 0 rgba(243, 160, 34, 0); } } 
+
+   main { width: 100%; max-width: 100%; margin: 0 auto; padding: 1.5rem 2rem 3rem; } 
+   .vista { display: none; opacity: 0; transform: translateY(10px); transition: all 0.4s ease-out; } 
+   .vista.activa { display: block; opacity: 1; transform: translateY(0); } 
+   
+   /* --- Filtros & Inputs --- */ 
+   .filtros { background: var(--surface); padding: 1rem 1.2rem; border-radius: 14px; box-shadow: 0 4px 15px var(--shadow); display: flex; flex-wrap: wrap; gap: 0.8rem; margin-bottom: 1.2rem; align-items: end; border: 1px solid var(--line); } 
+   .campo { display: flex; flex-direction: column; gap: 0.4rem; } 
+   .campo label { font-size: 0.8rem; color: var(--ink-soft); font-weight: 600; } 
+   select, input[type=text], input[type=number], input[type=date] { font-family: var(--sans); font-size: 0.9rem; padding: 0.6rem 0.9rem; border: 2px solid #E2E8F0; border-radius: 8px; background: #F8FAFC; color: var(--ink); transition: all 0.3s ease; } 
+   select:focus, input:focus { outline: none; border-color: var(--brand-green); background: var(--surface); box-shadow: 0 0 0 4px rgba(15, 99, 67, 0.1); } 
+   
+   /* --- Botones --- */ 
+   .btn { font-family: var(--sans); font-size: 0.9rem; padding: 0.6rem 1.2rem; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; transition: all 0.2s; } 
+   .btn:active { transform: scale(0.95); } 
+   .btn-primario { background: var(--brand-orange); color: var(--brand-dark); box-shadow: 0 4px 12px rgba(243, 160, 34, 0.3); } 
+   .btn-primario:hover { background: #FBBF24; box-shadow: 0 6px 16px rgba(243, 160, 34, 0.4); transform: translateY(-1px); } 
+   .btn-secundario { background: var(--surface); color: var(--ink); border: 2px solid #E2E8F0; } 
+   .btn-secundario:hover { border-color: var(--ink-soft); background: #F1F5F9; } 
+   .btn-peligro { background: #EF4444; color: white; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); } 
+   .btn-peligro:hover { background: #DC2626; box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4); transform: translateY(-1px); } 
+   .btn-accion { background: transparent; border: none; padding: 4px 6px; border-radius: 6px; cursor: pointer; font-size: 1rem; transition: all 0.2s; } 
+   .btn-eliminar { color: #94A3B8; } .btn-eliminar:hover { background: #FEE2E2; color: #DC2626; } 
+   .btn-editar { color: #94A3B8; } .btn-editar:hover { background: #E0F2FE; color: #0284C7; } 
+   
+   /* --- Tabla 12 Columnas --- */ 
+   .tabla-envoltura { width: 100%; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); box-shadow: 0 10px 30px var(--shadow); overflow: hidden; } 
+   table { border-collapse: collapse; width: 100%; font-size: 0.88rem; text-align: left; table-layout: fixed; } 
+   thead th { padding: 0.9rem 0.4rem; background: rgba(248, 250, 252, 0.9); color: var(--ink-soft); font-weight: 700; border-bottom: 2px solid var(--line); font-family: var(--display); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.03em; overflow: hidden; text-overflow: ellipsis; } 
+   tbody td { padding: 0.9rem 0.4rem; border-bottom: 1px solid var(--line); vertical-align: middle; transition: background 0.3s; overflow: hidden; text-overflow: ellipsis; } 
+   tbody tr:hover td { background-color: #F8FAFC; } 
+   tbody tr.fila-seleccionada td { background-color: #eaf5f0; } 
+   tbody tr:last-child td { border-bottom: none; } 
+   tfoot td { padding: 0.9rem 0.4rem; background: #F8FAFC; border-top: 2px solid var(--line); } 
+   .texto-total { text-align: right; font-family: var(--display); font-size: 0.75rem; color: var(--ink-soft); text-transform: uppercase; font-weight: 700; } 
+   .total-val { color: var(--brand-green); font-weight: 800; font-size: 0.95rem; } 
+   
+   th:nth-child(1), td:nth-child(1) { width: 3%; text-align: center; } /* Chk */
+   th:nth-child(2), td:nth-child(2) { width: 4%; } /* Folio */
+   th:nth-child(3), td:nth-child(3) { width: 8%; } /* Fecha Pedido NUEVA */
+   th:nth-child(4), td:nth-child(4) { width: 7%; } /* Región */
+   th:nth-child(5), td:nth-child(5) { width: 10%; } /* Guía */
+   th:nth-child(6), td:nth-child(6) { width: 22%; } /* Desc */
+   th:nth-child(7), td:nth-child(7) { width: 4%; } /* Kg */
+   th:nth-child(8), td:nth-child(8) { width: 8%; } /* Monto */
+   th:nth-child(9), td:nth-child(9) { width: 9%; } /* Entrega */
+   th:nth-child(10), td:nth-child(10) { width: 9%; } /* Pago */
+   th:nth-child(11), td:nth-child(11) { width: 8%; } /* Fecha pago */
+   th:nth-child(12), td:nth-child(12) { width: 8%; text-align: center; white-space: nowrap; } /* Acción */
+
+   .num { font-family: var(--mono); font-weight: 600; color: var(--ink-soft); } 
+   .col-desc { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } 
+   .chk-row { width: 16px; height: 16px; accent-color: var(--brand-green); cursor: pointer; } 
+
+   @keyframes rowUpdate { 0% { background-color: rgba(15, 99, 67, 0.15); } 100% { background-color: transparent; } } 
+   .fila-actualizada td { animation: rowUpdate 1s ease; } 
+
+   /* --- Enlace Rastreo --- */
+   .link-rastreo { display: inline-flex; align-items: center; gap: 5px; background: rgba(243, 160, 34, 0.15); color: var(--brand-orange-dark); padding: 3px 8px; border-radius: 6px; text-decoration: none; font-weight: 700; font-size: 0.8rem; transition: all 0.2s; border: 1px solid rgba(243, 160, 34, 0.3); }
+   .link-rastreo:hover { background: var(--brand-orange); color: #fff; border-color: var(--brand-orange); transform: translateY(-1px); box-shadow: 0 4px 8px rgba(243, 160, 34, 0.2); }
+   .link-rastreo svg { width: 14px; height: 14px; }
+
+   /* --- Estados --- */ 
+   .estado { display: inline-flex; align-items: center; justify-content: center; width: 100%; padding: 0.35rem 0.5rem; border-radius: 16px; font-size: 0.78rem; font-weight: 700; font-family: var(--sans); user-select: none; white-space: nowrap; } 
+   .estado.interactivo { cursor: pointer; transition: all 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.04); } 
+   .estado.interactivo:hover { transform: translateY(-1px) scale(1.02); filter: brightness(1.05); } 
+   .estado.entrega-pendiente { background: var(--state-amber-bg); color: var(--state-amber); } 
+   .estado.entrega-entregado { background: var(--state-slate-bg); color: var(--state-slate); } 
+   .estado.pago-pendiente { background: var(--state-amber-bg); color: var(--state-amber); } 
+   .estado.pago-pagado { background: var(--state-sage-bg); color: var(--state-sage); } 
+
+   /* --- Formulario --- */ 
+   .formulario-container { display: flex; justify-content: center; } 
+   .formulario { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 2.5rem 3rem; width: 100%; max-width: 650px; box-shadow: 0 20px 40px var(--shadow); } 
+   .formulario h2 { font-family: var(--display); font-size: 1.8rem; margin: 0 0 2rem; color: var(--brand-green); border-bottom: 4px solid var(--brand-orange); padding-bottom: 0.5rem; display: inline-block; } 
+   .formulario .campo { margin-bottom: 1.5rem; width: 100%; } 
+   .formulario select, .formulario input { width: 100%; } 
+   .fila-doble { display: flex; gap: 1.5rem; } .fila-doble .campo { flex: 1; } 
+   .check { display: flex; align-items: center; gap: 0.8rem; margin: 2rem 0; padding: 1.2rem; background: #F8FAFC; border-radius: 12px; border: 2px solid var(--line); transition: all 0.3s; } 
+   .check:hover { border-color: var(--brand-green); } 
+   .check input { width: 20px; height: 20px; accent-color: var(--brand-green); cursor: pointer; } 
+   .check label { font-size: 1rem; color: var(--ink); margin: 0; font-weight: 600; cursor: pointer; } 
+   .formulario .btn-primario { width: 100%; padding: 1rem; font-size: 1.1rem; border-radius: 12px; } 
+
+   /* --- Toasts --- */ 
+   .toast-container { position: fixed; bottom: 2rem; right: 2rem; z-index: 1000; display: flex; flex-direction: column; gap: 1rem; pointer-events: none; } 
+   .toast { background: var(--surface); color: var(--ink); padding: 1rem 1.5rem; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 12px; font-weight: 600; font-family: var(--sans); transform: translateX(120%); opacity: 0; transition: all 0.4s; border-left: 5px solid var(--brand-green); } 
+   .toast.show { transform: translateX(0); opacity: 1; } 
+   .toast.error { border-left-color: #EF4444; } .toast.info { border-left-color: var(--brand-orange); } 
+
+   /* --- Modales --- */ 
+   .modal-dialog { border: none; border-radius: 16px; padding: 0; background: var(--surface); box-shadow: 0 20px 40px rgba(0,0,0,0.2); } 
+   .modal-dialog::backdrop { background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(4px); } 
+   .modal-content { padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem; min-width: 320px; max-width: 500px; } 
+   .modal-content h3 { margin: 0; color: var(--brand-green); font-family: var(--display); font-size: 1.2rem; } 
+   .modal-content p { margin: 0; font-size: 0.95rem; color: var(--ink); } 
+   .modal-actions { display: flex; justify-content: flex-end; gap: 1rem; margin-top: 0.5rem; } 
+   
+   #area-reporte { background: #ffffff; padding: 35px 40px; color: var(--ink); border-radius: 12px; width: 100%; } 
+   .tabla-reporte { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.95rem; } 
+   .tabla-reporte th, .tabla-reporte td { border: 1px solid #E2E8F0; padding: 12px 10px; text-align: left; } 
+   .tabla-reporte th { background-color: #F8FAFC; color: var(--brand-green); font-family: var(--display); font-size: 0.85rem; text-transform: uppercase; } 
+
+   @media (max-width: 1024px) { 
+     main { padding: 1rem 0.5rem 3rem; } header { flex-direction: column; align-items: stretch; text-align: center; } 
+     .brand-container { justify-content: center; } .notification-pill { justify-content: center; width: 100%; } 
+     .header-actions { justify-content: center; flex-direction: column-reverse; } nav { justify-content: center; width: 100%; } 
+     .toast-container { bottom: 1rem; right: 1rem; } .tabla-envoltura { overflow-x: auto; } table { min-width: 1100px; table-layout: auto; } 
+   } 
+ </style> 
+ </head> 
+ <body> 
+
+ <header> 
+   <div class="brand-container"> 
+     <img src="logo con colores sin fondo.jpg" alt="Café Sierra Escondida Logo" class="logo" onerror="this.style.display='none'"> 
+     <div> 
+       <h1>Café Sierra Escondida</h1> 
+       <p>Lo mejor de México en tu taza</p> 
+     </div> 
+   </div> 
+   <div class="notification-pill" id="resumen"> 
+     <div class="pill-item"><div class="skeleton-line" style="width: 20px;"></div><div class="skeleton-line" style="width: 80px;"></div></div> 
+     <div class="pill-divider" style="opacity: 0.3;"></div> 
+     <div class="pill-item"><div class="skeleton-line" style="width: 20px;"></div><div class="skeleton-line" style="width: 110px;"></div></div> 
+   </div> 
+   <div class="header-actions"> 
+     <button id="btn-abrir-reporte" class="btn-reporte" title="Generar reporte de los pedidos seleccionados"> 
+       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> Reporte 
+     </button> 
+     <div id="status-monitor" class="status-btn btn-sync" title="Iniciando conexión..."></div> 
+     <nav> 
+       <button id="tab-historial" class="active">Historial</button> 
+       <button id="tab-formulario">Nuevo pedido</button> 
+     </nav> 
+   </div> 
+ </header> 
+
+ <main> 
+   <!-- ===== HISTORIAL ===== --> 
+   <section id="vista-historial" class="vista activa"> 
+     <div class="filtros"> 
+       <div class="campo"><label>Región</label><select id="f-region"><option value="">Todas</option><option value="CHIAPAS">Chiapas</option><option value="VERACRUZ">Veracruz</option><option value="OAXACA">Oaxaca</option></select></div> 
+       <div class="campo"><label>Entrega</label><select id="f-entrega"><option value="">Todos</option><option value="PENDIENTE">En camino</option><option value="ENTREGADO">Entregado</option></select></div> 
+       <div class="campo"><label>Pago</label><select id="f-pago"><option value="">Todos</option><option value="PENDIENTE">Pendiente</option><option value="PAGADO">Pagado</option></select></div> 
+       <div class="campo" style="flex:1; min-width:200px;"><label>Buscar pedido</label><input type="text" id="f-buscar" placeholder="Ej. Folio 701, Paquete Express..."></div> 
+       <button class="btn btn-secundario" id="btn-refrescar">Actualizar</button> 
+     </div> 
+
+     <div class="tabla-envoltura"> 
+       <table> 
+         <thead> 
+           <tr> 
+             <th><input type="checkbox" id="chk-todos" class="chk-row" title="Seleccionar todos"></th> 
+             <th>Folio</th> 
+             <th>Fecha Pedido</th> 
+             <th>Región</th> 
+             <th>Guía / paquetería</th> 
+             <th>Descripción</th> 
+             <th>Kg</th> 
+             <th>Monto</th> 
+             <th>Entrega</th> 
+             <th>Pago</th> 
+             <th>Fecha pago</th> 
+             <th style="text-align: center;">Acción</th> 
+           </tr> 
+         </thead> 
+         <tbody id="tabla-body"></tbody> 
+         <tfoot id="tabla-foot" style="display: none;"> 
+           <tr> 
+             <td colspan="6" class="texto-total">Total mostrado:</td> 
+             <td class="num total-val" id="total-kg">0</td> 
+             <td class="num total-val" id="total-monto">$0.00</td> 
+             <td colspan="4"></td> 
+           </tr> 
+         </tfoot> 
+       </table> 
+       <div style="padding: 3rem; text-align: center; color: var(--ink-soft); display: none;" id="estado-vacio"> 
+         No hay pedidos que coincidan con tu búsqueda. 
+       </div> 
+     </div> 
+   </section> 
+
+   <!-- ===== FORMULARIO ===== --> 
+   <section id="vista-formulario" class="vista"> 
+     <div class="formulario-container"> 
+       <form class="formulario" id="form-pedido"> 
+         <h2>Registrar nuevo pedido</h2> 
+         <div class="fila-doble"> 
+           <div class="campo"><label>Fecha de pedido</label><input type="date" id="f-in-fecha-pedido" required></div>
+           <div class="campo"><label>Región de origen</label><select id="f-in-region" required><option value="CHIAPAS">Chiapas</option><option value="VERACRUZ">Veracruz</option><option value="OAXACA">Oaxaca</option><option value="OTRA">Otra</option></select></div> 
+         </div> 
+         <div class="fila-doble"> 
+           <div class="campo"><label>Cantidad (kg)</label><input type="number" id="f-in-cantidad" step="0.1" min="0" required></div> 
+           <div class="campo"><label>Monto total ($)</label><input type="number" id="f-in-monto" step="0.01" min="0" required></div> 
+         </div> 
+         <div class="campo"><label>Descripción detallada</label><input type="text" id="f-in-descripcion" placeholder="Ej. 20 costales de café molido regular"></div> 
+         <div class="fila-doble"> 
+           <div class="campo"><label>Número de guía (opcional)</label><input type="text" id="f-in-guia"></div> 
+           <div class="campo"><label>Paquetería</label><select id="f-in-paqueteria"><option value="">— Ninguna —</option><option value="PAQUETE EXPRESS">Paquete Express</option><option value="CORREOS MEXICO">Correos México</option><option value="ESTAFETA">Estafeta</option></select></div> 
+         </div> 
+         <div class="check"> 
+           <input type="checkbox" id="f-in-cargo"><label for="f-in-cargo">Marcar como cargo de envío (No suma kg de café)</label> 
+         </div> 
+         <button type="submit" class="btn btn-primario">Guardar pedido de forma segura</button> 
+       </form> 
+     </div> 
+   </section> 
+ </main> 
+
+ <!-- Modales de Interfaz --> 
+ <dialog id="modal-reporte" class="modal-dialog"> 
+   <div class="modal-content" style="max-width: 850px; width: 100%;"> 
+     <div id="area-reporte"> 
+       <div style="text-align: center; border-bottom: 2px solid var(--brand-orange); padding-bottom: 12px; margin-bottom: 15px;"> 
+         <h2 style="margin: 0; color: var(--brand-green); font-family: var(--display); font-size: 1.6rem;">Reporte de Pedidos</h2> 
+         <p style="margin: 5px 0 0 0; color: var(--ink-soft); font-size: 0.95rem; font-weight: 600;">Café Sierra Escondida</p> 
+       </div> 
+       <table class="tabla-reporte"> 
+         <thead><tr><th style="width: 60%;">Descripción</th><th style="width: 10%;">Kg</th><th style="width: 15%;">Monto</th><th style="width: 15%;">Fecha de Pago</th></tr></thead> 
+         <tbody id="cuerpo-reporte"></tbody> 
+       </table> 
+     </div> 
+     <div class="modal-actions"> 
+       <button class="btn btn-secundario" id="btn-cerrar-reporte">Cerrar</button> 
+       <button class="btn btn-primario" id="btn-descargar-reporte" style="display:flex; align-items:center; gap:6px;"> 
+         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Descargar Imagen 
+       </button> 
+     </div> 
+   </div> 
+ </dialog> 
+
+ <dialog id="modal-editar" class="modal-dialog"> 
+   <div class="modal-content"> 
+     <h3>Editar Pedido <span id="edit-folio-title" style="color:var(--brand-orange);"></span></h3> 
+     <div class="fila-doble" style="margin-top:0.5rem;"> 
+       <div class="campo">
+         <label>Fecha Pedido</label>
+         <input type="date" id="edit-fecha-pedido">
+       </div>
+       <div class="campo"> 
+         <label>Región</label> 
+         <select id="edit-region"><option value="CHIAPAS">Chiapas</option><option value="VERACRUZ">Veracruz</option><option value="OAXACA">Oaxaca</option><option value="OTRA">Otra</option></select> 
+       </div> 
+     </div> 
+     <div class="fila-doble"> 
+       <div class="campo"><label>Cantidad (kg)</label><input type="number" id="edit-cantidad" step="0.1" min="0"></div> 
+       <div class="campo"><label>Monto total ($)</label><input type="number" id="edit-monto" step="0.01" min="0"></div> 
+     </div> 
+     <div class="campo"><label>Descripción</label><input type="text" id="edit-descripcion"></div> 
+     <div class="fila-doble"> 
+       <div class="campo"><label>Número de guía</label><input type="text" id="edit-guia"></div> 
+       <div class="campo"><label>Paquetería</label><select id="edit-paqueteria"><option value="">— Ninguna —</option><option value="PAQUETE EXPRESS">Paquete Express</option><option value="CORREOS MEXICO">Correos México</option><option value="ESTAFETA">Estafeta</option></select></div> 
+     </div>
+     <div class="modal-actions"> 
+       <button class="btn btn-secundario" id="btn-cancelar-editar">Cancelar</button> 
+       <button class="btn btn-primario" id="btn-guardar-editar">Guardar Cambios</button> 
+     </div> 
+   </div> 
+ </dialog> 
+
+ <dialog id="modal-fecha-pago" class="modal-dialog"> 
+   <div class="modal-content"> 
+     <h3>Confirmar Pago</h3> 
+     <div class="campo"><label>¿En qué fecha se realizó el pago?</label><input type="date" id="input-fecha-pago" required></div> 
+     <div class="modal-actions"> 
+       <button class="btn btn-secundario" id="btn-cancelar-fecha">Cancelar</button> 
+       <button class="btn btn-primario" id="btn-guardar-fecha">Guardar Pago</button> 
+     </div> 
+   </div> 
+ </dialog> 
+
+ <dialog id="modal-confirmar-eliminar" class="modal-dialog"> 
+   <div class="modal-content"> 
+     <h3 style="color: #EF4444;">Eliminar Pedido</h3> 
+     <p id="texto-confirmar-eliminar"></p> 
+     <div class="modal-actions"> 
+       <button class="btn btn-secundario" id="btn-cancelar-eliminar">Cancelar</button> 
+       <button class="btn btn-peligro" id="btn-aceptar-eliminar">Sí, eliminar</button> 
+     </div> 
+   </div> 
+ </dialog> 
+
+ <div id="toast-container" class="toast-container"></div> 
+
+ <script> 
+ const API_URL = "https://script.google.com/macros/s/AKfycbwqFDAZb1WjgqjV1s38aRczpeGc2XxYvwIVAymrFPYaQ8J5todvKNApSFSbW4KmSRUF/exec"; 
+
+ document.addEventListener("DOMContentLoaded", () => { document.getElementById('f-in-fecha-pedido').value = hoyISO(); }); 
+
+ let foliosSeleccionados = new Set(); 
+ window.toggleSeleccion = function(folio, checkbox) { 
+   const fila = document.getElementById(`fila-${folio}`); 
+   if(checkbox.checked) { foliosSeleccionados.add(String(folio)); if(fila) fila.classList.add('fila-seleccionada'); } 
+   else { foliosSeleccionados.delete(String(folio)); if(fila) fila.classList.remove('fila-seleccionada'); } 
+ }; 
+ document.getElementById('chk-todos').addEventListener('change', function(e) { 
+   const isChecked = e.target.checked; 
+   document.querySelectorAll('.chk-row:not(#chk-todos)').forEach(chk => { chk.checked = isChecked; toggleSeleccion(chk.value, chk); }); 
+ }); 
+
+ const statusSVGs = { 
+   online: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="m9 15 3 3 5-5"/></svg>`,  
+   sync: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 12v6"/><path d="m9 15 3-3 3 3"/></svg>`,    
+   error: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 12v4"/><path d="M12 20h.01"/></svg>`,  
+   offline: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12a6.004 6.004 0 0 0-7.44-5.842A6.002 6.002 0 0 0 4.094 9.176"/><path d="M4 14.899A7 7 0 0 0 15.71 22h1.79a4.5 4.5 0 0 0 2.5-8.242"/><path d="m2 2 20 20"/></svg>`  
+ }; 
+ function setAppStatus(state, msg) { 
+   const monitor = document.getElementById('status-monitor'); 
+   monitor.title = msg; monitor.className = `status-btn btn-${state}`; monitor.innerHTML = statusSVGs[state]; 
+ } 
+ window.addEventListener('online', () => setAppStatus('online', 'Sistema Conectado')); 
+ window.addEventListener('offline', () => setAppStatus('offline', 'Sin Internet')); 
+
+ async function fetchConTimeout(resource, options = {}) { 
+   const { timeout = 15000 } = options; const controller = new AbortController(); const id = setTimeout(() => controller.abort(), timeout); 
+   const response = await fetch(resource, { ...options, signal: controller.signal }); clearTimeout(id); return response; 
+ } 
+
+ function mostrarToast(mensaje, tipo = 'exito') { 
+   const container = document.getElementById('toast-container'); const toast = document.createElement('div'); toast.className = `toast ${tipo}`; 
+   let icono = tipo === 'error' ? '❌' : (tipo === 'info' ? '⏳' : '✅'); 
+   toast.innerHTML = `<span style="font-size:1.3rem;">${icono}</span> <span>${mensaje}</span>`; container.appendChild(toast); 
+   setTimeout(() => toast.classList.add('show'), 10); setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 3500); 
+ } 
+
+ function formatearFecha(fechaIso) { 
+   if (!fechaIso) return ''; 
+   try { 
+     const soloFecha = String(fechaIso).trim().split(/[T ]/)[0]; const partes = soloFecha.split('-'); if(partes.length !== 3) return fechaIso; 
+     const fechaObj = new Date(parseInt(partes[0], 10), parseInt(partes[1], 10) - 1, parseInt(partes[2], 10)); 
+     if (isNaN(fechaObj.getTime())) return fechaIso; 
+     return fechaObj.toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/\./g, '').split(' ').join('/'); 
+   } catch(e) { return fechaIso; } 
+ } 
+
+ const tabHistorial = document.getElementById('tab-historial'); const tabFormulario = document.getElementById('tab-formulario'); 
+ const vistaHistorial = document.getElementById('vista-historial'); const vistaFormulario = document.getElementById('vista-formulario'); 
+ function cambiarVista(nombre){ 
+   const esHistorial = nombre === 'historial'; tabHistorial.classList.toggle('active', esHistorial); tabFormulario.classList.toggle('active', !esHistorial); 
+   const vistaOcultar = esHistorial ? vistaFormulario : vistaHistorial; const vistaMostrar = esHistorial ? vistaHistorial : vistaFormulario; 
+   vistaOcultar.style.opacity = '0'; vistaOcultar.style.transform = 'translateY(10px)'; 
+   setTimeout(() => { vistaOcultar.classList.remove('activa'); vistaMostrar.classList.add('activa'); setTimeout(() => { vistaMostrar.style.opacity = '1'; vistaMostrar.style.transform = 'translateY(0)'; }, 50); }, 300); 
+ } 
+ tabHistorial.addEventListener('click', () => cambiarVista('historial')); tabFormulario.addEventListener('click', () => cambiarVista('formulario')); 
+
+ let pedidosCache = []; 
+ async function cargarHistorial(silencioso = false){ 
+   if(!navigator.onLine) { setAppStatus('offline', 'Sin Internet'); return; } 
+   if(!silencioso) mostrarToast('Actualizando datos...', 'info'); setAppStatus('sync', 'Sincronizando...'); 
+   try{ 
+     const res = await fetchConTimeout(API_URL); const data = await res.json(); if(!data.ok) throw new Error(data.error || 'Error'); 
+     pedidosCache = data.pedidos.filter(p => p.tipo_registro !== 'CARGO_ENVIO'); renderTabla(); 
+     if(!silencioso) mostrarToast('Actualizado con éxito', 'exito'); setAppStatus('online', 'Actualizado'); 
+   }catch(err){ setAppStatus('error', 'Fallo de conexión'); mostrarToast('Error al conectar, revisa el enlace API_URL', 'error'); } 
+ } 
+
+ function renderTabla(){ 
+   const region = document.getElementById('f-region').value; const entrega = document.getElementById('f-entrega').value; const pago = document.getElementById('f-pago').value; const busqueda = document.getElementById('f-buscar').value.trim().toLowerCase(); 
+   document.getElementById('chk-todos').checked = false; 
+
+   let filtrados = pedidosCache.filter(p => { 
+     if(region && p.region !== region) return false; if(entrega && p.status_entrega !== entrega) return false; if(pago && p.status_pago !== pago) return false; 
+     if(busqueda) { const texto = [p.folio, p.guia, p.paqueteria, p.descripcion].join(' ').toLowerCase(); if(!texto.includes(busqueda)) return false; } 
+     return true; 
+   }); 
+   filtrados.sort((a,b) => Number(b.folio) - Number(a.folio)); 
+
+   const pendEntrega = pedidosCache.filter(p => p.status_entrega === 'PENDIENTE'); const pendPago = pedidosCache.filter(p => p.status_pago === 'PENDIENTE'); 
+   const montoPendiente = pendPago.reduce((s,p) => s + (Number(p.monto) || 0), 0); 
+   document.getElementById('resumen').innerHTML = `<div class="pill-item"><span>🚚</span><span><strong>${pendEntrega.length}</strong> por llegar</span></div><div class="pill-divider"></div><div class="pill-item"><span>💳</span><span><strong>${pendPago.length}</strong> pendientes (<span class="highlight-money">$${montoPendiente.toLocaleString('es-MX',{minimumFractionDigits:2})}</span>)</span></div>`; 
+
+   const tbody = document.getElementById('tabla-body'); const vacio = document.getElementById('estado-vacio'); const tfoot = document.getElementById('tabla-foot'); tbody.innerHTML = ''; 
+   if(filtrados.length === 0){ vacio.style.display = 'block'; tfoot.style.display = 'none'; return; } 
+   vacio.style.display = 'none'; tfoot.style.display = 'table-footer-group'; 
+
+   let sumaKg = 0; let sumaMonto = 0; 
+   filtrados.forEach(p => { 
+     sumaKg += Number(p.cantidad_kg || 0); sumaMonto += Number(p.monto || 0); 
+     const tr = document.createElement('tr'); tr.id = `fila-${p.folio}`; const estaSeleccionado = foliosSeleccionados.has(String(p.folio)); if(estaSeleccionado) tr.classList.add('fila-seleccionada'); 
+     const monto = Number(p.monto || 0).toLocaleString('es-MX', {minimumFractionDigits:2}); 
+     
+     let guiaHtml = '<span style="color:var(--ink-soft);">—</span>';
+     if(p.guia) { guiaHtml = `<a href="https://parcelsapp.com/es/tracking/${encodeURIComponent(p.guia)}" target="_blank" class="link-rastreo">${p.guia} <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg></a>${p.paqueteria ? `<div style="font-size:0.75rem; color:var(--ink-soft); margin-top:3px; font-weight:600;">${p.paqueteria}</div>` : ''}`; } 
+     else if (p.paqueteria) { guiaHtml = `<span style="font-weight:600; color:var(--ink-soft);">${p.paqueteria}</span>`; }
+     
+     const clasePago = p.status_pago === 'PAGADO' ? 'pago-pagado' : 'pago-pendiente'; const textoPago = p.status_pago === 'PAGADO' ? '✓ Pagado' : '⏳ Pendiente'; 
+     const claseEntrega = p.status_entrega === 'ENTREGADO' ? 'entrega-entregado' : 'entrega-pendiente'; const textoEntrega = p.status_entrega === 'ENTREGADO' ? '✓ Entregado' : '🚚 En camino'; 
+     
+     const fechaPedidoFormateada = formatearFecha(p.fecha_pedido);
+     const fechaPagoFormateada = formatearFecha(p.fecha_pago); 
+
+     tr.innerHTML = ` 
+       <td style="text-align:center;"><input type="checkbox" class="chk-row" value="${p.folio}" ${estaSeleccionado ? 'checked' : ''} onchange="toggleSeleccion('${p.folio}', this)"></td> 
+       <td class="num">#${p.folio}</td> 
+       <td class="num">${fechaPedidoFormateada}</td> 
+       <td><strong>${p.region || ''}</strong></td> 
+       <td>${guiaHtml}</td> 
+       <td class="col-desc" title="${p.descripcion || ''}">${p.descripcion || ''}</td> 
+       <td class="num">${p.cantidad_kg || ''}</td> 
+       <td class="num" style="color:var(--brand-green); font-weight:700;">$${monto}</td> 
+       <td><span class="estado ${claseEntrega} interactivo" onclick="toggleEntrega('${p.folio}', '${p.status_entrega}')">${textoEntrega}</span></td> 
+       <td><span class="estado ${clasePago} interactivo" onclick="togglePago('${p.folio}', '${p.status_pago}')">${textoPago}</span></td> 
+       <td class="num" id="fecha-${p.folio}">${fechaPagoFormateada}</td> 
+       <td style="text-align: center; white-space: nowrap;"> 
+         <button class="btn-accion btn-editar" onclick="abrirModalEditar('${p.folio}')" title="Editar pedido">✏️</button> 
+         <button class="btn-accion btn-eliminar" onclick="confirmarEliminar('${p.folio}')" title="Eliminar pedido">🗑</button> 
+       </td> 
+     `; 
+     tbody.appendChild(tr); 
+   }); 
+   document.getElementById('total-kg').textContent = sumaKg.toFixed(1); document.getElementById('total-monto').textContent = '$' + sumaMonto.toLocaleString('es-MX', {minimumFractionDigits:2}); 
+ } 
+ function hoyISO(){ return new Date().toISOString().slice(0,10); } 
+ function animarFilaActualizada(folio) { const fila = document.getElementById(`fila-${folio}`); if(fila) { fila.classList.remove('fila-actualizada'); void fila.offsetWidth; fila.classList.add('fila-actualizada'); } } 
+
+ const modalReporte = document.getElementById('modal-reporte'); 
+ document.getElementById('btn-abrir-reporte').addEventListener('click', () => { 
+   if(foliosSeleccionados.size === 0) { mostrarToast('Selecciona al menos un pedido', 'error'); return; } 
+   const tbody = document.getElementById('cuerpo-reporte'); tbody.innerHTML = ''; let repKg = 0; let repMonto = 0; 
+   pedidosCache.forEach(p => { 
+     if(foliosSeleccionados.has(String(p.folio))) { 
+       repKg += Number(p.cantidad_kg || 0); repMonto += Number(p.monto || 0); 
+       const tr = document.createElement('tr'); tr.innerHTML = `<td style="font-weight: 500;">${p.descripcion || '—'}</td><td style="font-family: var(--mono);">${p.cantidad_kg || '0'}</td><td style="font-family: var(--mono); color: var(--brand-green); font-weight: bold;">$${Number(p.monto || 0).toLocaleString('es-MX', {minimumFractionDigits:2})}</td><td>${formatearFecha(p.fecha_pago) || '—'}</td>`; tbody.appendChild(tr); 
+     } 
+   }); 
+   tbody.innerHTML += `<tr style="background-color: #F8FAFC; border-top: 2px solid #E2E8F0;"><td style="text-align: right; font-weight: 800; font-family: var(--display); color: var(--ink-soft); font-size: 0.8rem; text-transform: uppercase;">Total:</td><td style="font-family: var(--mono); font-weight: 700;">${repKg.toFixed(1)}</td><td style="font-family: var(--mono); font-weight: 800; color: var(--brand-green);">$${repMonto.toLocaleString('es-MX', {minimumFractionDigits:2})}</td><td></td></tr>`; 
+   modalReporte.showModal(); 
+ }); 
+ document.getElementById('btn-cerrar-reporte').addEventListener('click', () => modalReporte.close()); 
+ document.getElementById('btn-descargar-reporte').addEventListener('click', async () => { 
+   const btn = document.getElementById('btn-descargar-reporte'); const txtOriginal = btn.innerHTML; btn.innerHTML = 'Generando...'; btn.disabled = true; 
+   try { const canvas = await html2canvas(document.getElementById('area-reporte'), { scale: 2, backgroundColor: '#ffffff', useCORS: true }); const enlace = document.createElement('a'); enlace.download = `Reporte-${hoyISO()}.png`; enlace.href = canvas.toDataURL('image/png'); enlace.click(); mostrarToast('Descargado', 'exito'); } catch (error) { mostrarToast('Error', 'error'); } finally { btn.innerHTML = txtOriginal; btn.disabled = false; } 
+ }); 
+
+ window.toggleEntrega = function(folio, estadoActual) { const nuevoEstado = estadoActual === 'ENTREGADO' ? 'PENDIENTE' : 'ENTREGADO'; const pedido = pedidosCache.find(p => p.folio == folio); if(pedido) pedido.status_entrega = nuevoEstado; renderTabla(); animarFilaActualizada(folio); actualizarPedido(folio, { status_entrega: nuevoEstado }, 'Guardado'); }; 
+ let folioEnProceso = null; const modalFecha = document.getElementById('modal-fecha-pago'); const inputFecha = document.getElementById('input-fecha-pago'); 
+ window.togglePago = function(folio, estadoActual) { if (estadoActual === 'PAGADO') { ejecutarCambioPago(folio, 'PENDIENTE', ''); } else { folioEnProceso = folio; inputFecha.value = hoyISO(); modalFecha.showModal(); } }; 
+ function ejecutarCambioPago(folio, nuevoEstado, nuevaFecha) { const pedido = pedidosCache.find(p => p.folio == folio); if(pedido) { pedido.status_pago = nuevoEstado; pedido.fecha_pago = nuevaFecha; } renderTabla(); animarFilaActualizada(folio); actualizarPedido(folio, { status_pago: nuevoEstado, fecha_pago: nuevaFecha }, 'Guardado'); } 
+ document.getElementById('btn-cancelar-fecha').addEventListener('click', () => { modalFecha.close(); folioEnProceso = null; }); document.getElementById('btn-guardar-fecha').addEventListener('click', () => { if(!inputFecha.value) return; modalFecha.close(); ejecutarCambioPago(folioEnProceso, 'PAGADO', inputFecha.value); folioEnProceso = null; }); 
+
+ async function actualizarPedido(folio, cambios, msjExito){ 
+   if(!navigator.onLine) return; setAppStatus('sync', 'Guardando...'); 
+   try{ const res = await fetchConTimeout(API_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify({action:'actualizar', folio, cambios}) }); const data = await res.json(); if(!data.ok) throw new Error(); mostrarToast(msjExito, 'exito'); setAppStatus('online', 'Actualizado'); }catch(err){ setAppStatus('error', 'Fallo'); cargarHistorial(true); } 
+ } 
+
+ let folioAEditar = null; const modalEditar = document.getElementById('modal-editar'); 
+ window.abrirModalEditar = function(folio) { 
+   const pedido = pedidosCache.find(p => p.folio == folio); if(!pedido) return; folioAEditar = folio; document.getElementById('edit-folio-title').textContent = `#${folio}`; 
+   
+   // Cargar fecha de pedido en el formulario de edición (si existe, si no, vacío)
+   let fechaIsoCorta = '';
+   if(pedido.fecha_pedido) {
+     fechaIsoCorta = String(pedido.fecha_pedido).trim().split(/[T ]/)[0];
+   }
+   document.getElementById('edit-fecha-pedido').value = fechaIsoCorta;
+
+   document.getElementById('edit-region').value = pedido.region || ''; document.getElementById('edit-paqueteria').value = pedido.paqueteria || ''; document.getElementById('edit-cantidad').value = pedido.cantidad_kg || ''; document.getElementById('edit-monto').value = pedido.monto || ''; document.getElementById('edit-descripcion').value = pedido.descripcion || ''; document.getElementById('edit-guia').value = pedido.guia || ''; 
+   modalEditar.showModal(); 
+ }; 
+ document.getElementById('btn-cancelar-editar').addEventListener('click', () => { modalEditar.close(); folioAEditar = null; }); 
+ document.getElementById('btn-guardar-editar').addEventListener('click', () => { 
+   if(!folioAEditar) return; 
+   const cambios = { 
+     fecha_pedido: document.getElementById('edit-fecha-pedido').value,
+     region: document.getElementById('edit-region').value, paqueteria: document.getElementById('edit-paqueteria').value, cantidad_kg: parseFloat(document.getElementById('edit-cantidad').value) || null, monto: parseFloat(document.getElementById('edit-monto').value) || null, descripcion: document.getElementById('edit-descripcion').value, guia: document.getElementById('edit-guia').value 
+   }; 
+   const pedido = pedidosCache.find(p => p.folio == folioAEditar); if(pedido) Object.assign(pedido, cambios); 
+   modalEditar.close(); renderTabla(); animarFilaActualizada(folioAEditar); actualizarPedido(folioAEditar, cambios, 'Actualizado'); folioAEditar = null; 
+ }); 
+
+ let folioAEliminar = null; const modalEliminar = document.getElementById('modal-confirmar-eliminar'); const textoEliminar = document.getElementById('texto-confirmar-eliminar'); 
+ window.confirmarEliminar = function(folio) { folioAEliminar = folio; textoEliminar.innerHTML = `¿Eliminar pedido <strong>#${folio}</strong>?`; modalEliminar.showModal(); } 
+ document.getElementById('btn-cancelar-eliminar').addEventListener('click', () => { modalEliminar.close(); folioAEliminar = null; }); document.getElementById('btn-aceptar-eliminar').addEventListener('click', () => { if(folioAEliminar) eliminarPedido(folioAEliminar); modalEliminar.close(); folioAEliminar = null; }); 
+ async function eliminarPedido(folio) { mostrarToast(`Eliminando...`, 'info'); setAppStatus('sync', 'Borrando...'); try { await fetchConTimeout(API_URL, { method: 'POST', body: JSON.stringify({ action: 'eliminar', folio: Number(folio) }) }); mostrarToast(`Eliminado`, 'exito'); setAppStatus('online', 'Actualizado'); foliosSeleccionados.delete(String(folio)); cargarHistorial(true); } catch(err) { setAppStatus('error', 'Error'); } } 
+
+ ['f-region','f-entrega','f-pago'].forEach(id => document.getElementById(id).addEventListener('change', renderTabla)); document.getElementById('f-buscar').addEventListener('input', renderTabla); document.getElementById('btn-refrescar').addEventListener('click', () => cargarHistorial(false)); 
+
+ document.getElementById('form-pedido').addEventListener('submit', async function(e){ 
+   e.preventDefault(); if(!navigator.onLine) return mostrarToast('Sin Internet', 'error'); 
+   const btn = this.querySelector('button[type="submit"]'); const textoOriginal = btn.textContent; btn.textContent = 'Guardando...'; btn.disabled = true; mostrarToast('Enviando...', 'info'); setAppStatus('sync', 'Registrando...'); 
+   const pedido = { fecha_pedido: document.getElementById('f-in-fecha-pedido').value, region: document.getElementById('f-in-region').value, cantidad_kg: parseFloat(document.getElementById('f-in-cantidad').value) || null, monto: parseFloat(document.getElementById('f-in-monto').value) || null, descripcion: document.getElementById('f-in-descripcion').value, guia: document.getElementById('f-in-guia').value, paqueteria: document.getElementById('f-in-paqueteria').value, tipo_registro: document.getElementById('f-in-cargo').checked ? 'CARGO_ENVIO' : 'PEDIDO' }; 
+   try{ await fetchConTimeout(API_URL, { method:'POST', body: JSON.stringify({action:'crear', pedido}) }); mostrarToast(`¡Registrado con éxito!`, 'exito'); setAppStatus('online', 'Actualizado'); this.reset(); document.getElementById('f-in-fecha-pedido').value = hoyISO(); cargarHistorial(true); setTimeout(() => { cambiarVista('historial'); }, 1500); }catch(err){ setAppStatus('error', 'Error'); mostrarToast('Fallo al guardar', 'error'); } finally { btn.textContent = textoOriginal; btn.disabled = false; } 
+ }); 
+
+ setAppStatus('sync', 'Conectando...'); 
+ cargarHistorial(true); 
+ </script> 
+ </body> 
+ </html>
