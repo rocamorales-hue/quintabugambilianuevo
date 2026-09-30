@@ -1,630 +1,681 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Quinta Bugambilia - Control de Rentas</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@500;700;800&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-<style>
-  :root {
-    --brand-gold: #D98918;
-    --brand-gold-light: #F3A022;
-    --brand-green: #0F6343;
-    --brand-dark: #1C1C1C;
-    
-    --bg: #F8FAFC;
-    --surface: #FFFFFF;
-    --ink: #1E293B;
-    --ink-soft: #64748B;
-    
-    --line: #E2E8F0;
-    --shadow: rgba(15, 23, 42, 0.08);
-    
-    --state-amber: #B45309;
-    --state-amber-bg: #FEF3C7;
-    --state-sage: #15803D;
-    --state-sage-bg: #DCFCE7;
+<!DOCTYPE html> 
+<html lang="es"> 
+<head> 
+<meta charset="UTF-8"> 
+<meta name="viewport" content="width=device-width, initial-scale=1"> 
+<title>Quinta Bugambilia - Control de Rentas</title> 
+<link rel="preconnect" href="https://fonts.googleapis.com"> 
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@500;700;800&display=swap" rel="stylesheet"> 
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script> 
+<style> 
+  :root { 
+    --brand-gold: #D98918; 
+    --brand-gold-light: #F3A022; 
+    --brand-green: #0F6343; 
+    --brand-dark: #1C1C1C; 
+     
+    --bg: #F8FAFC; 
+    --surface: #FFFFFF; 
+    --ink: #1E293B; 
+    --ink-soft: #64748B; 
+     
+    --line: #E2E8F0; 
+    --shadow: rgba(15, 23, 42, 0.08); 
+     
+    --state-amber: #B45309; 
+    --state-amber-bg: #FEF3C7; 
+    --state-sage: #15803D; 
+    --state-sage-bg: #DCFCE7; 
 
-    --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-    --sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    --display: 'Montserrat', sans-serif;
-  }
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace; 
+    --sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
+    --display: 'Montserrat', sans-serif; 
+  } 
+   
+  * { box-sizing: border-box; } 
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; } 
+
+  header { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); padding: 0.8rem 2rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid rgba(226, 232, 240, 0.8); position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04); } 
+  .brand-container { display: flex; align-items: center; gap: 1rem; } 
+  .logo-placeholder { width: 45px; height: 45px; background: linear-gradient(135deg, var(--brand-green), #0d4f35); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-family: var(--display); font-size: 1.2rem; box-shadow: 0 4px 10px rgba(15, 99, 67, 0.2); } 
+  header h1 { font-family: var(--display); font-size: 1.35rem; font-weight: 800; margin: 0; color: var(--brand-green); letter-spacing: -0.02em; } 
+  header p { margin: 0.1rem 0 0; font-size: 0.7rem; color: var(--ink-soft); font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; } 
+
+  .notification-pill { display: inline-flex; align-items: center; background: linear-gradient(135deg, var(--brand-green) 0%, #0d4f35 100%); color: #ffffff; padding: 8px 16px; border-radius: 50px; font-size: 0.85rem; gap: 12px; box-shadow: 0 4px 15px rgba(15, 99, 67, 0.2); font-family: var(--display); min-height: 38px; } 
+  .pill-item { display: flex; align-items: center; gap: 6px; } 
+  .pill-divider { width: 1px; height: 14px; background-color: rgba(255, 255, 255, 0.3); } 
+  .notification-pill strong { color: var(--brand-gold-light); font-weight: 800; } 
+  .highlight-money { color: #ffd166; font-weight: bold; } 
+   
+  .skeleton-line { height: 12px; background: rgba(255, 255, 255, 0.2); border-radius: 6px; animation: pulse-skel 1.5s infinite ease-in-out; } 
+  @keyframes pulse-skel { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } } 
+
+  .header-actions { display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap; } 
+  .btn-reporte { display: flex; align-items: center; gap: 6px; background: transparent; border: 1px solid var(--line); color: var(--ink-soft); padding: 0.5rem 0.8rem; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.3s; } 
+  .btn-reporte:hover { background: rgba(15, 99, 67, 0.05); color: var(--brand-green); border-color: var(--brand-green); } 
+
+  nav { display: flex; gap: 0.4rem; background: var(--bg); padding: 0.25rem; border-radius: 10px; border: 1px solid var(--line); } 
+  nav button { background: transparent; border: none; color: var(--ink-soft); padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.3s; } 
+  nav button:hover:not(.active) { color: var(--brand-green); background: rgba(15, 99, 67, 0.05); } 
+  nav button.active { background: var(--surface); color: var(--brand-green); box-shadow: 0 2px 6px var(--shadow); } 
+
+  .status-btn { display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 50%; background: var(--surface); border: 1px solid var(--line); cursor: help; transition: all 0.3s; box-shadow: 0 2px 6px rgba(0,0,0,0.04); } 
+  .btn-online { color: var(--brand-green); } 
+  .btn-sync { color: var(--brand-gold); animation: pulse-border 1.5s infinite; } 
+  .btn-error { color: #EF4444; background: #FEF2F2; border-color: #FECACA; } 
+  .btn-offline { color: var(--ink-soft); opacity: 0.7; } 
+  @keyframes pulse-border { 0% { box-shadow: 0 0 0 0 rgba(217, 137, 24, 0.4); } 70% { box-shadow: 0 0 0 8px rgba(217, 137, 24, 0); } 100% { box-shadow: 0 0 0 0 rgba(217, 137, 24, 0); } } 
+
+  main { width: 100%; max-width: 100%; margin: 0 auto; padding: 1.5rem 2rem 3rem; } 
+  .vista { display: none; opacity: 0; transform: translateY(10px); transition: all 0.4s ease-out; } 
+  .vista.activa { display: block; opacity: 1; transform: translateY(0); } 
+   
+  .filtros { background: var(--surface); padding: 1rem 1.2rem; border-radius: 14px; box-shadow: 0 4px 15px var(--shadow); display: flex; flex-wrap: wrap; gap: 0.8rem; margin-bottom: 1.2rem; align-items: end; border: 1px solid var(--line); } 
+  .campo { display: flex; flex-direction: column; gap: 0.4rem; } 
+  .campo label { font-size: 0.8rem; color: var(--ink-soft); font-weight: 600; } 
+  select, input[type=text], input[type=number], input[type=date] { font-family: var(--sans); font-size: 0.9rem; padding: 0.6rem 0.9rem; border: 2px solid #E2E8F0; border-radius: 8px; background: #F8FAFC; color: var(--ink); transition: all 0.3s ease; } 
+  select:focus, input:focus { outline: none; border-color: var(--brand-green); background: var(--surface); box-shadow: 0 0 0 4px rgba(15, 99, 67, 0.1); } 
+   
+  .btn { font-family: var(--sans); font-size: 0.9rem; padding: 0.6rem 1.2rem; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; transition: all 0.2s; } 
+  .btn:active { transform: scale(0.95); } 
+  .btn-primario { background: var(--brand-gold); color: white; box-shadow: 0 4px 12px rgba(217, 137, 24, 0.3); } 
+  .btn-primario:hover { background: var(--brand-gold-light); box-shadow: 0 6px 16px rgba(217, 137, 24, 0.4); transform: translateY(-1px); } 
+  .btn-secundario { background: var(--surface); color: var(--ink); border: 2px solid #E2E8F0; } 
+  .btn-secundario:hover { border-color: var(--ink-soft); background: #F1F5F9; } 
+  .btn-accion { background: transparent; border: none; padding: 4px 6px; border-radius: 6px; cursor: pointer; font-size: 1rem; transition: all 0.2s; } 
+  .btn-eliminar { color: #94A3B8; } .btn-eliminar:hover { background: #FEE2E2; color: #DC2626; } 
+  .btn-editar { color: #94A3B8; } .btn-editar:hover { background: #E0F2FE; color: #0284C7; } 
+   
+  /* Estructura para tabla desplazable con sticky header y scrollbars */
+  .tabla-envoltura { width: 100%; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); box-shadow: 0 10px 30px var(--shadow); overflow: hidden; display: flex; flex-direction: column; } 
   
-  * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+  /* Scrollbar superior sincrónico */
+  .top-scrollbar-wrapper { width: 100%; overflow-x: auto; overflow-y: hidden; background: #F8FAFC; border-bottom: 1px solid var(--line); height: 14px; }
+  .top-scrollbar-content { height: 1px; }
 
-  header { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); padding: 0.8rem 2rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid rgba(226, 232, 240, 0.8); position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04); }
-  .brand-container { display: flex; align-items: center; gap: 1rem; }
-  .logo-placeholder { width: 45px; height: 45px; background: linear-gradient(135deg, var(--brand-green), #0d4f35); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-family: var(--display); font-size: 1.2rem; box-shadow: 0 4px 10px rgba(15, 99, 67, 0.2); }
-  header h1 { font-family: var(--display); font-size: 1.35rem; font-weight: 800; margin: 0; color: var(--brand-green); letter-spacing: -0.02em; }
-  header p { margin: 0.1rem 0 0; font-size: 0.7rem; color: var(--ink-soft); font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; }
-
-  .notification-pill { display: inline-flex; align-items: center; background: linear-gradient(135deg, var(--brand-green) 0%, #0d4f35 100%); color: #ffffff; padding: 8px 16px; border-radius: 50px; font-size: 0.85rem; gap: 12px; box-shadow: 0 4px 15px rgba(15, 99, 67, 0.2); font-family: var(--display); min-height: 38px; }
-  .pill-item { display: flex; align-items: center; gap: 6px; }
-  .pill-divider { width: 1px; height: 14px; background-color: rgba(255, 255, 255, 0.3); }
-  .notification-pill strong { color: var(--brand-gold-light); font-weight: 800; }
-  .highlight-money { color: #ffd166; font-weight: bold; }
+  /* Contenedor desplazable principal con scrollbar vertical alto máximo */
+  .tabla-scroll-container { width: 100%; max-height: calc(100vh - 230px); overflow: auto; position: relative; }
   
-  .skeleton-line { height: 12px; background: rgba(255, 255, 255, 0.2); border-radius: 6px; animation: pulse-skel 1.5s infinite ease-in-out; }
-  @keyframes pulse-skel { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
-
-  .header-actions { display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap; }
-  .btn-reporte { display: flex; align-items: center; gap: 6px; background: transparent; border: 1px solid var(--line); color: var(--ink-soft); padding: 0.5rem 0.8rem; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.3s; }
-  .btn-reporte:hover { background: rgba(15, 99, 67, 0.05); color: var(--brand-green); border-color: var(--brand-green); }
-
-  nav { display: flex; gap: 0.4rem; background: var(--bg); padding: 0.25rem; border-radius: 10px; border: 1px solid var(--line); }
-  nav button { background: transparent; border: none; color: var(--ink-soft); padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.3s; }
-  nav button:hover:not(.active) { color: var(--brand-green); background: rgba(15, 99, 67, 0.05); }
-  nav button.active { background: var(--surface); color: var(--brand-green); box-shadow: 0 2px 6px var(--shadow); }
-
-  .status-btn { display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 50%; background: var(--surface); border: 1px solid var(--line); cursor: help; transition: all 0.3s; box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
-  .btn-online { color: var(--brand-green); }
-  .btn-sync { color: var(--brand-gold); animation: pulse-border 1.5s infinite; }
-  .btn-error { color: #EF4444; background: #FEF2F2; border-color: #FECACA; }
-  .btn-offline { color: var(--ink-soft); opacity: 0.7; }
-  @keyframes pulse-border { 0% { box-shadow: 0 0 0 0 rgba(217, 137, 24, 0.4); } 70% { box-shadow: 0 0 0 8px rgba(217, 137, 24, 0); } 100% { box-shadow: 0 0 0 0 rgba(217, 137, 24, 0); } }
-
-  main { width: 100%; max-width: 100%; margin: 0 auto; padding: 1.5rem 2rem 3rem; }
-  .vista { display: none; opacity: 0; transform: translateY(10px); transition: all 0.4s ease-out; }
-  .vista.activa { display: block; opacity: 1; transform: translateY(0); }
+  table { border-collapse: separate; border-spacing: 0; width: 100%; font-size: 0.82rem; text-align: left; min-width: 1500px; } 
   
-  .filtros { background: var(--surface); padding: 1rem 1.2rem; border-radius: 14px; box-shadow: 0 4px 15px var(--shadow); display: flex; flex-wrap: wrap; gap: 0.8rem; margin-bottom: 1.2rem; align-items: end; border: 1px solid var(--line); }
-  .campo { display: flex; flex-direction: column; gap: 0.4rem; }
-  .campo label { font-size: 0.8rem; color: var(--ink-soft); font-weight: 600; }
-  select, input[type=text], input[type=number], input[type=date] { font-family: var(--sans); font-size: 0.9rem; padding: 0.6rem 0.9rem; border: 2px solid #E2E8F0; border-radius: 8px; background: #F8FAFC; color: var(--ink); transition: all 0.3s ease; }
-  select:focus, input:focus { outline: none; border-color: var(--brand-green); background: var(--surface); box-shadow: 0 0 0 4px rgba(15, 99, 67, 0.1); }
+  /* Sticky Header */
+  thead { position: sticky; top: 0; z-index: 20; }
+  thead th { padding: 0.9rem 0.5rem; background: #F8FAFC; color: var(--ink-soft); font-weight: 700; border-bottom: 2px solid var(--line); font-family: var(--display); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.03em; white-space: nowrap; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03); } 
   
-  .btn { font-family: var(--sans); font-size: 0.9rem; padding: 0.6rem 1.2rem; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; transition: all 0.2s; }
-  .btn:active { transform: scale(0.95); }
-  .btn-primario { background: var(--brand-gold); color: white; box-shadow: 0 4px 12px rgba(217, 137, 24, 0.3); }
-  .btn-primario:hover { background: var(--brand-gold-light); box-shadow: 0 6px 16px rgba(217, 137, 24, 0.4); transform: translateY(-1px); }
-  .btn-secundario { background: var(--surface); color: var(--ink); border: 2px solid #E2E8F0; }
-  .btn-secundario:hover { border-color: var(--ink-soft); background: #F1F5F9; }
-  .btn-accion { background: transparent; border: none; padding: 4px 6px; border-radius: 6px; cursor: pointer; font-size: 1rem; transition: all 0.2s; }
-  .btn-eliminar { color: #94A3B8; } .btn-eliminar:hover { background: #FEE2E2; color: #DC2626; }
-  .btn-editar { color: #94A3B8; } .btn-editar:hover { background: #E0F2FE; color: #0284C7; }
+  tbody td { padding: 0.8rem 0.5rem; border-bottom: 1px solid var(--line); vertical-align: middle; transition: background 0.3s; white-space: nowrap; background-color: var(--surface); } 
+  tbody tr:hover td { background-color: #F8FAFC; } 
+  tbody tr.fila-seleccionada td { background-color: #eaf5f0; } 
   
-  .tabla-envoltura { width: 100%; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); box-shadow: 0 10px 30px var(--shadow); overflow-x: auto; }
-  table { border-collapse: collapse; width: 100%; font-size: 0.82rem; text-align: left; min-width: 1500px; }
-  thead th { padding: 0.9rem 0.5rem; background: rgba(248, 250, 252, 0.9); color: var(--ink-soft); font-weight: 700; border-bottom: 2px solid var(--line); font-family: var(--display); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.03em; white-space: nowrap; }
-  tbody td { padding: 0.8rem 0.5rem; border-bottom: 1px solid var(--line); vertical-align: middle; transition: background 0.3s; white-space: nowrap; }
-  tbody tr:hover td { background-color: #F8FAFC; }
-  tbody tr.fila-seleccionada td { background-color: #eaf5f0; }
-  tfoot td { padding: 0.9rem 0.5rem; background: #F8FAFC; border-top: 2px solid var(--line); font-weight: 700; }
-  .texto-total { text-align: right; font-family: var(--display); font-size: 0.75rem; color: var(--ink-soft); text-transform: uppercase; }
-  .total-val { color: var(--brand-green); font-weight: 800; }
-
-  .num { font-family: var(--mono); font-weight: 600; color: var(--ink-soft); }
-  .chk-row { width: 16px; height: 16px; accent-color: var(--brand-green); cursor: pointer; }
-
-  @keyframes rowUpdate { 0% { background-color: rgba(15, 99, 67, 0.15); } 100% { background-color: transparent; } }
-  .fila-actualizada td { animation: rowUpdate 1s ease; }
-
-  .formulario-container { display: flex; justify-content: center; }
-  .formulario { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 2.5rem 3rem; width: 100%; max-width: 800px; box-shadow: 0 20px 40px var(--shadow); }
-  .formulario h2 { font-family: var(--display); font-size: 1.8rem; margin: 0 0 2rem; color: var(--brand-green); border-bottom: 4px solid var(--brand-gold); padding-bottom: 0.5rem; display: inline-block; }
-  .formulario .campo { margin-bottom: 1.2rem; width: 100%; }
-  .formulario select, .formulario input { width: 100%; }
-  .fila-doble { display: flex; gap: 1.2rem; } .fila-doble .campo { flex: 1; }
-  .formulario .btn-primario { width: 100%; padding: 1rem; font-size: 1.1rem; border-radius: 12px; margin-top: 1rem; }
-
-  .toast-container { position: fixed; bottom: 2rem; right: 2rem; z-index: 1000; display: flex; flex-direction: column; gap: 1rem; pointer-events: none; }
-  .toast { background: var(--surface); color: var(--ink); padding: 1rem 1.5rem; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 12px; font-weight: 600; transform: translateX(120%); opacity: 0; transition: all 0.4s; border-left: 5px solid var(--brand-green); }
-  .toast.show { transform: translateX(0); opacity: 1; }
-  .toast.error { border-left-color: #EF4444; } .toast.info { border-left-color: var(--brand-gold); }
-
-  .modal-dialog { border: none; border-radius: 16px; padding: 0; background: var(--surface); box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
-  .modal-dialog::backdrop { background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(4px); }
-  .modal-content { padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem; min-width: 320px; max-width: 550px; }
-  .modal-content h3 { margin: 0; color: var(--brand-green); font-family: var(--display); font-size: 1.2rem; }
-  .modal-actions { display: flex; justify-content: flex-end; gap: 1rem; margin-top: 0.5rem; }
+  /* Sticky Footer */
+  tfoot { position: sticky; bottom: 0; z-index: 10; }
+  tfoot td { padding: 0.9rem 0.5rem; background: #F8FAFC; border-top: 2px solid var(--line); font-weight: 700; box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.03); } 
   
-  #area-reporte { background: #ffffff; padding: 35px 40px; color: var(--ink); border-radius: 12px; width: 100%; }
-  .tabla-reporte { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9rem; min-width: 100%; }
-  .tabla-reporte th, .tabla-reporte td { border: 1px solid #E2E8F0; padding: 10px; text-align: left; }
-  .tabla-reporte th { background-color: #F8FAFC; color: var(--brand-green); font-family: var(--display); font-size: 0.8rem; text-transform: uppercase; }
+  .texto-total { text-align: right; font-family: var(--display); font-size: 0.75rem; color: var(--ink-soft); text-transform: uppercase; } 
+  .total-val { color: var(--brand-green); font-weight: 800; } 
 
-  @media (max-width: 1024px) {
-    main { padding: 1rem 0.5rem 3rem; } header { flex-direction: column; align-items: stretch; text-align: center; }
-    .brand-container { justify-content: center; } .notification-pill { justify-content: center; width: 100%; }
-  }
-</style>
-</head>
-<body>
+  .num { font-family: var(--mono); font-weight: 600; color: var(--ink-soft); } 
+  .chk-row { width: 16px; height: 16px; accent-color: var(--brand-green); cursor: pointer; } 
 
-<header>
-  <div class="brand-container">
-    <div class="logo-placeholder">QB</div>
-    <div>
-      <h1>Quinta Bugambilia</h1>
-      <p>Control Ejecutivo de Rentas</p>
-    </div>
-  </div>
-  <div class="notification-pill" id="resumen">
-    <div class="pill-item"><div class="skeleton-line" style="width: 20px;"></div><div class="skeleton-line" style="width: 80px;"></div></div>
-    <div class="pill-divider" style="opacity: 0.3;"></div>
-    <div class="pill-item"><div class="skeleton-line" style="width: 20px;"></div><div class="skeleton-line" style="width: 110px;"></div></div>
-  </div>
-  <div class="header-actions">
-    <button id="btn-abrir-reporte" class="btn-reporte" title="Generar reporte de rentas seleccionadas">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> Reporte Imagen
-    </button>
-    <div id="status-monitor" class="status-btn btn-sync" title="Iniciando conexión..."></div>
-    <nav>
-      <button id="tab-historial" class="active">Historial</button>
-      <button id="tab-formulario">Nueva Renta</button>
-    </nav>
-  </div>
-</header>
+  @keyframes rowUpdate { 0% { background-color: rgba(15, 99, 67, 0.15); } 100% { background-color: transparent; } } 
+  .fila-actualizada td { animation: rowUpdate 1s ease; } 
 
-<main>
-  <!-- ===== VISTA HISTORIAL ===== -->
-  <section id="vista-historial" class="vista activa">
-    <div class="filtros">
-      <div class="campo"><label>Mes de Renta</label><select id="f-mes"><option value="">Todos</option><option value="ENERO">Enero</option><option value="FEBRERO">Febrero</option><option value="MARZO">Marzo</option><option value="ABRIL">Abril</option><option value="MAYO">Mayo</option><option value="JUNIO">Junio</option><option value="JULIO">Julio</option><option value="AGOSTO">Agosto</option><option value="SEPTIEMBRE">Septiembre</option><option value="OCTUBRE">Octubre</option><option value="NOVIEMBRE">Noviembre</option><option value="DICIEMBRE">Diciembre</option></select></div>
-      <div class="campo"><label>Hospedaje / Evento</label><select id="f-tipo"><option value="">Todos</option><option value="HOSPEDAJE">Hospedaje</option><option value="EVENTO">Evento</option></select></div>
-      <div class="campo" style="flex:1; min-width:220px;"><label>Buscar cliente, teléfono...</label><input type="text" id="f-buscar" placeholder="Ej. Roberto, Folio 4..."></div>
-      <button class="btn btn-secundario" id="btn-refrescar">Actualizar</button>
-    </div>
+  .formulario-container { display: flex; justify-content: center; } 
+  .formulario { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 2.5rem 3rem; width: 100%; max-width: 800px; box-shadow: 0 20px 40px var(--shadow); } 
+  .formulario h2 { font-family: var(--display); font-size: 1.8rem; margin: 0 0 2rem; color: var(--brand-green); border-bottom: 4px solid var(--brand-gold); padding-bottom: 0.5rem; display: inline-block; } 
+  .formulario .campo { margin-bottom: 1.2rem; width: 100%; } 
+  .formulario select, .formulario input { width: 100%; } 
+  .fila-doble { display: flex; gap: 1.2rem; } .fila-doble .campo { flex: 1; } 
+  .formulario .btn-primario { width: 100%; padding: 1rem; font-size: 1.1rem; border-radius: 12px; margin-top: 1rem; } 
 
-    <div class="tabla-envoltura">
-      <table>
-        <thead>
-          <tr>
-            <th><input type="checkbox" id="chk-todos" class="chk-row" title="Seleccionar todos"></th>
-            <th>Folio</th>
-            <th>Mes de renta</th>
-            <th>Nombre</th>
-            <th>Teléfono</th>
-            <th>Hospedaje</th>
-            <th>Evento</th>
-            <th>Fecha entrada</th>
-            <th>Fecha salida</th>
-            <th>Total Venta</th>
-            <th>Anticipo 1</th>
-            <th>Fecha anticpo</th>
-            <th>Anticipo 2</th>
-            <th>Fecha anticpo</th>
-            <th>Saldo</th>
-            <th>Comisión</th>
-            <th>Fecha Cobrado</th>
-            <th>COMISION NO.</th>
-            <th>Teléfono 2</th>
-            <th style="text-align: center;">Acción</th>
-          </tr>
-        </thead>
-        <tbody id="tabla-body"></tbody>
-        <tfoot id="tabla-foot" style="display: none;">
-          <tr>
-            <td colspan="9" class="texto-total">Totales mostrados:</td>
-            <td class="num total-val" id="total-venta">$0.00</td>
-            <td class="num total-val" id="total-ant1">$0.00</td>
-            <td></td>
-            <td class="num total-val" id="total-ant2">$0.00</td>
-            <td></td>
-            <td class="num total-val" id="total-saldo">$0.00</td>
-            <td colspan="5"></td>
-          </tr>
-        </tfoot>
-      </table>
-      <div style="padding: 3rem; text-align: center; color: var(--ink-soft); display: none;" id="estado-vacio">
-        No hay registros de rentas que coincidan con tu búsqueda.
+  .toast-container { position: fixed; bottom: 2rem; right: 2rem; z-index: 1000; display: flex; flex-direction: column; gap: 1rem; pointer-events: none; } 
+  .toast { background: var(--surface); color: var(--ink); padding: 1rem 1.5rem; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 12px; font-weight: 600; transform: translateX(120%); opacity: 0; transition: all 0.4s; border-left: 5px solid var(--brand-green); } 
+  .toast.show { transform: translateX(0); opacity: 1; } 
+  .toast.error { border-left-color: #EF4444; } .toast.info { border-left-color: var(--brand-gold); } 
+
+  .modal-dialog { border: none; border-radius: 16px; padding: 0; background: var(--surface); box-shadow: 0 20px 40px rgba(0,0,0,0.2); } 
+  .modal-dialog::backdrop { background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(4px); } 
+  .modal-content { padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem; min-width: 320px; max-width: 550px; } 
+  .modal-content h3 { margin: 0; color: var(--brand-green); font-family: var(--display); font-size: 1.2rem; } 
+  .modal-actions { display: flex; justify-content: flex-end; gap: 1rem; margin-top: 0.5rem; } 
+   
+  #area-reporte { background: #ffffff; padding: 35px 40px; color: var(--ink); border-radius: 12px; width: 100%; } 
+  .tabla-reporte { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9rem; min-width: 100%; } 
+  .tabla-reporte th, .tabla-reporte td { border: 1px solid #E2E8F0; padding: 10px; text-align: left; } 
+  .tabla-reporte th { background-color: #F8FAFC; color: var(--brand-green); font-family: var(--display); font-size: 0.8rem; text-transform: uppercase; } 
+
+  @media (max-width: 1024px) { 
+    main { padding: 1rem 0.5rem 3rem; } header { flex-direction: column; align-items: stretch; text-align: center; } 
+    .brand-container { justify-content: center; } .notification-pill { justify-content: center; width: 100%; } 
+  } 
+</style> 
+</head> 
+<body> 
+
+<header> 
+  <div class="brand-container"> 
+    <div class="logo-placeholder">QB</div> 
+    <div> 
+      <h1>Quinta Bugambilia</h1> 
+      <p>Control Ejecutivo de Rentas</p> 
+    </div> 
+  </div> 
+  <div class="notification-pill" id="resumen"> 
+    <div class="pill-item"><div class="skeleton-line" style="width: 20px;"></div><div class="skeleton-line" style="width: 80px;"></div></div> 
+    <div class="pill-divider" style="opacity: 0.3;"></div> 
+    <div class="pill-item"><div class="skeleton-line" style="width: 20px;"></div><div class="skeleton-line" style="width: 110px;"></div></div> 
+  </div> 
+  <div class="header-actions"> 
+    <button id="btn-abrir-reporte" class="btn-reporte" title="Generar reporte de rentas seleccionadas"> 
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> Reporte Imagen 
+    </button> 
+    <div id="status-monitor" class="status-btn btn-sync" title="Iniciando conexión..."></div> 
+    <nav> 
+      <button id="tab-historial" class="active">Historial</button> 
+      <button id="tab-formulario">Nueva Renta</button> 
+    </nav> 
+  </div> 
+</header> 
+
+<main> 
+  <!-- ===== VISTA HISTORIAL ===== --> 
+  <section id="vista-historial" class="vista activa"> 
+    <div class="filtros"> 
+      <div class="campo"><label>Mes de Renta</label><select id="f-mes"><option value="">Todos</option><option value="ENERO">Enero</option><option value="FEBRERO">Febrero</option><option value="MARZO">Marzo</option><option value="ABRIL">Abril</option><option value="MAYO">Mayo</option><option value="JUNIO">Junio</option><option value="JULIO">Julio</option><option value="AGOSTO">Agosto</option><option value="SEPTIEMBRE">Septiembre</option><option value="OCTUBRE">Octubre</option><option value="NOVIEMBRE">Noviembre</option><option value="DICIEMBRE">Diciembre</option></select></div> 
+      <div class="campo"><label>Hospedaje / Evento</label><select id="f-tipo"><option value="">Todos</option><option value="HOSPEDAJE">Hospedaje</option><option value="EVENTO">Evento</option></select></div> 
+      <div class="campo" style="flex:1; min-width:220px;"><label>Buscar cliente, teléfono...</label><input type="text" id="f-buscar" placeholder="Ej. Roberto, Folio 4..."></div> 
+      <button class="btn btn-secundario" id="btn-refrescar">Actualizar</button> 
+    </div> 
+
+    <div class="tabla-envoltura"> 
+      <!-- Scrollbar Superior Sincronizado -->
+      <div class="top-scrollbar-wrapper" id="top-scrollbar">
+        <div class="top-scrollbar-content" id="top-scrollbar-content"></div>
       </div>
-    </div>
-  </section>
 
-  <!-- ===== VISTA FORMULARIO (NUEVA RENTA) ===== -->
-  <section id="vista-formulario" class="vista">
-    <div class="formulario-container">
-      <form class="formulario" id="form-renta">
-        <h2>Registrar Nueva Renta</h2>
-        <div class="fila-doble">
-          <div class="campo"><label>Mes de renta</label><select id="in-mes" required><option value="ENERO">Enero</option><option value="FEBRERO">Febrero</option><option value="MARZO">Marzo</option><option value="ABRIL">Abril</option><option value="MAYO">Mayo</option><option value="JUNIO">Junio</option><option value="JULIO">Julio</option><option value="AGOSTO">Agosto</option><option value="SEPTIEMBRE">Septiembre</option><option value="OCTUBRE">Octubre</option><option value="NOVIEMBRE">Noviembre</option><option value="DICIEMBRE">Diciembre</option></select></div>
-          <div class="campo"><label>Nombre del cliente</label><input type="text" id="in-nombre" required placeholder="Nombre completo"></div>
-        </div>
-        <div class="fila-doble">
-          <div class="campo"><label>Teléfono principal</label><input type="text" id="in-telefono" placeholder="10 dígitos"></div>
-          <div class="campo"><label>Teléfono 2 (Opcional)</label><input type="text" id="in-telefono2" placeholder="Teléfono alternativo"></div>
-        </div>
-        <div class="fila-doble">
-          <div class="campo"><label>Hospedaje</label><input type="text" id="in-hospedaje" placeholder="Detalle de hospedaje"></div>
-          <div class="campo"><label>Evento</label><input type="text" id="in-evento" placeholder="Detalle de evento"></div>
-        </div>
-        <div class="fila-doble">
-          <div class="campo"><label>Fecha de entrada</label><input type="date" id="in-entrada"></div>
-          <div class="campo"><label>Fecha de salida</label><input type="date" id="in-salida"></div>
-        </div>
-        <div class="fila-doble">
-          <div class="campo"><label>Total Venta ($)</label><input type="number" id="in-total" step="0.01" min="0" required oninput="calcularAutomaticosNuevo()"></div>
-          <div class="campo"><label>Saldo ($) (Automático)</label><input type="number" id="in-saldo" step="0.01" readonly style="background:#E2E8F0; cursor:not-allowed;"></div>
-        </div>
-        <div class="fila-doble">
-          <div class="campo"><label>Anticipo 1 ($)</label><input type="number" id="in-ant1" step="0.01" min="0" value="0" oninput="calcularAutomaticosNuevo()"></div>
-          <div class="campo"><label>Fecha anticipo 1</label><input type="date" id="in-fecant1"></div>
-        </div>
-        <div class="fila-doble">
-          <div class="campo"><label>Anticipo 2 ($)</label><input type="number" id="in-ant2" step="0.01" min="0" value="0" oninput="calcularAutomaticosNuevo()"></div>
-          <div class="campo"><label>Fecha anticipo 2</label><input type="date" id="in-fecant2"></div>
-        </div>
-        <div class="fila-doble">
-          <div class="campo"><label>Comisión ($) (20% Automático)</label><input type="number" id="in-comision" step="0.01" readonly style="background:#E2E8F0; cursor:not-allowed;"></div>
-          <div class="campo"><label>Fecha Cobrado</label><input type="date" id="in-feccobrado"></div>
-        </div>
-        <div class="campo"><label>COMISION NO.</label><input type="text" id="in-comisionno" placeholder="Folio o referencia de comisión"></div>
-        <button type="submit" class="btn btn-primario">Guardar Renta en Quinta Bugambilia</button>
-      </form>
-    </div>
-  </section>
-</main>
-
-<!-- Modal Editar Renta -->
-<dialog id="modal-editar" class="modal-dialog">
-  <div class="modal-content" style="max-width: 600px; width: 100%;">
-    <h3>Editar Renta <span id="edit-folio-title" style="color:var(--brand-gold);"></span></h3>
-    <div class="fila-doble">
-      <div class="campo"><label>Mes de renta</label><select id="edit-mes"><option value="ENERO">Enero</option><option value="FEBRERO">Febrero</option><option value="MARZO">Marzo</option><option value="ABRIL">Abril</option><option value="MAYO">Mayo</option><option value="JUNIO">Junio</option><option value="JULIO">Julio</option><option value="AGOSTO">Agosto</option><option value="SEPTIEMBRE">Septiembre</option><option value="OCTUBRE">Octubre</option><option value="NOVIEMBRE">Noviembre</option><option value="DICIEMBRE">Diciembre</option></select></div>
-      <div class="campo"><label>Nombre del cliente</label><input type="text" id="edit-nombre"></div>
-    </div>
-    <div class="fila-doble">
-      <div class="campo"><label>Teléfono principal</label><input type="text" id="edit-telefono"></div>
-      <div class="campo"><label>Teléfono 2</label><input type="text" id="edit-telefono2"></div>
-    </div>
-    <div class="fila-doble">
-      <div class="campo"><label>Hospedaje</label><input type="text" id="edit-hospedaje"></div>
-      <div class="campo"><label>Evento</label><input type="text" id="edit-evento"></div>
-    </div>
-    <div class="fila-doble">
-      <div class="campo"><label>Fecha entrada</label><input type="date" id="edit-entrada"></div>
-      <div class="campo"><label>Fecha salida</label><input type="date" id="edit-salida"></div>
-    </div>
-    <div class="fila-doble">
-      <div class="campo"><label>Total Venta ($)</label><input type="number" id="edit-total" step="0.01" oninput="calcularAutomaticosEditar()"></div>
-      <div class="campo"><label>Saldo ($)</label><input type="number" id="edit-saldo" step="0.01" readonly style="background:#E2E8F0;"></div>
-    </div>
-    <div class="fila-doble">
-      <div class="campo"><label>Anticipo 1 ($)</label><input type="number" id="edit-ant1" step="0.01" oninput="calcularAutomaticosEditar()"></div>
-      <div class="campo"><label>Fecha anticipo 1</label><input type="date" id="edit-fecant1"></div>
-    </div>
-    <div class="fila-doble">
-      <div class="campo"><label>Anticipo 2 ($)</label><input type="number" id="edit-ant2" step="0.01" oninput="calcularAutomaticosEditar()"></div>
-      <div class="campo"><label>Fecha anticipo 2</label><input type="date" id="edit-fecant2"></div>
-    </div>
-    <div class="fila-doble">
-      <div class="campo"><label>Comisión ($) (20%)</label><input type="number" id="edit-comision" step="0.01" readonly style="background:#E2E8F0;"></div>
-      <div class="campo"><label>Fecha Cobrado</label><input type="date" id="edit-feccobrado"></div>
-    </div>
-    <div class="campo"><label>COMISION NO.</label><input type="text" id="edit-comisionno"></div>
-    <div class="modal-actions">
-      <button class="btn btn-secundario" id="btn-cancelar-editar">Cancelar</button>
-      <button class="btn btn-primario" id="btn-guardar-editar">Guardar Cambios</button>
-    </div>
-  </div>
-</dialog>
-
-<!-- Modales Reporte -->
-<dialog id="modal-reporte" class="modal-dialog">
-  <div class="modal-content" style="max-width: 900px; width: 100%;">
-    <div id="area-reporte">
-      <div style="text-align: center; border-bottom: 2px solid var(--brand-gold); padding-bottom: 12px; margin-bottom: 15px;">
-        <h2 style="margin: 0; color: var(--brand-green); font-family: var(--display); font-size: 1.5rem;">Reporte de Rentas - Quinta Bugambilia</h2>
-        <p style="margin: 5px 0 0 0; color: var(--ink-soft); font-size: 0.9rem; font-weight: 600;">Estado de Cuenta General</p>
+      <!-- Contenedor desplazable con Sticky Header -->
+      <div class="tabla-scroll-container" id="main-table-scroll">
+        <table id="tabla-rentas"> 
+          <thead> 
+            <tr> 
+              <th><input type="checkbox" id="chk-todos" class="chk-row" title="Seleccionar todos"></th> 
+              <th>Folio</th> 
+              <th>Mes de renta</th> 
+              <th>Nombre</th> 
+              <th>Teléfono</th> 
+              <th>Hospedaje</th> 
+              <th>Evento</th> 
+              <th>Fecha entrada</th> 
+              <th>Fecha salida</th> 
+              <th>Total Venta</th> 
+              <th>Anticipo 1</th> 
+              <th>Fecha anticpo</th> 
+              <th>Anticipo 2</th> 
+              <th>Fecha anticpo</th> 
+              <th>Saldo</th> 
+              <th>Comisión</th> 
+              <th>Fecha Cobrado</th> 
+              <th>COMISION NO.</th> 
+              <th>Teléfono 2</th> 
+              <th style="text-align: center;">Acción</th> 
+            </tr> 
+          </thead> 
+          <tbody id="tabla-body"></tbody> 
+          <tfoot id="tabla-foot" style="display: none;"> 
+            <tr> 
+              <td colspan="9" class="texto-total">Totales mostrados:</td> 
+              <td class="num total-val" id="total-venta">$0.00</td> 
+              <td class="num total-val" id="total-ant1">$0.00</td> 
+              <td></td> 
+              <td class="num total-val" id="total-ant2">$0.00</td> 
+              <td></td> 
+              <td class="num total-val" id="total-saldo">$0.00</td> 
+              <td colspan="5"></td> 
+            </tr> 
+          </tfoot> 
+        </table> 
       </div>
-      <table class="tabla-reporte">
-        <thead><tr><th>Folio</th><th>Mes</th><th>Cliente</th><th>Evento / Hospedaje</th><th>Entrada</th><th>Total</th><th>Saldo</th></tr></thead>
-        <tbody id="cuerpo-reporte"></tbody>
-      </table>
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-secundario" id="btn-cerrar-reporte">Cerrar</button>
-      <button class="btn btn-primario" id="btn-descargar-reporte">Descargar Imagen PNG</button>
-    </div>
-  </div>
-</dialog>
 
-<div id="toast-container" class="toast-container"></div>
+      <div style="padding: 3rem; text-align: center; color: var(--ink-soft); display: none;" id="estado-vacio"> 
+        No hay registros de rentas que coincidan con tu búsqueda. 
+      </div> 
+    </div> 
+  </section> 
 
-<script>
-const API_URL = "https://script.google.com/macros/s/AKfycbyUuSbd7XOIskwITU6wPbw7jDajpHvTHcOYaVSwWW83y9tOHzECOmk8yzMASq8eNJNT/exec";
+  <!-- ===== VISTA FORMULARIO (NUEVA RENTA) ===== --> 
+  <section id="vista-formulario" class="vista"> 
+    <div class="formulario-container"> 
+      <form class="formulario" id="form-renta"> 
+        <h2>Registrar Nueva Renta</h2> 
+        <div class="fila-doble"> 
+          <div class="campo"><label>Mes de renta</label><select id="in-mes" required><option value="ENERO">Enero</option><option value="FEBRERO">Febrero</option><option value="MARZO">Marzo</option><option value="ABRIL">Abril</option><option value="MAYO">Mayo</option><option value="JUNIO">Junio</option><option value="JULIO">Julio</option><option value="AGOSTO">Agosto</option><option value="SEPTIEMBRE">Septiembre</option><option value="OCTUBRE">Octubre</option><option value="NOVIEMBRE">Noviembre</option><option value="DICIEMBRE">Diciembre</option></select></div> 
+          <div class="campo"><label>Nombre del cliente</label><input type="text" id="in-nombre" required placeholder="Nombre completo"></div> 
+        </div> 
+        <div class="fila-doble"> 
+          <div class="campo"><label>Teléfono principal</label><input type="text" id="in-telefono" placeholder="10 dígitos"></div> 
+          <div class="campo"><label>Teléfono 2 (Opcional)</label><input type="text" id="in-telefono2" placeholder="Teléfono alternativo"></div> 
+        </div> 
+        <div class="fila-doble"> 
+          <div class="campo"><label>Hospedaje</label><input type="text" id="in-hospedaje" placeholder="Detalle de hospedaje"></div> 
+          <div class="campo"><label>Evento</label><input type="text" id="in-evento" placeholder="Detalle de evento"></div> 
+        </div> 
+        <div class="fila-doble"> 
+          <div class="campo"><label>Fecha de entrada</label><input type="date" id="in-entrada"></div> 
+          <div class="campo"><label>Fecha de salida</label><input type="date" id="in-salida"></div> 
+        </div> 
+        <div class="fila-doble"> 
+          <div class="campo"><label>Total Venta ($)</label><input type="number" id="in-total" step="0.01" min="0" required oninput="calcularAutomaticosNuevo()"></div> 
+          <div class="campo"><label>Saldo ($) (Automático)</label><input type="number" id="in-saldo" step="0.01" readonly style="background:#E2E8F0; cursor:not-allowed;"></div> 
+        </div> 
+        <div class="fila-doble"> 
+          <div class="campo"><label>Anticipo 1 ($)</label><input type="number" id="in-ant1" step="0.01" min="0" value="0" oninput="calcularAutomaticosNuevo()"></div> 
+          <div class="campo"><label>Fecha anticipo 1</label><input type="date" id="in-fecant1"></div> 
+        </div> 
+        <div class="fila-doble"> 
+          <div class="campo"><label>Anticipo 2 ($)</label><input type="number" id="in-ant2" step="0.01" min="0" value="0" oninput="calcularAutomaticosNuevo()"></div> 
+          <div class="campo"><label>Fecha anticipo 2</label><input type="date" id="in-fecant2"></div> 
+        </div> 
+        <div class="fila-doble"> 
+          <div class="campo"><label>Comisión ($) (20% Automático)</label><input type="number" id="in-comision" step="0.01" readonly style="background:#E2E8F0; cursor:not-allowed;"></div> 
+          <div class="campo"><label>Fecha Cobrado</label><input type="date" id="in-feccobrado"></div> 
+        </div> 
+        <div class="campo"><label>COMISION NO.</label><input type="text" id="in-comisionno" placeholder="Folio o referencia de comisión"></div> 
+        <button type="submit" class="btn btn-primario">Guardar Renta en Quinta Bugambilia</button> 
+      </form> 
+    </div> 
+  </section> 
+</main> 
 
-let rentasCache = [];
-let seleccionados = new Set();
+<!-- Modal Editar Renta --> 
+<dialog id="modal-editar" class="modal-dialog"> 
+  <div class="modal-content" style="max-width: 600px; width: 100%;"> 
+    <h3>Editar Renta <span id="edit-folio-title" style="color:var(--brand-gold);"></span></h3> 
+    <div class="fila-doble"> 
+      <div class="campo"><label>Mes de renta</label><select id="edit-mes"><option value="ENERO">Enero</option><option value="FEBRERO">Febrero</option><option value="MARZO">Marzo</option><option value="ABRIL">Abril</option><option value="MAYO">Mayo</option><option value="JUNIO">Junio</option><option value="JULIO">Julio</option><option value="AGOSTO">Agosto</option><option value="SEPTIEMBRE">Septiembre</option><option value="OCTUBRE">Octubre</option><option value="NOVIEMBRE">Noviembre</option><option value="DICIEMBRE">Diciembre</option></select></div> 
+      <div class="campo"><label>Nombre del cliente</label><input type="text" id="edit-nombre"></div> 
+    </div> 
+    <div class="fila-doble"> 
+      <div class="campo"><label>Teléfono principal</label><input type="text" id="edit-telefono"></div> 
+      <div class="campo"><label>Teléfono 2</label><input type="text" id="edit-telefono2"></div> 
+    </div> 
+    <div class="fila-doble"> 
+      <div class="campo"><label>Hospedaje</label><input type="text" id="edit-hospedaje"></div> 
+      <div class="campo"><label>Evento</label><input type="text" id="edit-evento"></div> 
+    </div> 
+    <div class="fila-doble"> 
+      <div class="campo"><label>Fecha entrada</label><input type="date" id="edit-entrada"></div> 
+      <div class="campo"><label>Fecha salida</label><input type="date" id="edit-salida"></div> 
+    </div> 
+    <div class="fila-doble"> 
+      <div class="campo"><label>Total Venta ($)</label><input type="number" id="edit-total" step="0.01" oninput="calcularAutomaticosEditar()"></div> 
+      <div class="campo"><label>Saldo ($)</label><input type="number" id="edit-saldo" step="0.01" readonly style="background:#E2E8F0;"></div> 
+    </div> 
+    <div class="fila-doble"> 
+      <div class="campo"><label>Anticipo 1 ($)</label><input type="number" id="edit-ant1" step="0.01" oninput="calcularAutomaticosEditar()"></div> 
+      <div class="campo"><label>Fecha anticipo 1</label><input type="date" id="edit-fecant1"></div> 
+    </div> 
+    <div class="fila-doble"> 
+      <div class="campo"><label>Anticipo 2 ($)</label><input type="number" id="edit-ant2" step="0.01" oninput="calcularAutomaticosEditar()"></div> 
+      <div class="campo"><label>Fecha anticipo 2</label><input type="date" id="edit-fecant2"></div> 
+    </div> 
+    <div class="fila-doble"> 
+      <div class="campo"><label>Comisión ($) (20%)</label><input type="number" id="edit-comision" step="0.01" readonly style="background:#E2E8F0;"></div> 
+      <div class="campo"><label>Fecha Cobrado</label><input type="date" id="edit-feccobrado"></div> 
+    </div> 
+    <div class="campo"><label>COMISION NO.</label><input type="text" id="edit-comisionno"></div> 
+    <div class="modal-actions"> 
+      <button class="btn btn-secundario" id="btn-cancelar-editar">Cancelar</button> 
+      <button class="btn btn-primario" id="btn-guardar-editar">Guardar Cambios</button> 
+    </div> 
+  </div> 
+</dialog> 
 
-window.toggleSeleccion = function(folio, chk) {
-  const fila = document.getElementById(`fila-${folio}`);
-  if(chk.checked) { seleccionados.add(String(folio)); if(fila) fila.classList.add('fila-seleccionada'); }
-  else { seleccionados.delete(String(folio)); if(fila) fila.classList.remove('fila-seleccionada'); }
-};
+<!-- Modales Reporte --> 
+<dialog id="modal-reporte" class="modal-dialog"> 
+  <div class="modal-content" style="max-width: 900px; width: 100%;"> 
+    <div id="area-reporte"> 
+      <div style="text-align: center; border-bottom: 2px solid var(--brand-gold); padding-bottom: 12px; margin-bottom: 15px;"> 
+        <h2 style="margin: 0; color: var(--brand-green); font-family: var(--display); font-size: 1.5rem;">Reporte de Rentas - Quinta Bugambilia</h2> 
+        <p style="margin: 5px 0 0 0; color: var(--ink-soft); font-size: 0.9rem; font-weight: 600;">Estado de Cuenta General</p> 
+      </div> 
+      <table class="tabla-reporte"> 
+        <thead><tr><th>Folio</th><th>Mes</th><th>Cliente</th><th>Evento / Hospedaje</th><th>Entrada</th><th>Total</th><th>Saldo</th></tr></thead> 
+        <tbody id="cuerpo-reporte"></tbody> 
+      </table> 
+    </div> 
+    <div class="modal-actions"> 
+      <button class="btn btn-secundario" id="btn-cerrar-reporte">Cerrar</button> 
+      <button class="btn btn-primario" id="btn-descargar-reporte">Descargar Imagen PNG</button> 
+    </div> 
+  </div> 
+</dialog> 
 
-document.getElementById('chk-todos').addEventListener('change', function(e) {
-  const isChecked = e.target.checked;
-  document.querySelectorAll('.chk-row:not(#chk-todos)').forEach(chk => { chk.checked = isChecked; toggleSeleccion(chk.value, chk); });
+<div id="toast-container" class="toast-container"></div> 
+
+<script> 
+const API_URL = "https://script.google.com/macros/s/AKfycbyUuSbd7XOIskwITU6wPbw7jDajpHvTHcOYaVSwWW83y9tOHzECOmk8yzMASq8eNJNT/exec"; 
+
+let rentasCache = []; 
+let seleccionados = new Set(); 
+
+// Sincronizar Scroll Horizontal entre barra superior y contenedor principal
+const topScroll = document.getElementById('top-scrollbar');
+const mainScroll = document.getElementById('main-table-scroll');
+const topScrollContent = document.getElementById('top-scrollbar-content');
+const tablaRentas = document.getElementById('tabla-rentas');
+
+function sincronizarAnchoScroll() {
+  if (tablaRentas) {
+    topScrollContent.style.width = tablaRentas.scrollWidth + 'px';
+  }
+}
+
+topScroll.addEventListener('scroll', () => {
+  mainScroll.scrollLeft = topScroll.scrollLeft;
 });
 
-const statusSVGs = {
+mainScroll.addEventListener('scroll', () => {
+  topScroll.scrollLeft = mainScroll.scrollLeft;
+});
+
+window.addEventListener('resize', sincronizarAnchoScroll);
+
+window.toggleSeleccion = function(folio, chk) { 
+  const fila = document.getElementById(`fila-${folio}`); 
+  if(chk.checked) { seleccionados.add(String(folio)); if(fila) fila.classList.add('fila-seleccionada'); } 
+  else { seleccionados.delete(String(folio)); if(fila) fila.classList.remove('fila-seleccionada'); } 
+}; 
+
+document.getElementById('chk-todos').addEventListener('change', function(e) { 
+  const isChecked = e.target.checked; 
+  document.querySelectorAll('.chk-row:not(#chk-todos)').forEach(chk => { chk.checked = isChecked; toggleSeleccion(chk.value, chk); }); 
+}); 
+
+const statusSVGs = { 
   online: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="m9 15 3 3 5-5"/></svg>`, 
-  sync: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 12v6"/><path d="m9 15 3-3 3 3"/></svg>`,   
+  sync: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 12v6"/><path d="m9 15 3-3 3 3"/></svg>`,    
   error: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 12v4"/><path d="M12 20h.01"/></svg>`, 
   offline: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12a6.004 6.004 0 0 0-7.44-5.842A6.002 6.002 0 0 0 4.094 9.176"/><path d="M4 14.899A7 7 0 0 0 15.71 22h1.79a4.5 4.5 0 0 0 2.5-8.242"/><path d="m2 2 20 20"/></svg>` 
-};
+}; 
 
-function setAppStatus(state, msg) {
-  const monitor = document.getElementById('status-monitor');
-  monitor.title = msg; monitor.className = `status-btn btn-${state}`; monitor.innerHTML = statusSVGs[state];
-}
+function setAppStatus(state, msg) { 
+  const monitor = document.getElementById('status-monitor'); 
+  monitor.title = msg; monitor.className = `status-btn btn-${state}`; monitor.innerHTML = statusSVGs[state]; 
+} 
 
-async function fetchConTimeout(resource, options = {}) {
-  const { timeout = 15000 } = options; const controller = new AbortController(); const id = setTimeout(() => controller.abort(), timeout);
-  const res = await fetch(resource, { ...options, mode: 'cors', signal: controller.signal }); clearTimeout(id); return res;
-}
+async function fetchConTimeout(resource, options = {}) { 
+  const { timeout = 15000 } = options; const controller = new AbortController(); const id = setTimeout(() => controller.abort(), timeout); 
+  const res = await fetch(resource, { ...options, mode: 'cors', signal: controller.signal }); clearTimeout(id); return res; 
+} 
 
-function mostrarToast(mensaje, tipo = 'exito') {
-  const container = document.getElementById('toast-container'); const toast = document.createElement('div'); toast.className = `toast ${tipo}`;
-  let icono = tipo === 'error' ? '❌' : (tipo === 'info' ? '⏳' : '✅');
-  toast.innerHTML = `<span style="font-size:1.3rem;">${icono}</span> <span>${mensaje}</span>`; container.appendChild(toast);
-  setTimeout(() => toast.classList.add('show'), 10); setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 3500);
-}
+function mostrarToast(mensaje, tipo = 'exito') { 
+  const container = document.getElementById('toast-container'); const toast = document.createElement('div'); toast.className = `toast ${tipo}`; 
+  let icono = tipo === 'error' ? '❌' : (tipo === 'info' ? '⏳' : '✅'); 
+  toast.innerHTML = `<span style="font-size:1.3rem;">${icono}</span> <span>${mensaje}</span>`; container.appendChild(toast); 
+  setTimeout(() => toast.classList.add('show'), 10); setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 3500); 
+} 
 
-function formatearFecha(fechaIso) {
-  if (!fechaIso) return '';
-  try {
-    const soloFecha = String(fechaIso).trim().split(/[T ]/)[0]; const partes = soloFecha.split('-'); if(partes.length !== 3) return fechaIso;
-    return `${partes[2]}/${partes[1]}/${partes[0]}`;
-  } catch(e) { return fechaIso; }
-}
+function formatearFecha(fechaIso) { 
+  if (!fechaIso) return ''; 
+  try { 
+    const soloFecha = String(fechaIso).trim().split(/[T ]/)[0]; const partes = soloFecha.split('-'); if(partes.length !== 3) return fechaIso; 
+    return `${partes[2]}/${partes[1]}/${partes[0]}`; 
+  } catch(e) { return fechaIso; } 
+} 
 
-function aislarFechaInput(fechaIso) {
-  if (!fechaIso) return '';
-  return String(fechaIso).trim().split(/[T ]/)[0];
-}
+function aislarFechaInput(fechaIso) { 
+  if (!fechaIso) return ''; 
+  return String(fechaIso).trim().split(/[T ]/)[0]; 
+} 
 
-const tabHistorial = document.getElementById('tab-historial'); const tabFormulario = document.getElementById('tab-formulario');
-const vistaHistorial = document.getElementById('vista-historial'); const vistaFormulario = document.getElementById('vista-formulario');
-function cambiarVista(nombre){
-  const esHist = nombre === 'historial'; tabHistorial.classList.toggle('active', esHist); tabFormulario.classList.toggle('active', !esHist);
-  vistaHistorial.classList.toggle('activa', esHist); vistaFormulario.classList.toggle('activa', !esHist);
-}
-tabHistorial.addEventListener('click', () => cambiarVista('historial')); tabFormulario.addEventListener('click', () => cambiarVista('formulario'));
+const tabHistorial = document.getElementById('tab-historial'); const tabFormulario = document.getElementById('tab-formulario'); 
+const vistaHistorial = document.getElementById('vista-historial'); const vistaFormulario = document.getElementById('vista-formulario'); 
+function cambiarVista(nombre){ 
+  const esHist = nombre === 'historial'; tabHistorial.classList.toggle('active', esHist); tabFormulario.classList.toggle('active', !esHist); 
+  vistaHistorial.classList.toggle('activa', esHist); vistaFormulario.classList.toggle('activa', !esHist); 
+  if(esHist) setTimeout(sincronizarAnchoScroll, 50);
+} 
+tabHistorial.addEventListener('click', () => cambiarVista('historial')); tabFormulario.addEventListener('click', () => cambiarVista('formulario')); 
 
-// Cálculos automáticos para Nuevo Registro
-function calcularAutomaticosNuevo() {
-  const total = parseFloat(document.getElementById('in-total').value) || 0;
-  const ant1 = parseFloat(document.getElementById('in-ant1').value) || 0;
-  const ant2 = parseFloat(document.getElementById('in-ant2').value) || 0;
+// Cálculos automáticos para Nuevo Registro 
+function calcularAutomaticosNuevo() { 
+  const total = parseFloat(document.getElementById('in-total').value) || 0; 
+  const ant1 = parseFloat(document.getElementById('in-ant1').value) || 0; 
+  const ant2 = parseFloat(document.getElementById('in-ant2').value) || 0; 
+   
+  const saldo = total - ant1 - ant2; 
+  const comision = total * 0.20; 
+
+  document.getElementById('in-saldo').value = saldo >= 0 ? saldo.toFixed(2) : '0.00'; 
+  document.getElementById('in-comision').value = comision.toFixed(2); 
+} 
+
+// Cálculos automáticos para Edición 
+function calcularAutomaticosEditar() { 
+  const total = parseFloat(document.getElementById('edit-total').value) || 0; 
+  const ant1 = parseFloat(document.getElementById('edit-ant1').value) || 0; 
+  const ant2 = parseFloat(document.getElementById('edit-ant2').value) || 0; 
+   
+  const saldo = total - ant1 - ant2; 
+  const comision = total * 0.20; 
+
+  document.getElementById('edit-saldo').value = saldo >= 0 ? saldo.toFixed(2) : '0.00'; 
+  document.getElementById('edit-comision').value = comision.toFixed(2); 
+} 
+
+async function cargarHistorial(silencioso = false){ 
+  if(!navigator.onLine) { setAppStatus('offline', 'Sin Internet'); return; } 
+  if(!silencioso) mostrarToast('Sincronizando rentas...', 'info'); setAppStatus('sync', 'Cargando...'); 
+  try { 
+    const res = await fetchConTimeout(API_URL); const data = await res.json(); if(!data.ok) throw new Error(data.error); 
+    rentasCache = data.rentas || []; renderTabla(); 
+    if(!silencioso) mostrarToast('Datos sincronizados', 'exito'); setAppStatus('online', 'En línea'); 
+  } catch(err) { setAppStatus('error', 'Error de conexión'); mostrarToast('No se pudo conectar a Google Sheets', 'error'); } 
+} 
+
+function renderTabla(){ 
+  const mes = document.getElementById('f-mes').value; const tipo = document.getElementById('f-tipo').value; const busqueda = document.getElementById('f-buscar').value.trim().toLowerCase(); 
+  document.getElementById('chk-todos').checked = false; 
+
+  let filtrados = rentasCache.filter(r => { 
+    if(mes && String(r.mes_renta).toUpperCase() !== mes) return false; 
+    if(tipo === 'HOSPEDAJE' && !r.hospedaje) return false; 
+    if(tipo === 'EVENTO' && !r.evento) return false; 
+    if(busqueda) { const txt = [r.folio, r.nombre, r.telefono, r.evento, r.hospedaje].join(' ').toLowerCase(); if(!txt.includes(busqueda)) return false; } 
+    return true; 
+  }); 
+  filtrados.sort((a,b) => Number(b.folio) - Number(a.folio)); 
+
+  const tVenta = filtrados.reduce((acc, r) => acc + (Number(r.total_venta) || 0), 0); 
+  const tAnt1 = filtrados.reduce((acc, r) => acc + (Number(r.anticipo_1) || 0), 0); 
+  const tAnt2 = filtrados.reduce((acc, r) => acc + (Number(r.anticipo_2) || 0), 0); 
+  const tSaldo = filtrados.reduce((acc, r) => acc + (Number(r.saldo) || 0), 0); 
+
+  document.getElementById('resumen').innerHTML = ` 
+    <div class="pill-item"><span>🏰</span><span><strong>${filtrados.length}</strong> rentas</span></div> 
+    <div class="pill-divider"></div> 
+    <div class="pill-item"><span>💰</span><span>Ventas: <span class="highlight-money">$${tVenta.toLocaleString('es-MX',{minimumFractionDigits:2})}</span></span></div> 
+  `; 
+
+  const tbody = document.getElementById('tabla-body'); const vacio = document.getElementById('estado-vacio'); const tfoot = document.getElementById('tabla-foot'); tbody.innerHTML = ''; 
+  if(filtrados.length === 0){ vacio.style.display = 'block'; tfoot.style.display = 'none'; sincronizarAnchoScroll(); return; } 
+  vacio.style.display = 'none'; tfoot.style.display = 'table-footer-group'; 
+
+  filtrados.forEach(r => { 
+    const tr = document.createElement('tr'); tr.id = `fila-${r.folio}`; const sel = seleccionados.has(String(r.folio)); if(sel) tr.classList.add('fila-seleccionada'); 
+    tr.innerHTML = ` 
+      <td style="text-align:center;"><input type="checkbox" class="chk-row" value="${r.folio}" ${sel ? 'checked' : ''} onchange="toggleSeleccion('${r.folio}', this)"></td> 
+      <td class="num">#${r.folio}</td> 
+      <td><strong>${r.mes_renta || ''}</strong></td> 
+      <td>${r.nombre || ''}</td> 
+      <td class="num">${r.telefono || ''}</td> 
+      <td>${r.hospedaje || '—'}</td> 
+      <td>${r.evento || '—'}</td> 
+      <td class="num">${formatearFecha(r.fecha_entrada)}</td> 
+      <td class="num">${formatearFecha(r.fecha_salida)}</td> 
+      <td class="num" style="color:var(--brand-green); font-weight:700;">$${Number(r.total_venta || 0).toLocaleString('es-MX',{minimumFractionDigits:2})}</td> 
+      <td class="num">$${Number(r.anticipo_1 || 0).toLocaleString('es-MX',{minimumFractionDigits:2})}</td> 
+      <td class="num">${formatearFecha(r.fecha_anticpo_1)}</td> 
+      <td class="num">$${Number(r.anticipo_2 || 0).toLocaleString('es-MX',{minimumFractionDigits:2})}</td> 
+      <td class="num">${formatearFecha(r.fecha_anticpo_2)}</td> 
+      <td class="num" style="color:var(--state-amber); font-weight:700;">$${Number(r.saldo || 0).toLocaleString('es-MX',{minimumFractionDigits:2})}</td> 
+      <td class="num">$${Number(r.comision || 0).toLocaleString('es-MX',{minimumFractionDigits:2})}</td> 
+      <td class="num">${formatearFecha(r.fecha_cobrado)}</td> 
+      <td class="num">${r.comision_no || ''}</td> 
+      <td class="num">${r.telefono_2 || ''}</td> 
+      <td style="text-align: center; white-space: nowrap;"> 
+        <button class="btn-accion btn-editar" onclick="abrirModalEditar('${r.folio}')" title="Editar renta">✏️</button> 
+        <button class="btn-accion btn-eliminar" onclick="eliminarRegistro('${r.folio}')" title="Eliminar renta">🗑</button> 
+      </td> 
+    `; 
+    tbody.appendChild(tr); 
+  }); 
+
+  document.getElementById('total-venta').textContent = '$' + tVenta.toLocaleString('es-MX',{minimumFractionDigits:2}); 
+  document.getElementById('total-ant1').textContent = '$' + tAnt1.toLocaleString('es-MX',{minimumFractionDigits:2}); 
+  document.getElementById('total-ant2').textContent = '$' + tAnt2.toLocaleString('es-MX',{minimumFractionDigits:2}); 
+  document.getElementById('total-saldo').textContent = '$' + tSaldo.toLocaleString('es-MX',{minimumFractionDigits:2}); 
   
-  const saldo = total - ant1 - ant2;
-  const comision = total * 0.20;
+  setTimeout(sincronizarAnchoScroll, 50);
+} 
 
-  document.getElementById('in-saldo').value = saldo >= 0 ? saldo.toFixed(2) : '0.00';
-  document.getElementById('in-comision').value = comision.toFixed(2);
-}
+// Enviar Nuevo Registro 
+document.getElementById('form-renta').addEventListener('submit', async function(e){ 
+  e.preventDefault(); if(!navigator.onLine) return mostrarToast('Sin Internet', 'error'); 
+  const btn = this.querySelector('button[type="submit"]'); btn.textContent = 'Guardando...'; btn.disabled = true; 
+   
+  const renta = { 
+    mes_renta: document.getElementById('in-mes').value, 
+    nombre: document.getElementById('in-nombre').value, 
+    telefono: document.getElementById('in-telefono').value, 
+    telefono_2: document.getElementById('in-telefono2').value, 
+    hospedaje: document.getElementById('in-hospedaje').value, 
+    evento: document.getElementById('in-evento').value, 
+    fecha_entrada: document.getElementById('in-entrada').value, 
+    fecha_salida: document.getElementById('in-salida').value, 
+    total_venta: parseFloat(document.getElementById('in-total').value) || 0, 
+    saldo: parseFloat(document.getElementById('in-saldo').value) || 0, 
+    anticipo_1: parseFloat(document.getElementById('in-ant1').value) || 0, 
+    fecha_anticpo_1: document.getElementById('in-fecant1').value, 
+    anticipo_2: parseFloat(document.getElementById('in-ant2').value) || 0, 
+    fecha_anticpo_2: document.getElementById('in-fecant2').value, 
+    comision: parseFloat(document.getElementById('in-comision').value) || 0, 
+    fecha_cobrado: document.getElementById('in-feccobrado').value, 
+    comision_no: document.getElementById('in-comisionno').value 
+  }; 
 
-// Cálculos automáticos para Edición
-function calcularAutomaticosEditar() {
-  const total = parseFloat(document.getElementById('edit-total').value) || 0;
-  const ant1 = parseFloat(document.getElementById('edit-ant1').value) || 0;
-  const ant2 = parseFloat(document.getElementById('edit-ant2').value) || 0;
-  
-  const saldo = total - ant1 - ant2;
-  const comision = total * 0.20;
+  try { 
+    const res = await fetchConTimeout(API_URL, { method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify({ action: 'crear', renta }) }); 
+    const data = await res.json(); if(!data.ok) throw new Error(); 
+    mostrarToast('¡Renta guardada con éxito!', 'exito'); this.reset(); cargarHistorial(true); cambiarVista('historial'); 
+  } catch(err) { mostrarToast('Error al registrar la renta', 'error'); } 
+  finally { btn.textContent = 'Guardar Renta en Quinta Bugambilia'; btn.disabled = false; } 
+}); 
 
-  document.getElementById('edit-saldo').value = saldo >= 0 ? saldo.toFixed(2) : '0.00';
-  document.getElementById('edit-comision').value = comision.toFixed(2);
-}
+// Modal de Edición 
+let folioAEditar = null; 
+const modalEditar = document.getElementById('modal-editar'); 
 
-async function cargarHistorial(silencioso = false){
-  if(!navigator.onLine) { setAppStatus('offline', 'Sin Internet'); return; }
-  if(!silencioso) mostrarToast('Sincronizando rentas...', 'info'); setAppStatus('sync', 'Cargando...');
-  try {
-    const res = await fetchConTimeout(API_URL); const data = await res.json(); if(!data.ok) throw new Error(data.error);
-    rentasCache = data.rentas || []; renderTabla();
-    if(!silencioso) mostrarToast('Datos sincronizados', 'exito'); setAppStatus('online', 'En línea');
-  } catch(err) { setAppStatus('error', 'Error de conexión'); mostrarToast('No se pudo conectar a Google Sheets', 'error'); }
-}
+window.abrirModalEditar = function(folio) { 
+  const r = rentasCache.find(item => String(item.folio) === String(folio)); 
+  if(!r) return; 
+  folioAEditar = folio; 
+  document.getElementById('edit-folio-title').textContent = `#${folio}`; 
 
-function renderTabla(){
-  const mes = document.getElementById('f-mes').value; const tipo = document.getElementById('f-tipo').value; const busqueda = document.getElementById('f-buscar').value.trim().toLowerCase();
-  document.getElementById('chk-todos').checked = false;
+  document.getElementById('edit-mes').value = r.mes_renta || 'ENERO'; 
+  document.getElementById('edit-nombre').value = r.nombre || ''; 
+  document.getElementById('edit-telefono').value = r.telefono || ''; 
+  document.getElementById('edit-telefono2').value = r.telefono_2 || ''; 
+  document.getElementById('edit-hospedaje').value = r.hospedaje || ''; 
+  document.getElementById('edit-evento').value = r.evento || ''; 
+  document.getElementById('edit-entrada').value = aislarFechaInput(r.fecha_entrada); 
+  document.getElementById('edit-salida').value = aislarFechaInput(r.fecha_salida); 
+  document.getElementById('edit-total').value = r.total_venta || 0; 
+  document.getElementById('edit-ant1').value = r.anticipo_1 || 0; 
+  document.getElementById('edit-fecant1').value = aislarFechaInput(r.fecha_anticpo_1); 
+  document.getElementById('edit-ant2').value = r.anticipo_2 || 0; 
+  document.getElementById('edit-fecant2').value = aislarFechaInput(r.fecha_anticpo_2); 
+  document.getElementById('edit-saldo').value = r.saldo || 0; 
+  document.getElementById('edit-comision').value = r.comision || 0; 
+  document.getElementById('edit-feccobrado').value = aislarFechaInput(r.fecha_cobrado); 
+  document.getElementById('edit-comisionno').value = r.comision_no || ''; 
 
-  let filtrados = rentasCache.filter(r => {
-    if(mes && String(r.mes_renta).toUpperCase() !== mes) return false;
-    if(tipo === 'HOSPEDAJE' && !r.hospedaje) return false;
-    if(tipo === 'EVENTO' && !r.evento) return false;
-    if(busqueda) { const txt = [r.folio, r.nombre, r.telefono, r.evento, r.hospedaje].join(' ').toLowerCase(); if(!txt.includes(busqueda)) return false; }
-    return true;
-  });
-  filtrados.sort((a,b) => Number(b.folio) - Number(a.folio));
+  modalEditar.showModal(); 
+}; 
 
-  const tVenta = filtrados.reduce((acc, r) => acc + (Number(r.total_venta) || 0), 0);
-  const tAnt1 = filtrados.reduce((acc, r) => acc + (Number(r.anticipo_1) || 0), 0);
-  const tAnt2 = filtrados.reduce((acc, r) => acc + (Number(r.anticipo_2) || 0), 0);
-  const tSaldo = filtrados.reduce((acc, r) => acc + (Number(r.saldo) || 0), 0);
+document.getElementById('btn-cancelar-editar').addEventListener('click', () => { modalEditar.close(); folioAEditar = null; }); 
 
-  document.getElementById('resumen').innerHTML = `
-    <div class="pill-item"><span>🏰</span><span><strong>${filtrados.length}</strong> rentas</span></div>
-    <div class="pill-divider"></div>
-    <div class="pill-item"><span>💰</span><span>Ventas: <span class="highlight-money">$${tVenta.toLocaleString('es-MX',{minimumFractionDigits:2})}</span></span></div>
-  `;
+document.getElementById('btn-guardar-editar').addEventListener('click', async () => { 
+  if(!folioAEditar) return; 
+  const cambios = { 
+    mes_renta: document.getElementById('edit-mes').value, 
+    nombre: document.getElementById('edit-nombre').value, 
+    telefono: document.getElementById('edit-telefono').value, 
+    telefono_2: document.getElementById('edit-telefono2').value, 
+    hospedaje: document.getElementById('edit-hospedaje').value, 
+    evento: document.getElementById('edit-evento').value, 
+    fecha_entrada: document.getElementById('edit-entrada').value, 
+    fecha_salida: document.getElementById('edit-salida').value, 
+    total_venta: parseFloat(document.getElementById('edit-total').value) || 0, 
+    saldo: parseFloat(document.getElementById('edit-saldo').value) || 0, 
+    anticipo_1: parseFloat(document.getElementById('edit-ant1').value) || 0, 
+    fecha_anticpo_1: document.getElementById('edit-fecant1').value, 
+    anticipo_2: parseFloat(document.getElementById('edit-ant2').value) || 0, 
+    fecha_anticpo_2: document.getElementById('edit-fecant2').value, 
+    comision: parseFloat(document.getElementById('edit-comision').value) || 0, 
+    fecha_cobrado: document.getElementById('edit-feccobrado').value, 
+    comision_no: document.getElementById('edit-comisionno').value 
+  }; 
 
-  const tbody = document.getElementById('tabla-body'); const vacio = document.getElementById('estado-vacio'); const tfoot = document.getElementById('tabla-foot'); tbody.innerHTML = '';
-  if(filtrados.length === 0){ vacio.style.display = 'block'; tfoot.style.display = 'none'; return; }
-  vacio.style.display = 'none'; tfoot.style.display = 'table-footer-group';
+  modalEditar.close(); 
+  mostrarToast('Actualizando...', 'info'); 
+  try { 
+    const res = await fetchConTimeout(API_URL, { method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify({ action: 'actualizar', folio: Number(folioAEditar), cambios }) }); 
+    const data = await res.json(); if(!data.ok) throw new Error(); 
+    mostrarToast('Renta actualizada con éxito', 'exito'); 
+    cargarHistorial(true); 
+  } catch(err) { mostrarToast('Error al actualizar', 'error'); } 
+  finally { folioAEditar = null; } 
+}); 
 
-  filtrados.forEach(r => {
-    const tr = document.createElement('tr'); tr.id = `fila-${r.folio}`; const sel = seleccionados.has(String(r.folio)); if(sel) tr.classList.add('fila-seleccionada');
-    tr.innerHTML = `
-      <td style="text-align:center;"><input type="checkbox" class="chk-row" value="${r.folio}" ${sel ? 'checked' : ''} onchange="toggleSeleccion('${r.folio}', this)"></td>
-      <td class="num">#${r.folio}</td>
-      <td><strong>${r.mes_renta || ''}</strong></td>
-      <td>${r.nombre || ''}</td>
-      <td class="num">${r.telefono || ''}</td>
-      <td>${r.hospedaje || '—'}</td>
-      <td>${r.evento || '—'}</td>
-      <td class="num">${formatearFecha(r.fecha_entrada)}</td>
-      <td class="num">${formatearFecha(r.fecha_salida)}</td>
-      <td class="num" style="color:var(--brand-green); font-weight:700;">$${Number(r.total_venta || 0).toLocaleString('es-MX',{minimumFractionDigits:2})}</td>
-      <td class="num">$${Number(r.anticipo_1 || 0).toLocaleString('es-MX',{minimumFractionDigits:2})}</td>
-      <td class="num">${formatearFecha(r.fecha_anticpo_1)}</td>
-      <td class="num">$${Number(r.anticipo_2 || 0).toLocaleString('es-MX',{minimumFractionDigits:2})}</td>
-      <td class="num">${formatearFecha(r.fecha_anticpo_2)}</td>
-      <td class="num" style="color:var(--state-amber); font-weight:700;">$${Number(r.saldo || 0).toLocaleString('es-MX',{minimumFractionDigits:2})}</td>
-      <td class="num">$${Number(r.comision || 0).toLocaleString('es-MX',{minimumFractionDigits:2})}</td>
-      <td class="num">${formatearFecha(r.fecha_cobrado)}</td>
-      <td class="num">${r.comision_no || ''}</td>
-      <td class="num">${r.telefono_2 || ''}</td>
-      <td style="text-align: center; white-space: nowrap;">
-        <button class="btn-accion btn-editar" onclick="abrirModalEditar('${r.folio}')" title="Editar renta">✏️</button>
-        <button class="btn-accion btn-eliminar" onclick="eliminarRegistro('${r.folio}')" title="Eliminar renta">🗑</button>
-      </td>
-    `;
-    tbody.appendChild(tr);
-  });
+async function eliminarRegistro(folio) { 
+  if(!confirm(`¿Deseas eliminar la renta #${folio}?`)) return; 
+  mostrarToast('Eliminando...', 'info'); 
+  try { 
+    await fetchConTimeout(API_URL, { method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify({ action: 'eliminar', folio: Number(folio) }) }); 
+    mostrarToast('Renta eliminada', 'exito'); seleccionados.delete(String(folio)); cargarHistorial(true); 
+  } catch(err) { mostrarToast('No se pudo eliminar', 'error'); } 
+} 
 
-  document.getElementById('total-venta').textContent = '$' + tVenta.toLocaleString('es-MX',{minimumFractionDigits:2});
-  document.getElementById('total-ant1').textContent = '$' + tAnt1.toLocaleString('es-MX',{minimumFractionDigits:2});
-  document.getElementById('total-ant2').textContent = '$' + tAnt2.toLocaleString('es-MX',{minimumFractionDigits:2});
-  document.getElementById('total-saldo').textContent = '$' + tSaldo.toLocaleString('es-MX',{minimumFractionDigits:2});
-}
+['f-mes','f-tipo'].forEach(id => document.getElementById(id).addEventListener('change', renderTabla)); 
+document.getElementById('f-buscar').addEventListener('input', renderTabla); 
+document.getElementById('btn-refrescar').addEventListener('click', () => cargarHistorial(false)); 
 
-// Enviar Nuevo Registro
-document.getElementById('form-renta').addEventListener('submit', async function(e){
-  e.preventDefault(); if(!navigator.onLine) return mostrarToast('Sin Internet', 'error');
-  const btn = this.querySelector('button[type="submit"]'); btn.textContent = 'Guardando...'; btn.disabled = true;
-  
-  const renta = {
-    mes_renta: document.getElementById('in-mes').value,
-    nombre: document.getElementById('in-nombre').value,
-    telefono: document.getElementById('in-telefono').value,
-    telefono_2: document.getElementById('in-telefono2').value,
-    hospedaje: document.getElementById('in-hospedaje').value,
-    evento: document.getElementById('in-evento').value,
-    fecha_entrada: document.getElementById('in-entrada').value,
-    fecha_salida: document.getElementById('in-salida').value,
-    total_venta: parseFloat(document.getElementById('in-total').value) || 0,
-    saldo: parseFloat(document.getElementById('in-saldo').value) || 0,
-    anticipo_1: parseFloat(document.getElementById('in-ant1').value) || 0,
-    fecha_anticpo_1: document.getElementById('in-fecant1').value,
-    anticipo_2: parseFloat(document.getElementById('in-ant2').value) || 0,
-    fecha_anticpo_2: document.getElementById('in-fecant2').value,
-    comision: parseFloat(document.getElementById('in-comision').value) || 0,
-    fecha_cobrado: document.getElementById('in-feccobrado').value,
-    comision_no: document.getElementById('in-comisionno').value
-  };
+const modalReporte = document.getElementById('modal-reporte'); 
+document.getElementById('btn-abrir-reporte').addEventListener('click', () => { 
+  if(seleccionados.size === 0) { mostrarToast('Selecciona al menos una renta para el reporte', 'error'); return; } 
+  const tbody = document.getElementById('cuerpo-reporte'); tbody.innerHTML = ''; 
+  rentasCache.forEach(r => { 
+    if(seleccionados.has(String(r.folio))) { 
+      const tr = document.createElement('tr'); 
+      tr.innerHTML = `<td>#${r.folio}</td><td>${r.mes_renta}</td><td><strong>${r.nombre}</strong></td><td>${r.evento || r.hospedaje || '—'}</td><td>${formatearFecha(r.fecha_entrada)}</td><td>$${Number(r.total_venta||0).toLocaleString('es-MX')}</td><td>$${Number(r.saldo||0).toLocaleString('es-MX')}</td>`; 
+      tbody.appendChild(tr); 
+    } 
+  }); 
+  modalReporte.showModal(); 
+}); 
+document.getElementById('btn-cerrar-reporte').addEventListener('click', () => modalReporte.close()); 
+document.getElementById('btn-descargar-reporte').addEventListener('click', async () => { 
+  const btn = document.getElementById('btn-descargar-reporte'); btn.textContent = 'Generando...'; btn.disabled = true; 
+  try { 
+    const canvas = await html2canvas(document.getElementById('area-reporte'), { scale: 2, backgroundColor: '#ffffff' }); 
+    const enlace = document.createElement('a'); enlace.download = `Reporte-QuintaBugambilia.png`; enlace.href = canvas.toDataURL('image/png'); enlace.click(); 
+    mostrarToast('Imagen descargada', 'exito'); 
+  } catch(e) { mostrarToast('Error al generar imagen', 'error'); } 
+  finally { btn.textContent = 'Descargar Imagen PNG'; btn.disabled = false; } 
+}); 
 
-  try {
-    const res = await fetchConTimeout(API_URL, { method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify({ action: 'crear', renta }) });
-    const data = await res.json(); if(!data.ok) throw new Error();
-    mostrarToast('¡Renta guardada con éxito!', 'exito'); this.reset(); cargarHistorial(true); cambiarVista('historial');
-  } catch(err) { mostrarToast('Error al registrar la renta', 'error'); }
-  finally { btn.textContent = 'Guardar Renta en Quinta Bugambilia'; btn.disabled = false; }
-});
-
-// Modal de Edición
-let folioAEditar = null;
-const modalEditar = document.getElementById('modal-editar');
-
-window.abrirModalEditar = function(folio) {
-  const r = rentasCache.find(item => String(item.folio) === String(folio));
-  if(!r) return;
-  folioAEditar = folio;
-  document.getElementById('edit-folio-title').textContent = `#${folio}`;
-
-  document.getElementById('edit-mes').value = r.mes_renta || 'ENERO';
-  document.getElementById('edit-nombre').value = r.nombre || '';
-  document.getElementById('edit-telefono').value = r.telefono || '';
-  document.getElementById('edit-telefono2').value = r.telefono_2 || '';
-  document.getElementById('edit-hospedaje').value = r.hospedaje || '';
-  document.getElementById('edit-evento').value = r.evento || '';
-  document.getElementById('edit-entrada').value = aislarFechaInput(r.fecha_entrada);
-  document.getElementById('edit-salida').value = aislarFechaInput(r.fecha_salida);
-  document.getElementById('edit-total').value = r.total_venta || 0;
-  document.getElementById('edit-ant1').value = r.anticipo_1 || 0;
-  document.getElementById('edit-fecant1').value = aislarFechaInput(r.fecha_anticpo_1);
-  document.getElementById('edit-ant2').value = r.anticipo_2 || 0;
-  document.getElementById('edit-fecant2').value = aislarFechaInput(r.fecha_anticpo_2);
-  document.getElementById('edit-saldo').value = r.saldo || 0;
-  document.getElementById('edit-comision').value = r.comision || 0;
-  document.getElementById('edit-feccobrado').value = aislarFechaInput(r.fecha_cobrado);
-  document.getElementById('edit-comisionno').value = r.comision_no || '';
-
-  modalEditar.showModal();
-};
-
-document.getElementById('btn-cancelar-editar').addEventListener('click', () => { modalEditar.close(); folioAEditar = null; });
-
-document.getElementById('btn-guardar-editar').addEventListener('click', async () => {
-  if(!folioAEditar) return;
-  const cambios = {
-    mes_renta: document.getElementById('edit-mes').value,
-    nombre: document.getElementById('edit-nombre').value,
-    telefono: document.getElementById('edit-telefono').value,
-    telefono_2: document.getElementById('edit-telefono2').value,
-    hospedaje: document.getElementById('edit-hospedaje').value,
-    evento: document.getElementById('edit-evento').value,
-    fecha_entrada: document.getElementById('edit-entrada').value,
-    fecha_salida: document.getElementById('edit-salida').value,
-    total_venta: parseFloat(document.getElementById('edit-total').value) || 0,
-    saldo: parseFloat(document.getElementById('edit-saldo').value) || 0,
-    anticipo_1: parseFloat(document.getElementById('edit-ant1').value) || 0,
-    fecha_anticpo_1: document.getElementById('edit-fecant1').value,
-    anticipo_2: parseFloat(document.getElementById('edit-ant2').value) || 0,
-    fecha_anticpo_2: document.getElementById('edit-fecant2').value,
-    comision: parseFloat(document.getElementById('edit-comision').value) || 0,
-    fecha_cobrado: document.getElementById('edit-feccobrado').value,
-    comision_no: document.getElementById('edit-comisionno').value
-  };
-
-  modalEditar.close();
-  mostrarToast('Actualizando...', 'info');
-  try {
-    const res = await fetchConTimeout(API_URL, { method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify({ action: 'actualizar', folio: Number(folioAEditar), cambios }) });
-    const data = await res.json(); if(!data.ok) throw new Error();
-    mostrarToast('Renta actualizada con éxito', 'exito');
-    cargarHistorial(true);
-  } catch(err) { mostrarToast('Error al actualizar', 'error'); }
-  finally { folioAEditar = null; }
-});
-
-async function eliminarRegistro(folio) {
-  if(!confirm(`¿Deseas eliminar la renta #${folio}?`)) return;
-  mostrarToast('Eliminando...', 'info');
-  try {
-    await fetchConTimeout(API_URL, { method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify({ action: 'eliminar', folio: Number(folio) }) });
-    mostrarToast('Renta eliminada', 'exito'); seleccionados.delete(String(folio)); cargarHistorial(true);
-  } catch(err) { mostrarToast('No se pudo eliminar', 'error'); }
-}
-
-['f-mes','f-tipo'].forEach(id => document.getElementById(id).addEventListener('change', renderTabla));
-document.getElementById('f-buscar').addEventListener('input', renderTabla);
-document.getElementById('btn-refrescar').addEventListener('click', () => cargarHistorial(false));
-
-const modalReporte = document.getElementById('modal-reporte');
-document.getElementById('btn-abrir-reporte').addEventListener('click', () => {
-  if(seleccionados.size === 0) { mostrarToast('Selecciona al menos una renta para el reporte', 'error'); return; }
-  const tbody = document.getElementById('cuerpo-reporte'); tbody.innerHTML = '';
-  rentasCache.forEach(r => {
-    if(seleccionados.has(String(r.folio))) {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td>#${r.folio}</td><td>${r.mes_renta}</td><td><strong>${r.nombre}</strong></td><td>${r.evento || r.hospedaje || '—'}</td><td>${formatearFecha(r.fecha_entrada)}</td><td>$${Number(r.total_venta||0).toLocaleString('es-MX')}</td><td>$${Number(r.saldo||0).toLocaleString('es-MX')}</td>`;
-      tbody.appendChild(tr);
-    }
-  });
-  modalReporte.showModal();
-});
-document.getElementById('btn-cerrar-reporte').addEventListener('click', () => modalReporte.close());
-document.getElementById('btn-descargar-reporte').addEventListener('click', async () => {
-  const btn = document.getElementById('btn-descargar-reporte'); btn.textContent = 'Generando...'; btn.disabled = true;
-  try {
-    const canvas = await html2canvas(document.getElementById('area-reporte'), { scale: 2, backgroundColor: '#ffffff' });
-    const enlace = document.createElement('a'); enlace.download = `Reporte-QuintaBugambilia.png`; enlace.href = canvas.toDataURL('image/png'); enlace.click();
-    mostrarToast('Imagen descargada', 'exito');
-  } catch(e) { mostrarToast('Error al generar imagen', 'error'); }
-  finally { btn.textContent = 'Descargar Imagen PNG'; btn.disabled = false; }
-});
-
-setAppStatus('sync', 'Conectando...'); cargarHistorial(true);
-</script>
-</body>
+setAppStatus('sync', 'Conectando...'); cargarHistorial(true); 
+</script> 
+</body> 
 </html>
