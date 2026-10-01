@@ -92,7 +92,7 @@
   .top-scrollbar-wrapper { width: 100%; overflow-x: auto; overflow-y: hidden; background: #F8FAFC; border-bottom: 1px solid var(--line); height: 14px; }
   .top-scrollbar-content { height: 1px; }
 
-  .tabla-scroll-container { width: 100%; max-height: calc(100vh - 230px); overflow: auto; position: relative; }
+  .tabla-scroll-container { width: 100%; max-height: calc(100vh - 230px); overflow: auto; position: relative; } 
   
   table { border-collapse: separate; border-spacing: 0; width: 100%; font-size: 0.82rem; text-align: left; min-width: 1500px; } 
   
@@ -153,7 +153,7 @@
   .tabla-reporte th, .tabla-reporte td { border: 1px solid #E2E8F0; padding: 10px; text-align: left; } 
   .tabla-reporte th { background-color: #F8FAFC; color: var(--brand-green); font-family: var(--display); font-size: 0.8rem; text-transform: uppercase; } 
 
-  /* Recibo */
+  /* Recibo HTML */
   #area-recibo {
     background: #ffffff;
     padding: 25px;
@@ -431,7 +431,7 @@
   </div> 
 </dialog> 
 
-<!-- Modales Reporte --> 
+<!-- Modal Reporte --> 
 <dialog id="modal-reporte" class="modal-dialog"> 
   <div class="modal-content" style="max-width: 900px; width: 100%;"> 
     <div id="area-reporte"> 
@@ -446,7 +446,6 @@
     </div> 
     <div class="modal-actions"> 
       <button class="btn btn-secundario" id="btn-cerrar-reporte">Cerrar</button> 
-      <button class="btn btn-primario" id="btn-descargar-reporte">Descargar Reporte</button> 
     </div> 
   </div> 
 </dialog> 
@@ -492,7 +491,19 @@
 
     <div class="modal-actions">
       <button class="btn btn-secundario" id="btn-cerrar-recibo">Cerrar</button>
-      <button class="btn btn-primario" id="btn-descargar-recibo">📲 Compartir / Guardar Recibo</button>
+      <button class="btn btn-primario" id="btn-descargar-recibo">🖼 Generar Imagen para WhatsApp</button>
+    </div>
+  </div>
+</dialog>
+
+<!-- Modal de Vista Previa para guardar en Celular -->
+<dialog id="modal-preview" class="modal-dialog">
+  <div class="modal-content" style="max-width: 500px; width: 100%; text-align: center;">
+    <h3 style="margin: 0; color: var(--brand-green);">Recibo Generado</h3>
+    <p style="font-size: 0.85rem; color: var(--ink-soft); margin: 0;">Mantén presionada la imagen para <b>Guardar en Fotos</b> o <b>Enviar por WhatsApp</b>:</p>
+    <div id="contenedor-img-preview" style="margin: 10px 0;"></div>
+    <div class="modal-actions" style="justify-content: center;">
+      <button class="btn btn-secundario" id="btn-cerrar-preview">Aceptar / Cerrar</button>
     </div>
   </div>
 </dialog>
@@ -697,6 +708,7 @@ function renderTabla(){
 
 // Modal Recibo
 const modalRecibo = document.getElementById('modal-recibo');
+const modalPreview = document.getElementById('modal-preview');
 let folioReciboActual = null;
 let numeroAnticipoActual = null;
 
@@ -727,73 +739,33 @@ window.generarRecibo = function(folio, numAnticipo) {
 };
 
 document.getElementById('btn-cerrar-recibo').addEventListener('click', () => modalRecibo.close());
+document.getElementById('btn-cerrar-preview').addEventListener('click', () => modalPreview.close());
 
-// Función compatible con Celulares (Guardar / Compartir por WhatsApp o Abrir Imagen)
+// Generar Imagen y Desplegar Preview para Guardar en Celular
 document.getElementById('btn-descargar-recibo').addEventListener('click', async () => {
   const btn = document.getElementById('btn-descargar-recibo'); 
   btn.textContent = 'Procesando...'; 
   btn.disabled = true; 
   try { 
-    const canvas = await html2canvas(document.getElementById('area-recibo'), { scale: 2.5, backgroundColor: '#ffffff' }); 
+    const canvas = await html2canvas(document.getElementById('area-recibo'), { scale: 2, backgroundColor: '#ffffff' }); 
+    const dataUrl = canvas.toDataURL('image/png');
     
-    canvas.toBlob(async (blob) => {
-      const nombreArchivo = `Recibo-QB-Folio${folioReciboActual}-Anticipo${numeroAnticipoActual}.png`;
-      const file = new File([blob], nombreArchivo, { type: 'image/png' });
+    // Insertar la imagen en el modal de previsualización
+    const contenedor = document.getElementById('contenedor-img-preview');
+    contenedor.innerHTML = `<img src="${dataUrl}" style="width:100%; border-radius:12px; border:1px solid var(--line); box-shadow:0 4px 15px rgba(0,0,0,0.1);"/>`;
 
-      // Si el cel soporta Compartir directamente (WhatsApp, Galería, etc.)
-      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-        try {
-          await navigator.share({
-            files: [file],
-            title: `Recibo de Pago Quinta Bugambilia Folio #${folioReciboActual}`,
-            text: `Comprobante de pago Anticipo ${numeroAnticipoActual} - Quinta Bugambilia`
-          });
-          mostrarToast('Recibo compartido con éxito', 'exito');
-        } catch (err) {
-          // Si cancela la acción de compartir
-        }
-      } else {
-        // Método alternativo para teléfonos donde la descarga directa falla: abrir en pestaña nueva
-        const dataUrl = canvas.toDataURL('image/png');
-        const nuevaVentana = window.open();
-        if (nuevaVentana) {
-          nuevaVentana.document.write(`<title>${nombreArchivo}</title><body style="margin:0; background:#111; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh;"><p style="color:#fff; font-family:sans-serif; text-align:center; padding:10px;">Mantén presionada la imagen para <b>Guardar</b> o <b>Compartir</b> en tu celular.</p><img src="${dataUrl}" style="max-width:95%; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.5);"/></body>`);
-          mostrarToast('Mantén presionada la imagen para guardarla', 'info');
-        } else {
-          // Forzar descarga clásica si la ventana emergente fue bloqueada
-          const enlace = document.createElement('a'); 
-          enlace.download = nombreArchivo; 
-          enlace.href = dataUrl; 
-          enlace.click(); 
-        }
-      }
-      btn.textContent = '📲 Compartir / Guardar Recibo'; 
-      btn.disabled = false;
-    }, 'image/png');
+    modalRecibo.close();
+    modalPreview.showModal();
+
+    mostrarToast('Mantén presionada la imagen para guardar', 'exito');
 
   } catch(e) { 
-    mostrarToast('Error al procesar el recibo', 'error'); 
-    btn.textContent = '📲 Compartir / Guardar Recibo'; 
+    mostrarToast('Error al procesar la imagen', 'error'); 
+  } finally {
+    btn.textContent = '🖼 Generar Imagen para WhatsApp'; 
     btn.disabled = false; 
-  } 
+  }
 });
-
-// Botón de Reportes (compatibilidad cel)
-document.getElementById('btn-descargar-reporte').addEventListener('click', async () => { 
-  const btn = document.getElementById('btn-descargar-reporte'); btn.textContent = 'Generando...'; btn.disabled = true; 
-  try { 
-    const canvas = await html2canvas(document.getElementById('area-reporte'), { scale: 2, backgroundColor: '#ffffff' }); 
-    const dataUrl = canvas.toDataURL('image/png');
-    const win = window.open();
-    if (win) {
-      win.document.write(`<title>Reporte Quinta Bugambilia</title><body style="margin:0; background:#111; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh;"><p style="color:#fff; font-family:sans-serif; text-align:center; padding:10px;">Mantén presionada la imagen para <b>Guardar</b> o <b>Enviar</b>.</p><img src="${dataUrl}" style="max-width:95%; border-radius:12px;"/></body>`);
-    } else {
-      const enlace = document.createElement('a'); enlace.download = `Reporte-QuintaBugambilia.png`; enlace.href = dataUrl; enlace.click(); 
-    }
-    mostrarToast('Reporte generado', 'exito'); 
-  } catch(e) { mostrarToast('Error al generar imagen', 'error'); } 
-  finally { btn.textContent = 'Descargar Reporte'; btn.disabled = false; } 
-}); 
 
 // Formulario Renta
 document.getElementById('form-renta').addEventListener('submit', async function(e){ 
