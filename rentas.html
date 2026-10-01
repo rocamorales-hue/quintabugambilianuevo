@@ -87,19 +87,15 @@
   .btn-eliminar { color: #94A3B8; } .btn-eliminar:hover { background: #FEE2E2; color: #DC2626; } 
   .btn-editar { color: #94A3B8; } .btn-editar:hover { background: #E0F2FE; color: #0284C7; } 
    
-  /* Estructura para tabla desplazable con sticky header y scrollbars */
   .tabla-envoltura { width: 100%; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); box-shadow: 0 10px 30px var(--shadow); overflow: hidden; display: flex; flex-direction: column; } 
   
-  /* Scrollbar superior sincrónico */
   .top-scrollbar-wrapper { width: 100%; overflow-x: auto; overflow-y: hidden; background: #F8FAFC; border-bottom: 1px solid var(--line); height: 14px; }
   .top-scrollbar-content { height: 1px; }
 
-  /* Contenedor desplazable principal con scrollbar vertical alto máximo */
   .tabla-scroll-container { width: 100%; max-height: calc(100vh - 230px); overflow: auto; position: relative; }
   
   table { border-collapse: separate; border-spacing: 0; width: 100%; font-size: 0.82rem; text-align: left; min-width: 1500px; } 
   
-  /* Sticky Header */
   thead { position: sticky; top: 0; z-index: 20; }
   thead th { padding: 0.9rem 0.5rem; background: #F8FAFC; color: var(--ink-soft); font-weight: 700; border-bottom: 2px solid var(--line); font-family: var(--display); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.03em; white-space: nowrap; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03); } 
   
@@ -107,7 +103,6 @@
   tbody tr:hover td { background-color: #F8FAFC; } 
   tbody tr.fila-seleccionada td { background-color: #eaf5f0; } 
   
-  /* Estilo para los anticipos clickeables */
   .anticipo-clickable {
     cursor: pointer;
     font-weight: 700;
@@ -122,7 +117,6 @@
     color: var(--state-sage);
   }
 
-  /* Sticky Footer */
   tfoot { position: sticky; bottom: 0; z-index: 10; }
   tfoot td { padding: 0.9rem 0.5rem; background: #F8FAFC; border-top: 2px solid var(--line); font-weight: 700; box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.03); } 
   
@@ -150,19 +144,19 @@
 
   .modal-dialog { border: none; border-radius: 16px; padding: 0; background: var(--surface); box-shadow: 0 20px 40px rgba(0,0,0,0.2); } 
   .modal-dialog::backdrop { background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(4px); } 
-  .modal-content { padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem; min-width: 320px; max-width: 550px; } 
+  .modal-content { padding: 1.5rem; display: flex; flex-direction: column; gap: 1.2rem; min-width: 320px; max-width: 550px; } 
   .modal-content h3 { margin: 0; color: var(--brand-green); font-family: var(--display); font-size: 1.2rem; } 
-  .modal-actions { display: flex; justify-content: flex-end; gap: 1rem; margin-top: 0.5rem; } 
+  .modal-actions { display: flex; justify-content: flex-end; gap: 0.8rem; margin-top: 0.5rem; flex-wrap: wrap; } 
    
   #area-reporte { background: #ffffff; padding: 35px 40px; color: var(--ink); border-radius: 12px; width: 100%; } 
   .tabla-reporte { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9rem; min-width: 100%; } 
   .tabla-reporte th, .tabla-reporte td { border: 1px solid #E2E8F0; padding: 10px; text-align: left; } 
   .tabla-reporte th { background-color: #F8FAFC; color: var(--brand-green); font-family: var(--display); font-size: 0.8rem; text-transform: uppercase; } 
 
-  /* Estilos para Recibo de Pago */
+  /* Recibo */
   #area-recibo {
     background: #ffffff;
-    padding: 30px 35px;
+    padding: 25px;
     border: 2px solid var(--brand-green);
     border-radius: 16px;
     color: var(--ink);
@@ -174,90 +168,83 @@
     justify-content: space-between;
     align-items: center;
     border-bottom: 2px dashed var(--line);
-    padding-bottom: 15px;
-    margin-bottom: 20px;
+    padding-bottom: 12px;
+    margin-bottom: 15px;
   }
   .recibo-logo {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
   }
   .recibo-logo-icon {
-    width: 42px;
-    height: 42px;
+    width: 38px;
+    height: 38px;
     background: var(--brand-green);
     color: #fff;
     font-weight: 800;
     font-family: var(--display);
-    border-radius: 10px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.1rem;
+    font-size: 1rem;
   }
   .recibo-badge {
     background: var(--state-sage-bg);
     color: var(--state-sage);
     font-weight: 800;
-    padding: 6px 14px;
+    padding: 4px 10px;
     border-radius: 50px;
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
   }
   .recibo-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
-    margin-bottom: 20px;
+    gap: 12px;
+    margin-bottom: 15px;
     background: #F8FAFC;
-    padding: 15px;
-    border-radius: 12px;
+    padding: 12px;
+    border-radius: 10px;
     border: 1px solid var(--line);
   }
   .recibo-campo label {
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     color: var(--ink-soft);
     text-transform: uppercase;
     font-weight: 700;
     display: block;
-    margin-bottom: 2px;
   }
   .recibo-campo span {
-    font-size: 0.95rem;
+    font-size: 0.88rem;
     font-weight: 600;
     color: var(--ink);
   }
   .recibo-monto-box {
     background: linear-gradient(135deg, var(--brand-green) 0%, #0d4f35 100%);
     color: white;
-    padding: 20px;
-    border-radius: 12px;
+    padding: 15px;
+    border-radius: 10px;
     text-align: center;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 15px rgba(15, 99, 67, 0.2);
+    margin-bottom: 15px;
   }
   .recibo-monto-box h4 {
-    margin: 0 0 5px 0;
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    opacity: 0.9;
-    font-weight: 600;
+    margin: 0 0 4px 0;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
   }
   .recibo-monto-box .monto-val {
-    font-size: 2.2rem;
+    font-size: 1.8rem;
     font-family: var(--display);
     font-weight: 800;
     color: var(--brand-gold-light);
   }
   .recibo-footer {
     text-align: center;
-    font-size: 0.78rem;
+    font-size: 0.72rem;
     color: var(--ink-soft);
     border-top: 1px solid var(--line);
-    padding-top: 15px;
-    line-height: 1.4;
+    padding-top: 10px;
   }
 
   @media (max-width: 1024px) { 
@@ -304,12 +291,10 @@
     </div> 
 
     <div class="tabla-envoltura"> 
-      <!-- Scrollbar Superior Sincronizado -->
       <div class="top-scrollbar-wrapper" id="top-scrollbar">
         <div class="top-scrollbar-content" id="top-scrollbar-content"></div>
       </div>
 
-      <!-- Contenedor desplazable con Sticky Header -->
       <div class="tabla-scroll-container" id="main-table-scroll">
         <table id="tabla-rentas"> 
           <thead> 
@@ -461,7 +446,7 @@
     </div> 
     <div class="modal-actions"> 
       <button class="btn btn-secundario" id="btn-cerrar-reporte">Cerrar</button> 
-      <button class="btn btn-primario" id="btn-descargar-reporte">Descargar Imagen PNG</button> 
+      <button class="btn btn-primario" id="btn-descargar-reporte">Descargar Reporte</button> 
     </div> 
   </div> 
 </dialog> 
@@ -507,7 +492,7 @@
 
     <div class="modal-actions">
       <button class="btn btn-secundario" id="btn-cerrar-recibo">Cerrar</button>
-      <button class="btn btn-primario" id="btn-descargar-recibo">Descargar Recibo Imagen</button>
+      <button class="btn btn-primario" id="btn-descargar-recibo">📲 Compartir / Guardar Recibo</button>
     </div>
   </div>
 </dialog>
@@ -520,7 +505,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbyUuSbd7XOIskwITU6wPbw7
 let rentasCache = []; 
 let seleccionados = new Set(); 
 
-// Sincronizar Scroll Horizontal entre barra superior y contenedor principal
 const topScroll = document.getElementById('top-scrollbar');
 const mainScroll = document.getElementById('main-table-scroll');
 const topScrollContent = document.getElementById('top-scrollbar-content');
@@ -599,7 +583,6 @@ function cambiarVista(nombre){
 } 
 tabHistorial.addEventListener('click', () => cambiarVista('historial')); tabFormulario.addEventListener('click', () => cambiarVista('formulario')); 
 
-// Cálculos automáticos para Nuevo Registro 
 function calcularAutomaticosNuevo() { 
   const total = parseFloat(document.getElementById('in-total').value) || 0; 
   const ant1 = parseFloat(document.getElementById('in-ant1').value) || 0; 
@@ -612,7 +595,6 @@ function calcularAutomaticosNuevo() {
   document.getElementById('in-comision').value = comision.toFixed(2); 
 } 
 
-// Cálculos automáticos para Edición 
 function calcularAutomaticosEditar() { 
   const total = parseFloat(document.getElementById('edit-total').value) || 0; 
   const ant1 = parseFloat(document.getElementById('edit-ant1').value) || 0; 
@@ -670,11 +652,11 @@ function renderTabla(){
     const ant2Val = Number(r.anticipo_2 || 0);
 
     const ant1Html = ant1Val > 0 
-      ? `<span class="anticipo-clickable" onclick="generarRecibo('${r.folio}', 1)" title="Ver recibo de Anticipo 1">$${ant1Val.toLocaleString('es-MX',{minimumFractionDigits:2})} 🧾</span>` 
+      ? `<span class="anticipo-clickable" onclick="generarRecibo('${r.folio}', 1)" title="Ver recibo">$${ant1Val.toLocaleString('es-MX',{minimumFractionDigits:2})} 🧾</span>` 
       : `$0.00`;
 
     const ant2Html = ant2Val > 0 
-      ? `<span class="anticipo-clickable" onclick="generarRecibo('${r.folio}', 2)" title="Ver recibo de Anticipo 2">$${ant2Val.toLocaleString('es-MX',{minimumFractionDigits:2})} 🧾</span>` 
+      ? `<span class="anticipo-clickable" onclick="generarRecibo('${r.folio}', 2)" title="Ver recibo">$${ant2Val.toLocaleString('es-MX',{minimumFractionDigits:2})} 🧾</span>` 
       : `$0.00`;
 
     tr.innerHTML = ` 
@@ -713,7 +695,7 @@ function renderTabla(){
   setTimeout(sincronizarAnchoScroll, 50);
 } 
 
-// Generar y Mostrar Recibo de Pago
+// Modal Recibo
 const modalRecibo = document.getElementById('modal-recibo');
 let folioReciboActual = null;
 let numeroAnticipoActual = null;
@@ -746,26 +728,74 @@ window.generarRecibo = function(folio, numAnticipo) {
 
 document.getElementById('btn-cerrar-recibo').addEventListener('click', () => modalRecibo.close());
 
+// Función compatible con Celulares (Guardar / Compartir por WhatsApp o Abrir Imagen)
 document.getElementById('btn-descargar-recibo').addEventListener('click', async () => {
   const btn = document.getElementById('btn-descargar-recibo'); 
-  btn.textContent = 'Generando Recibo...'; 
+  btn.textContent = 'Procesando...'; 
   btn.disabled = true; 
   try { 
     const canvas = await html2canvas(document.getElementById('area-recibo'), { scale: 2.5, backgroundColor: '#ffffff' }); 
-    const enlace = document.createElement('a'); 
-    enlace.download = `Recibo-QuintaBugambilia-Folio${folioReciboActual}-Anticipo${numeroAnticipoActual}.png`; 
-    enlace.href = canvas.toDataURL('image/png'); 
-    enlace.click(); 
-    mostrarToast('Recibo generado y descargado', 'exito'); 
+    
+    canvas.toBlob(async (blob) => {
+      const nombreArchivo = `Recibo-QB-Folio${folioReciboActual}-Anticipo${numeroAnticipoActual}.png`;
+      const file = new File([blob], nombreArchivo, { type: 'image/png' });
+
+      // Si el cel soporta Compartir directamente (WhatsApp, Galería, etc.)
+      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({
+            files: [file],
+            title: `Recibo de Pago Quinta Bugambilia Folio #${folioReciboActual}`,
+            text: `Comprobante de pago Anticipo ${numeroAnticipoActual} - Quinta Bugambilia`
+          });
+          mostrarToast('Recibo compartido con éxito', 'exito');
+        } catch (err) {
+          // Si cancela la acción de compartir
+        }
+      } else {
+        // Método alternativo para teléfonos donde la descarga directa falla: abrir en pestaña nueva
+        const dataUrl = canvas.toDataURL('image/png');
+        const nuevaVentana = window.open();
+        if (nuevaVentana) {
+          nuevaVentana.document.write(`<title>${nombreArchivo}</title><body style="margin:0; background:#111; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh;"><p style="color:#fff; font-family:sans-serif; text-align:center; padding:10px;">Mantén presionada la imagen para <b>Guardar</b> o <b>Compartir</b> en tu celular.</p><img src="${dataUrl}" style="max-width:95%; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.5);"/></body>`);
+          mostrarToast('Mantén presionada la imagen para guardarla', 'info');
+        } else {
+          // Forzar descarga clásica si la ventana emergente fue bloqueada
+          const enlace = document.createElement('a'); 
+          enlace.download = nombreArchivo; 
+          enlace.href = dataUrl; 
+          enlace.click(); 
+        }
+      }
+      btn.textContent = '📲 Compartir / Guardar Recibo'; 
+      btn.disabled = false;
+    }, 'image/png');
+
   } catch(e) { 
-    mostrarToast('Error al generar el recibo', 'error'); 
-  } finally { 
-    btn.textContent = 'Descargar Recibo Imagen'; 
+    mostrarToast('Error al procesar el recibo', 'error'); 
+    btn.textContent = '📲 Compartir / Guardar Recibo'; 
     btn.disabled = false; 
   } 
 });
 
-// Enviar Nuevo Registro 
+// Botón de Reportes (compatibilidad cel)
+document.getElementById('btn-descargar-reporte').addEventListener('click', async () => { 
+  const btn = document.getElementById('btn-descargar-reporte'); btn.textContent = 'Generando...'; btn.disabled = true; 
+  try { 
+    const canvas = await html2canvas(document.getElementById('area-reporte'), { scale: 2, backgroundColor: '#ffffff' }); 
+    const dataUrl = canvas.toDataURL('image/png');
+    const win = window.open();
+    if (win) {
+      win.document.write(`<title>Reporte Quinta Bugambilia</title><body style="margin:0; background:#111; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh;"><p style="color:#fff; font-family:sans-serif; text-align:center; padding:10px;">Mantén presionada la imagen para <b>Guardar</b> o <b>Enviar</b>.</p><img src="${dataUrl}" style="max-width:95%; border-radius:12px;"/></body>`);
+    } else {
+      const enlace = document.createElement('a'); enlace.download = `Reporte-QuintaBugambilia.png`; enlace.href = dataUrl; enlace.click(); 
+    }
+    mostrarToast('Reporte generado', 'exito'); 
+  } catch(e) { mostrarToast('Error al generar imagen', 'error'); } 
+  finally { btn.textContent = 'Descargar Reporte'; btn.disabled = false; } 
+}); 
+
+// Formulario Renta
 document.getElementById('form-renta').addEventListener('submit', async function(e){ 
   e.preventDefault(); if(!navigator.onLine) return mostrarToast('Sin Internet', 'error'); 
   const btn = this.querySelector('button[type="submit"]'); btn.textContent = 'Guardando...'; btn.disabled = true; 
@@ -798,7 +828,7 @@ document.getElementById('form-renta').addEventListener('submit', async function(
   finally { btn.textContent = 'Guardar Renta en Quinta Bugambilia'; btn.disabled = false; } 
 }); 
 
-// Modal de Edición 
+// Edición
 let folioAEditar = null; 
 const modalEditar = document.getElementById('modal-editar'); 
 
@@ -891,15 +921,6 @@ document.getElementById('btn-abrir-reporte').addEventListener('click', () => {
   modalReporte.showModal(); 
 }); 
 document.getElementById('btn-cerrar-reporte').addEventListener('click', () => modalReporte.close()); 
-document.getElementById('btn-descargar-reporte').addEventListener('click', async () => { 
-  const btn = document.getElementById('btn-descargar-reporte'); btn.textContent = 'Generando...'; btn.disabled = true; 
-  try { 
-    const canvas = await html2canvas(document.getElementById('area-reporte'), { scale: 2, backgroundColor: '#ffffff' }); 
-    const enlace = document.createElement('a'); enlace.download = `Reporte-QuintaBugambilia.png`; enlace.href = canvas.toDataURL('image/png'); enlace.click(); 
-    mostrarToast('Imagen descargada', 'exito'); 
-  } catch(e) { mostrarToast('Error al generar imagen', 'error'); } 
-  finally { btn.textContent = 'Descargar Imagen PNG'; btn.disabled = false; } 
-}); 
 
 setAppStatus('sync', 'Conectando...'); cargarHistorial(true); 
 </script> 
