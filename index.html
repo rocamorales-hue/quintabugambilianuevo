@@ -1,12 +1,414 @@
-<header> 
-  <div class="brand-container"> 
-    <!-- Botón para volver al Index Principal -->
-    <a href="index.html" style="text-decoration:none; color:var(--brand-green); font-size:1.2rem; margin-right:0.5rem;" title="Volver al Portal">🏠</a>
-    <div class="logo-placeholder">QB</div> 
-    <div> 
-      <h1>Quinta Bugambilia</h1> 
-      <p>Control Ejecutivo de Rentas</p> 
-    </div> 
-  </div>
-  <!-- resto del header... -->
-</header>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quinta Bugambilia - Portal Principal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --brand-green: #0F6343;
+      --brand-green-dark: #0A452E;
+      --brand-gold: #D98918;
+      --brand-gold-light: #F3A022;
+      --bg: #F8FAFC;
+      --surface: #FFFFFF;
+      --ink: #1E293B;
+      --ink-soft: #64748B;
+      --line: #E2E8F0;
+      --shadow-sm: 0 4px 12px rgba(15, 23, 42, 0.05);
+      --shadow-lg: 0 20px 35px rgba(15, 99, 67, 0.08);
+      
+      --sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --display: 'Montserrat', sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Header Superior */
+    header {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+      padding: 1rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-content {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .logo-badge {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--brand-green), var(--brand-green-dark));
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FFFFFF;
+      font-weight: 800;
+      font-family: var(--display);
+      font-size: 1.3rem;
+      box-shadow: 0 6px 16px rgba(15, 99, 67, 0.25);
+    }
+
+    .brand-text h1 {
+      margin: 0;
+      font-family: var(--display);
+      font-size: 1.25rem;
+      color: var(--brand-green);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-text p {
+      margin: 0.1rem 0 0;
+      font-size: 0.72rem;
+      color: var(--ink-soft);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .user-pill {
+      background: rgba(15, 99, 67, 0.06);
+      border: 1px solid rgba(15, 99, 67, 0.12);
+      padding: 0.4rem 1rem;
+      border-radius: 50px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--brand-green);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Main Layout */
+    main {
+      flex: 1;
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 4rem;
+    }
+
+    /* Banner Hero */
+    .hero-banner {
+      background: linear-gradient(135deg, var(--brand-green-dark) 0%, var(--brand-green) 100%);
+      border-radius: 24px;
+      padding: 2.5rem 2.5rem;
+      color: white;
+      margin-bottom: 2.5rem;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-banner::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 350px;
+      height: 350px;
+      background: radial-gradient(circle, rgba(217, 137, 24, 0.25) 0%, rgba(255,255,255,0) 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .hero-banner h2 {
+      font-family: var(--display);
+      font-size: 1.8rem;
+      margin: 0 0 0.5rem;
+      font-weight: 800;
+    }
+
+    .hero-banner p {
+      margin: 0;
+      font-size: 0.95rem;
+      color: rgba(255, 255, 255, 0.85);
+      max-width: 550px;
+      line-height: 1.5;
+    }
+
+    /* Grid de Accesos Directos (6 Botones) */
+    .grid-menu {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+
+    /* Tarjeta / Botón */
+    .card-btn {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 1.8rem;
+      text-decoration: none;
+      color: var(--ink);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 160px;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: var(--shadow-sm);
+      position: relative;
+    }
+
+    .card-btn:hover {
+      transform: translateY(-5px);
+      border-color: var(--brand-green);
+      box-shadow: 0 16px 30px rgba(15, 99, 67, 0.12);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+
+    .card-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: rgba(15, 99, 67, 0.08);
+      color: var(--brand-green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .card-btn:hover .card-icon {
+      background: var(--brand-green);
+      color: #FFFFFF;
+    }
+
+    .card-badge {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 50px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .badge-active { background: #DCFCE7; color: #15803D; }
+    .badge-pending { background: #FEF3C7; color: #B45309; }
+
+    .card-body {
+      margin-top: 1.2rem;
+    }
+
+    .card-body h3 {
+      margin: 0 0 0.3rem;
+      font-family: var(--display);
+      font-size: 1.15rem;
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    .card-body p {
+      margin: 0;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      line-height: 1.4;
+    }
+
+    .card-footer {
+      margin-top: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--brand-gold);
+    }
+
+    .card-footer span {
+      transition: transform 0.3s ease;
+    }
+
+    .card-btn:hover .card-footer span {
+      transform: translateX(5px);
+    }
+
+    /* Responsivo para móviles */
+    @media (max-width: 768px) {
+      .grid-menu {
+        grid-template-columns: 1fr;
+      }
+      .hero-banner {
+        padding: 1.8rem 1.5rem;
+      }
+      .hero-banner h2 {
+        font-size: 1.4rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="header-content">
+      <div class="brand">
+        <div class="logo-badge">QB</div>
+        <div class="brand-text">
+          <h1>Quinta Bugambilia</h1>
+          <p>Panel General de Administración</p>
+        </div>
+      </div>
+      <div class="user-pill">
+        <span>🟢</span> En Línea
+      </div>
+    </div>
+  </header>
+
+  <!-- Contenido Principal -->
+  <main>
+    <!-- Banner Principal -->
+    <section class="hero-banner">
+      <h2>Bienvenido al Portal Ejecutivo</h2>
+      <p>Selecciona uno de los módulos de trabajo para gestionar reservas, finanzas, inventarios y operaciones de la quinta.</p>
+    </section>
+
+    <!-- Menú de 6 Botones -->
+    <div class="grid-menu">
+
+      <!-- Botón 1: Control de Rentas (Activo) -->
+      <a href="rentas.html" class="card-btn">
+        <div>
+          <div class="card-header">
+            <div class="card-icon">📋</div>
+            <span class="card-badge badge-active">Activo</span>
+          </div>
+          <div class="card-body">
+            <h3>Control de Rentas</h3>
+            <p>Registro de eventos, hospedajes, pagos, anticipos, saldos pendientes y reportes.</p>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span>Ingresar ➔</span>
+        </div>
+      </a>
+
+      <!-- Botón 2: Calendario / Disponibilidad -->
+      <a href="#" class="card-btn" onclick="alert('Módulo en desarrollo: Calendario de fechas ocupadas.'); return false;">
+        <div>
+          <div class="card-header">
+            <div class="card-icon">📅</div>
+            <span class="card-badge badge-pending">Próximamente</span>
+          </div>
+          <div class="card-body">
+            <h3>Calendario de Eventos</h3>
+            <p>Consulta visual rápida de fechas disponibles, reservadas y en mantenimiento.</p>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span>Ver módulo ➔</span>
+        </div>
+      </a>
+
+      <!-- Botón 3: Control de Gastos y Mantenimiento -->
+      <a href="#" class="card-btn" onclick="alert('Módulo en desarrollo: Registro de compras y mantenimiento de alberca/instalaciones.'); return false;">
+        <div>
+          <div class="card-header">
+            <div class="card-icon">🛠️</div>
+            <span class="card-badge badge-pending">Próximamente</span>
+          </div>
+          <div class="card-body">
+            <h3>Gastos y Mantenimiento</h3>
+            <p>Seguimiento de insumos de alberca, servicios, reparaciones y gastos operativos.</p>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span>Ver módulo ➔</span>
+        </div>
+      </a>
+
+      <!-- Botón 4: Cotizador y Mensajes -->
+      <a href="#" class="card-btn" onclick="alert('Módulo en desarrollo: Plantillas de respuestas para WhatsApp y cotizaciones.'); return false;">
+        <div>
+          <div class="card-header">
+            <div class="card-icon">💬</div>
+            <span class="card-badge badge-pending">Próximamente</span>
+          </div>
+          <div class="card-body">
+            <h3>Cotizador y Respuestas</h3>
+            <p>Generador de presupuestos rápidos y plantillas de mensajes para clientes en WhatsApp.</p>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span>Ver módulo ➔</span>
+        </div>
+      </a>
+
+      <!-- Botón 5: Inventario de Inmueble -->
+      <a href="#" class="card-btn" onclick="alert('Módulo en desarrollo: Control de mobiliario, mantelería y juegos.'); return false;">
+        <div>
+          <div class="card-header">
+            <div class="card-icon">🏰</div>
+            <span class="card-badge badge-pending">Próximamente</span>
+          </div>
+          <div class="card-body">
+            <h3>Inventario de Instalaciones</h3>
+            <p>Listado y verificación de mobiliario, manteles, equipos de juego y amenidades.</p>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span>Ver módulo ➔</span>
+        </div>
+      </a>
+
+      <!-- Botón 6: Contratos y Reglamento -->
+      <a href="#" class="card-btn" onclick="alert('Módulo en desarrollo: Generación automática de contratos de arrendamiento.'); return false;">
+        <div>
+          <div class="card-header">
+            <div class="card-icon">📄</div>
+            <span class="card-badge badge-pending">Próximamente</span>
+          </div>
+          <div class="card-body">
+            <h3>Generador de Contratos</h3>
+            <p>Creación automática de reglamentos internos y contratos de arrendamiento firmables.</p>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span>Ver módulo ➔</span>
+        </div>
+      </a>
+
+    </div>
+  </main>
+
+</body>
+</html>
