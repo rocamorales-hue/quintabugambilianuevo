@@ -107,6 +107,21 @@
   tbody tr:hover td { background-color: #F8FAFC; } 
   tbody tr.fila-seleccionada td { background-color: #eaf5f0; } 
   
+  /* Estilo para los anticipos clickeables */
+  .anticipo-clickable {
+    cursor: pointer;
+    font-weight: 700;
+    color: var(--brand-green);
+    text-decoration: underline dotted;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+  }
+  .anticipo-clickable:hover {
+    background-color: var(--state-sage-bg);
+    color: var(--state-sage);
+  }
+
   /* Sticky Footer */
   tfoot { position: sticky; bottom: 0; z-index: 10; }
   tfoot td { padding: 0.9rem 0.5rem; background: #F8FAFC; border-top: 2px solid var(--line); font-weight: 700; box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.03); } 
@@ -143,6 +158,107 @@
   .tabla-reporte { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9rem; min-width: 100%; } 
   .tabla-reporte th, .tabla-reporte td { border: 1px solid #E2E8F0; padding: 10px; text-align: left; } 
   .tabla-reporte th { background-color: #F8FAFC; color: var(--brand-green); font-family: var(--display); font-size: 0.8rem; text-transform: uppercase; } 
+
+  /* Estilos para Recibo de Pago */
+  #area-recibo {
+    background: #ffffff;
+    padding: 30px 35px;
+    border: 2px solid var(--brand-green);
+    border-radius: 16px;
+    color: var(--ink);
+    font-family: var(--sans);
+    position: relative;
+  }
+  .recibo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px dashed var(--line);
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+  }
+  .recibo-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .recibo-logo-icon {
+    width: 42px;
+    height: 42px;
+    background: var(--brand-green);
+    color: #fff;
+    font-weight: 800;
+    font-family: var(--display);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+  }
+  .recibo-badge {
+    background: var(--state-sage-bg);
+    color: var(--state-sage);
+    font-weight: 800;
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .recibo-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+    background: #F8FAFC;
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+  }
+  .recibo-campo label {
+    font-size: 0.72rem;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .recibo-campo span {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .recibo-monto-box {
+    background: linear-gradient(135deg, var(--brand-green) 0%, #0d4f35 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(15, 99, 67, 0.2);
+  }
+  .recibo-monto-box h4 {
+    margin: 0 0 5px 0;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.9;
+    font-weight: 600;
+  }
+  .recibo-monto-box .monto-val {
+    font-size: 2.2rem;
+    font-family: var(--display);
+    font-weight: 800;
+    color: var(--brand-gold-light);
+  }
+  .recibo-footer {
+    text-align: center;
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+    border-top: 1px solid var(--line);
+    padding-top: 15px;
+    line-height: 1.4;
+  }
 
   @media (max-width: 1024px) { 
     main { padding: 1rem 0.5rem 3rem; } header { flex-direction: column; align-items: stretch; text-align: center; } 
@@ -350,6 +466,52 @@
   </div> 
 </dialog> 
 
+<!-- Modal Recibo de Pago -->
+<dialog id="modal-recibo" class="modal-dialog">
+  <div class="modal-content" style="max-width: 550px; width: 100%;">
+    <div id="area-recibo">
+      <div class="recibo-header">
+        <div class="recibo-logo">
+          <div class="recibo-logo-icon">QB</div>
+          <div>
+            <h3 style="margin:0; color:var(--brand-green); font-family:var(--display); font-size:1.1rem;">Quinta Bugambilia</h3>
+            <span style="font-size:0.75rem; color:var(--ink-soft); font-weight:600;">COMPROBANTE DE PAGO</span>
+          </div>
+        </div>
+        <div class="recibo-badge" id="recibo-tipo-badge">ANTICIPO 1</div>
+      </div>
+
+      <div class="recibo-monto-box">
+        <h4 id="recibo-titulo-monto">MONTO RECIBIDO</h4>
+        <div class="monto-val" id="recibo-monto-val">$0.00</div>
+      </div>
+
+      <div class="recibo-grid">
+        <div class="recibo-campo"><label>Folio de Renta</label><span id="recibo-folio">#0</span></div>
+        <div class="recibo-campo"><label>Fecha de Pago</label><span id="recibo-fecha-pago">—</span></div>
+        <div class="recibo-campo" style="grid-column: span 2;"><label>Cliente</label><span id="recibo-cliente">—</span></div>
+        <div class="recibo-campo"><label>Teléfono</label><span id="recibo-telefono">—</span></div>
+        <div class="recibo-campo"><label>Mes de Renta</label><span id="recibo-mes">—</span></div>
+        <div class="recibo-campo" style="grid-column: span 2;"><label>Concepto (Evento/Hospedaje)</label><span id="recibo-concepto">—</span></div>
+        <div class="recibo-campo"><label>Fecha Entrada</label><span id="recibo-entrada">—</span></div>
+        <div class="recibo-campo"><label>Fecha Salida</label><span id="recibo-salida">—</span></div>
+        <div class="recibo-campo"><label>Total Venta</label><span id="recibo-total-venta" style="color:var(--brand-green); font-weight:700;">$0.00</span></div>
+        <div class="recibo-campo"><label>Saldo Pendiente</label><span id="recibo-saldo" style="color:var(--state-amber); font-weight:700;">$0.00</span></div>
+      </div>
+
+      <div class="recibo-footer">
+        ¡Gracias por su pago! Este comprobante confirma la reservación correspondiente.<br>
+        <strong>Quinta Bugambilia - Real del Catorce, Hermosillo, Sonora</strong>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-secundario" id="btn-cerrar-recibo">Cerrar</button>
+      <button class="btn btn-primario" id="btn-descargar-recibo">Descargar Recibo Imagen</button>
+    </div>
+  </div>
+</dialog>
+
 <div id="toast-container" class="toast-container"></div> 
 
 <script> 
@@ -503,6 +665,18 @@ function renderTabla(){
 
   filtrados.forEach(r => { 
     const tr = document.createElement('tr'); tr.id = `fila-${r.folio}`; const sel = seleccionados.has(String(r.folio)); if(sel) tr.classList.add('fila-seleccionada'); 
+    
+    const ant1Val = Number(r.anticipo_1 || 0);
+    const ant2Val = Number(r.anticipo_2 || 0);
+
+    const ant1Html = ant1Val > 0 
+      ? `<span class="anticipo-clickable" onclick="generarRecibo('${r.folio}', 1)" title="Ver recibo de Anticipo 1">$${ant1Val.toLocaleString('es-MX',{minimumFractionDigits:2})} 🧾</span>` 
+      : `$0.00`;
+
+    const ant2Html = ant2Val > 0 
+      ? `<span class="anticipo-clickable" onclick="generarRecibo('${r.folio}', 2)" title="Ver recibo de Anticipo 2">$${ant2Val.toLocaleString('es-MX',{minimumFractionDigits:2})} 🧾</span>` 
+      : `$0.00`;
+
     tr.innerHTML = ` 
       <td style="text-align:center;"><input type="checkbox" class="chk-row" value="${r.folio}" ${sel ? 'checked' : ''} onchange="toggleSeleccion('${r.folio}', this)"></td> 
       <td class="num">#${r.folio}</td> 
@@ -514,9 +688,9 @@ function renderTabla(){
       <td class="num">${formatearFecha(r.fecha_entrada)}</td> 
       <td class="num">${formatearFecha(r.fecha_salida)}</td> 
       <td class="num" style="color:var(--brand-green); font-weight:700;">$${Number(r.total_venta || 0).toLocaleString('es-MX',{minimumFractionDigits:2})}</td> 
-      <td class="num">$${Number(r.anticipo_1 || 0).toLocaleString('es-MX',{minimumFractionDigits:2})}</td> 
+      <td class="num">${ant1Html}</td> 
       <td class="num">${formatearFecha(r.fecha_anticpo_1)}</td> 
-      <td class="num">$${Number(r.anticipo_2 || 0).toLocaleString('es-MX',{minimumFractionDigits:2})}</td> 
+      <td class="num">${ant2Html}</td> 
       <td class="num">${formatearFecha(r.fecha_anticpo_2)}</td> 
       <td class="num" style="color:var(--state-amber); font-weight:700;">$${Number(r.saldo || 0).toLocaleString('es-MX',{minimumFractionDigits:2})}</td> 
       <td class="num">$${Number(r.comision || 0).toLocaleString('es-MX',{minimumFractionDigits:2})}</td> 
@@ -538,6 +712,58 @@ function renderTabla(){
   
   setTimeout(sincronizarAnchoScroll, 50);
 } 
+
+// Generar y Mostrar Recibo de Pago
+const modalRecibo = document.getElementById('modal-recibo');
+let folioReciboActual = null;
+let numeroAnticipoActual = null;
+
+window.generarRecibo = function(folio, numAnticipo) {
+  const r = rentasCache.find(item => String(item.folio) === String(folio));
+  if(!r) return;
+
+  folioReciboActual = folio;
+  numeroAnticipoActual = numAnticipo;
+
+  const monto = numAnticipo === 1 ? Number(r.anticipo_1 || 0) : Number(r.anticipo_2 || 0);
+  const fechaPago = numAnticipo === 1 ? formatearFecha(r.fecha_anticpo_1) : formatearFecha(r.fecha_anticpo_2);
+
+  document.getElementById('recibo-tipo-badge').textContent = `ANTICIPO ${numAnticipo}`;
+  document.getElementById('recibo-monto-val').textContent = `$${monto.toLocaleString('es-MX',{minimumFractionDigits:2})}`;
+  document.getElementById('recibo-folio').textContent = `#${r.folio}`;
+  document.getElementById('recibo-fecha-pago').textContent = fechaPago || 'Sin fecha';
+  document.getElementById('recibo-cliente').textContent = r.nombre || '—';
+  document.getElementById('recibo-telefono').textContent = r.telefono || '—';
+  document.getElementById('recibo-mes').textContent = r.mes_renta || '—';
+  document.getElementById('recibo-concepto').textContent = r.evento || r.hospedaje || 'Renta de Quinta';
+  document.getElementById('recibo-entrada').textContent = formatearFecha(r.fecha_entrada) || '—';
+  document.getElementById('recibo-salida').textContent = formatearFecha(r.fecha_salida) || '—';
+  document.getElementById('recibo-total-venta').textContent = `$${Number(r.total_venta || 0).toLocaleString('es-MX',{minimumFractionDigits:2})}`;
+  document.getElementById('recibo-saldo').textContent = `$${Number(r.saldo || 0).toLocaleString('es-MX',{minimumFractionDigits:2})}`;
+
+  modalRecibo.showModal();
+};
+
+document.getElementById('btn-cerrar-recibo').addEventListener('click', () => modalRecibo.close());
+
+document.getElementById('btn-descargar-recibo').addEventListener('click', async () => {
+  const btn = document.getElementById('btn-descargar-recibo'); 
+  btn.textContent = 'Generando Recibo...'; 
+  btn.disabled = true; 
+  try { 
+    const canvas = await html2canvas(document.getElementById('area-recibo'), { scale: 2.5, backgroundColor: '#ffffff' }); 
+    const enlace = document.createElement('a'); 
+    enlace.download = `Recibo-QuintaBugambilia-Folio${folioReciboActual}-Anticipo${numeroAnticipoActual}.png`; 
+    enlace.href = canvas.toDataURL('image/png'); 
+    enlace.click(); 
+    mostrarToast('Recibo generado y descargado', 'exito'); 
+  } catch(e) { 
+    mostrarToast('Error al generar el recibo', 'error'); 
+  } finally { 
+    btn.textContent = 'Descargar Recibo Imagen'; 
+    btn.disabled = false; 
+  } 
+});
 
 // Enviar Nuevo Registro 
 document.getElementById('form-renta').addEventListener('submit', async function(e){ 
