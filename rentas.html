@@ -2,92 +2,87 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Control de Rentas | Quinta Bugambilia</title>
     <!-- Google Fonts & FontAwesome -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
-            --bg-body: #f1f5f9;
+            --bg-body: #f8fafc;
             --surface: #ffffff;
-            --primary: #1e293b;
+            --primary: #0f172a;
             --primary-accent: #2563eb;
             --success: #059669;
             --danger: #dc2626;
             --warning: #d97706;
             --border: #e2e8f0;
-            --text-main: #0f172a;
+            --text-main: #1e293b;
             --text-muted: #64748b;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-body);
             color: var(--text-main);
-            padding: 24px;
+            padding: 12px;
+            padding-bottom: 80px; /* Espacio para botón flotante */
         }
 
-        /* Topbar & Dashboard Layout */
+        /* Topbar Header Mobile */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
+            margin-bottom: 16px;
+            padding: 4px 0;
         }
 
         .brand-title {
-            font-size: 22px;
+            font-size: 18px;
             font-weight: 700;
             color: var(--primary);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
-        /* KPI Cards */
+        /* KPI Dashboard Mobile */
         .kpi-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 16px;
         }
 
         .kpi-card {
             background: var(--surface);
-            padding: 16px 20px;
-            border-radius: 12px;
+            padding: 12px 8px;
+            border-radius: 10px;
             border: 1px solid var(--border);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            text-align: center;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
         }
 
-        .kpi-card span { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; }
-        .kpi-card h3 { font-size: 22px; font-weight: 700; margin-top: 4px; }
+        .kpi-card span { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; display: block; }
+        .kpi-card h3 { font-size: 14px; font-weight: 700; margin-top: 2px; }
         .kpi-total h3 { color: var(--primary-accent); }
         .kpi-cobrado h3 { color: var(--success); }
         .kpi-saldo h3 { color: var(--danger); }
 
         /* Actions Bar */
         .actions-bar {
-            background: var(--surface);
-            padding: 16px;
-            border-radius: 12px 12px 0 0;
-            border: 1px solid var(--border);
-            border-bottom: none;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 16px;
-            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
         }
 
         .search-box {
             position: relative;
             flex: 1;
-            max-width: 360px;
         }
 
         .search-box i {
@@ -100,97 +95,142 @@
 
         .search-box input {
             width: 100%;
-            padding: 9px 12px 9px 36px;
-            border-radius: 8px;
+            padding: 12px 12px 12px 36px;
+            border-radius: 10px;
             border: 1px solid var(--border);
             font-size: 14px;
             outline: none;
+            background: var(--surface);
         }
 
         .btn {
-            padding: 9px 16px;
-            border-radius: 8px;
+            padding: 12px 16px;
+            border-radius: 10px;
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
             border: none;
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
             transition: all 0.2s;
         }
 
         .btn-primary { background: var(--primary-accent); color: #fff; }
-        .btn-primary:hover { background: #1d4ed8; }
-        .btn-secondary { background: #f8fafc; border: 1px solid var(--border); color: var(--text-main); }
-        .btn-secondary:hover { background: #e2e8f0; }
+        .btn-secondary { background: var(--surface); border: 1px solid var(--border); color: var(--text-main); }
 
-        /* Table Area */
-        .table-container {
-            background: var(--surface);
-            border-radius: 0 0 12px 12px;
-            border: 1px solid var(--border);
-            overflow-x: auto;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-            white-space: nowrap;
-        }
-
-        th {
-            background: #f8fafc;
-            color: var(--text-muted);
-            font-weight: 700;
-            text-transform: uppercase;
-            padding: 12px 14px;
-            text-align: left;
-            border-bottom: 2px solid var(--border);
-            font-size: 11px;
-        }
-
-        td {
-            padding: 12px 14px;
-            border-bottom: 1px solid var(--border);
-            vertical-align: middle;
-        }
-
-        tr:hover { background-color: #f8fafc; }
-
-        .folio-tag { font-weight: 700; color: var(--primary-accent); }
-        .monto-total { font-weight: 700; color: var(--primary-accent); }
-        .monto-anticipo { font-weight: 600; color: var(--success); }
-        .monto-saldo { font-weight: 700; color: var(--danger); }
-
-        .action-btns { display: flex; gap: 8px; }
-        .icon-btn {
-            width: 30px;
-            height: 30px;
-            border-radius: 6px;
+        /* Botón Flotante para Agregar Renta en Celular */
+        .btn-float {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--primary-accent);
+            color: #fff;
             border: none;
-            background: #f1f5f9;
-            color: var(--text-muted);
-            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+            font-size: 22px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s;
+            z-index: 99;
+            cursor: pointer;
         }
-        .icon-btn-edit:hover { background: #fef3c7; color: var(--warning); }
-        .icon-btn-delete:hover { background: #fee2e2; color: var(--danger); }
 
-        /* Modal Styles */
+        /* VISTA DE TARJETAS PARA CELULAR (Renta Cards) */
+        .cards-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .renta-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            position: relative;
+        }
+
+        .card-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            border-bottom: 1px dashed var(--border);
+            padding-bottom: 8px;
+        }
+
+        .card-folio {
+            font-weight: 700;
+            color: var(--primary-accent);
+            font-size: 15px;
+        }
+
+        .card-cliente {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .card-subtext {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-grid-info {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            background: #f8fafc;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            margin-bottom: 12px;
+        }
+
+        .info-item span { display: block; color: var(--text-muted); font-size: 10px; text-transform: uppercase; }
+        .info-item strong { font-size: 13px; }
+
+        .card-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        .btn-card-action {
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-card-edit { background: #fef3c7; color: var(--warning); }
+        .btn-card-delete { background: #fee2e2; color: var(--danger); }
+
+        /* Modal / Formulario Flotante Móvil */
         .modal {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.5);
+            background: rgba(15, 23, 42, 0.6);
             backdrop-filter: blur(4px);
             z-index: 1000;
-            align-items: center;
+            align-items: flex-end; /* Abre desde abajo en celular */
             justify-content: center;
         }
 
@@ -198,49 +238,70 @@
 
         .modal-content {
             background: var(--surface);
-            border-radius: 16px;
+            border-radius: 20px 20px 0 0;
             width: 100%;
-            max-width: 750px;
-            max-height: 90vh;
+            max-height: 92vh;
             overflow-y: auto;
-            padding: 24px;
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+            padding: 20px;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
         }
 
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 12px;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
             border-bottom: 1px solid var(--border);
         }
 
         .form-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 14px;
+            grid-template-columns: 1fr; /* Una sola columna en celular */
+            gap: 12px;
         }
 
         .form-group { display: flex; flex-direction: column; gap: 4px; }
-        .form-group.span-2 { grid-column: span 2; }
         .form-group label { font-size: 12px; font-weight: 600; color: var(--text-muted); }
         .form-group input, .form-group select {
-            padding: 8px 12px;
-            border-radius: 6px;
+            padding: 12px;
+            border-radius: 8px;
             border: 1px solid var(--border);
-            font-size: 13px;
+            font-size: 14px;
             outline: none;
+            background: #fff;
         }
-        .form-group input:focus { border-color: var(--primary-accent); }
+
+        .form-row-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
 
         .modal-footer {
-            margin-top: 24px;
+            margin-top: 20px;
             display: flex;
-            justify-content: flex-end;
-            gap: 12px;
-            padding-top: 16px;
-            border-top: 1px solid var(--border);
+            gap: 10px;
+        }
+
+        .modal-footer .btn { flex: 1; padding: 14px; }
+
+        /* Estilos Desktop / Pantallas Grandes */
+        @media (min-width: 768px) {
+            body { padding: 24px; }
+            .kpi-container { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+            .kpi-card span { font-size: 12px; }
+            .kpi-card h3 { font-size: 22px; }
+            .modal { align-items: center; }
+            .modal-content { border-radius: 16px; max-width: 700px; }
+            .form-grid { grid-template-columns: repeat(3, 1fr); }
+            .form-group.span-2 { grid-column: span 2; }
         }
     </style>
 </head>
@@ -250,79 +311,55 @@
     <div class="header">
         <div class="brand-title">
             <i class="fas fa-house-user" style="color: var(--primary-accent);"></i>
-            Quinta Bugambilia - Panel de Rentas
+            Quinta Bugambilia
         </div>
-        <button class="btn btn-primary" onclick="abrirModalNuevo()">
-            <i class="fas fa-plus"></i> Nueva Reservación
+        <button class="btn btn-secondary" onclick="cargarDatos()" title="Actualizar">
+            <i class="fas fa-sync-alt"></i>
         </button>
     </div>
 
     <!-- KPI Dashboard -->
     <div class="kpi-container">
         <div class="kpi-card kpi-total">
-            <span>Total Ventas</span>
-            <h3 id="kpi-total">$0.00</h3>
+            <span>Ventas</span>
+            <h3 id="kpi-total">$0</h3>
         </div>
         <div class="kpi-card kpi-cobrado">
-            <span>Total Cobrado</span>
-            <h3 id="kpi-cobrado">$0.00</h3>
+            <span>Cobrado</span>
+            <h3 id="kpi-cobrado">$0</h3>
         </div>
         <div class="kpi-card kpi-saldo">
-            <span>Saldo por Cobrar</span>
-            <h3 id="kpi-saldo">$0.00</h3>
+            <span>Saldo</span>
+            <h3 id="kpi-saldo">$0</h3>
         </div>
     </div>
 
-    <!-- Actions Bar -->
+    <!-- Buscador -->
     <div class="actions-bar">
         <div class="search-box">
             <i class="fas fa-search"></i>
             <input type="text" id="input-search" placeholder="Buscar por cliente o folio..." onkeyup="filtrarTabla()">
         </div>
-        <button class="btn btn-secondary" onclick="cargarDatos()">
-            <i class="fas fa-sync-alt"></i> Actualizar
-        </button>
     </div>
 
-    <!-- Data Table -->
-    <div class="table-container">
-        <table id="tabla-rentas">
-            <thead>
-                <tr>
-                    <th>FOLIO</th>
-                    <th>MES</th>
-                    <th>NOMBRE CLIENTE</th>
-                    <th>TELÉFONO</th>
-                    <th>HOSPEDAJE</th>
-                    <th>EVENTO</th>
-                    <th>F. ENTRADA</th>
-                    <th>F. SALIDA</th>
-                    <th>TOTAL VENTA</th>
-                    <th>ANTICIPO 1</th>
-                    <th>F. ANTICIPO 1</th>
-                    <th>ANTICIPO 2</th>
-                    <th>F. ANTICIPO 2</th>
-                    <th>SALDO</th>
-                    <th>COMISIÓN</th>
-                    <th>ACCIONES</th>
-                </tr>
-            </thead>
-            <tbody id="tabla-body">
-                <tr>
-                    <td colspan="16" style="text-align: center; padding: 40px; color: var(--text-muted);">
-                        <i class="fas fa-spinner fa-spin fa-2x"></i><br><br>Cargando información del sistema...
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+    <!-- Contenedor de Tarjetas (Vista Celular) -->
+    <div class="cards-container" id="cards-container">
+        <div style="text-align: center; padding: 40px; color: var(--text-muted);">
+            <i class="fas fa-spinner fa-spin fa-2x"></i><br><br>Cargando reservaciones...
+        </div>
     </div>
+
+    <!-- Botón Flotante para Agregar Renta -->
+    <button class="btn-float" onclick="abrirModalNuevo()" title="Nueva Reservación">
+        <i class="fas fa-plus"></i>
+    </button>
 
     <!-- Modal Form (Crear / Editar) -->
     <div class="modal" id="modal-form">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 id="modal-title">Nueva Reservación</h3>
-                <button class="icon-btn" onclick="cerrarModal()"><i class="fas fa-times"></i></button>
+                <button class="btn btn-secondary" onclick="cerrarModal()" style="padding: 6px 10px;"><i class="fas fa-times"></i></button>
             </div>
             
             <form id="renta-form" onsubmit="guardarRegistro(event)">
@@ -331,95 +368,114 @@
                 <div class="form-grid">
                     <div class="form-group span-2">
                         <label>Nombre del Cliente</label>
-                        <input type="text" id="field-nombre" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Mes de Renta</label>
-                        <select id="field-mes">
-                            <option value="enero">Enero</option>
-                            <option value="febrero">Febrero</option>
-                            <option value="marzo">Marzo</option>
-                            <option value="abril">Abril</option>
-                            <option value="mayo">Mayo</option>
-                            <option value="junio">Junio</option>
-                            <option value="julio">Julio</option>
-                            <option value="agosto">Agosto</option>
-                            <option value="septiembre">Septiembre</option>
-                            <option value="octubre">Octubre</option>
-                            <option value="noviembre">Noviembre</option>
-                            <option value="diciembre">Diciembre</option>
-                        </select>
+                        <input type="text" id="field-nombre" required placeholder="Nombre completo">
                     </div>
 
-                    <div class="form-group">
-                        <label>Teléfono Principal</label>
-                        <input type="text" id="field-telefono">
-                    </div>
-                    <div class="form-group">
-                        <label>Hospedaje</label>
-                        <input type="text" id="field-hospedaje" placeholder="Ej. 12 personas">
-                    </div>
-                    <div class="form-group">
-                        <label>Evento</label>
-                        <input type="text" id="field-evento" placeholder="Ej. 50 personas">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Fecha Entrada</label>
-                        <input type="date" id="field-fecha-entrada">
-                    </div>
-                    <div class="form-group">
-                        <label>Fecha Salida</label>
-                        <input type="date" id="field-fecha-salida">
-                    </div>
-                    <div class="form-group">
-                        <label>Total Venta ($)</label>
-                        <input type="number" step="0.01" id="field-total" oninput="calcularSaldoForm()" required>
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label>Mes Renta</label>
+                            <select id="field-mes">
+                                <option value="enero">Enero</option>
+                                <option value="febrero">Febrero</option>
+                                <option value="marzo">Marzo</option>
+                                <option value="abril">Abril</option>
+                                <option value="mayo">Mayo</option>
+                                <option value="junio">Junio</option>
+                                <option value="julio">Julio</option>
+                                <option value="agosto">Agosto</option>
+                                <option value="septiembre">Septiembre</option>
+                                <option value="octubre">Octubre</option>
+                                <option value="noviembre">Noviembre</option>
+                                <option value="diciembre">Diciembre</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Teléfono</label>
+                            <input type="tel" id="field-telefono" placeholder="662...">
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label>Anticipo 1 ($)</label>
-                        <input type="number" step="0.01" id="field-anticipo1" oninput="calcularSaldoForm()">
-                    </div>
-                    <div class="form-group">
-                        <label>Fecha Anticipo 1</label>
-                        <input type="date" id="field-f-anticipo1">
-                    </div>
-                    <div class="form-group">
-                        <label>Saldo Pendiente ($)</label>
-                        <input type="number" step="0.01" id="field-saldo" readonly style="background: #f8fafc; font-weight: 700; color: var(--danger);">
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label>Hospedaje</label>
+                            <input type="text" id="field-hospedaje" placeholder="Ej. 12 personas">
+                        </div>
+                        <div class="form-group">
+                            <label>Evento</label>
+                            <input type="text" id="field-evento" placeholder="Ej. 50 personas">
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label>Anticipo 2 ($)</label>
-                        <input type="number" step="0.01" id="field-anticipo2" oninput="calcularSaldoForm()">
-                    </div>
-                    <div class="form-group">
-                        <label>Fecha Anticipo 2</label>
-                        <input type="date" id="field-f-anticipo2">
-                    </div>
-                    <div class="form-group">
-                        <label>Comisión ($)</label>
-                        <input type="number" step="0.01" id="field-comision">
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label>Fecha Entrada</label>
+                            <input type="date" id="field-fecha-entrada">
+                        </div>
+                        <div class="form-group">
+                            <label>Fecha Salida</label>
+                            <input type="date" id="field-fecha-salida">
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label>Fecha Cobrado</label>
-                        <input type="date" id="field-f-cobrado">
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label>Total Venta ($)</label>
+                            <input type="number" step="0.01" id="field-total" oninput="calcularSaldoForm()" required placeholder="0.00">
+                        </div>
+                        <div class="form-group">
+                            <label>Saldo Pendiente ($)</label>
+                            <input type="number" step="0.01" id="field-saldo" readonly style="background: #f1f5f9; font-weight: 700; color: var(--danger);">
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>Comisión No.</label>
-                        <input type="text" id="field-comision-no">
+
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label>Anticipo 1 ($)</label>
+                            <input type="number" step="0.01" id="field-anticipo1" oninput="calcularSaldoForm()" placeholder="0.00">
+                        </div>
+                        <div class="form-group">
+                            <label>Fecha Anticipo 1</label>
+                            <input type="date" id="field-f-anticipo1">
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>Teléfono 2</label>
-                        <input type="text" id="field-telefono2">
+
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label>Anticipo 2 ($)</label>
+                            <input type="number" step="0.01" id="field-anticipo2" oninput="calcularSaldoForm()" placeholder="0.00">
+                        </div>
+                        <div class="form-group">
+                            <label>Fecha Anticipo 2</label>
+                            <input type="date" id="field-f-anticipo2">
+                        </div>
+                    </div>
+
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label>Comisión ($)</label>
+                            <input type="number" step="0.01" id="field-comision" placeholder="0.00">
+                        </div>
+                        <div class="form-group">
+                            <label>Fecha Cobrado</label>
+                            <input type="date" id="field-f-cobrado">
+                        </div>
+                    </div>
+
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label>Comisión No.</label>
+                            <input type="text" id="field-comision-no">
+                        </div>
+                        <div class="form-group">
+                            <label>Teléfono 2</label>
+                            <input type="tel" id="field-telefono2">
+                        </div>
                     </div>
                 </div>
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" onclick="cerrarModal()">Cancelar</button>
-                    <button type="submit" class="btn btn-primary" id="btn-guardar">Guardar Registro</button>
+                    <button type="submit" class="btn btn-primary" id="btn-guardar">Guardar</button>
                 </div>
             </form>
         </div>
@@ -437,27 +493,28 @@
         }
 
         function fmtMoneda(val) {
-            return `$${parseMonto(val).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            return `$${parseMonto(val).toLocaleString('es-MX', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
         }
 
         async function cargarDatos() {
+            const container = document.getElementById('cards-container');
             try {
                 const res = await fetch(SCRIPT_URL, { method: 'GET', redirect: 'follow' });
                 registrosGlobales = await res.json();
-                renderizarTabla(registrosGlobales);
+                renderizarTarjetas(registrosGlobales);
                 actualizarKPIs(registrosGlobales);
             } catch (err) {
                 console.error(err);
-                document.getElementById('tabla-body').innerHTML = `<tr><td colspan="16" style="text-align:center; color: var(--danger); padding:20px;">Error al conectar con la base de datos. Verifique la versión publicada en Apps Script.</td></tr>`;
+                container.innerHTML = `<div style="text-align:center; color: var(--danger); padding:20px;">Error al conectar con la base de datos.</div>`;
             }
         }
 
-        function renderizarTabla(registros) {
-            const tbody = document.getElementById('tabla-body');
-            tbody.innerHTML = '';
+        function renderizarTarjetas(registros) {
+            const container = document.getElementById('cards-container');
+            container.innerHTML = '';
 
             if (registros.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="16" style="text-align:center; padding: 20px;">No hay reservaciones registradas.</td></tr>`;
+                container.innerHTML = `<div style="text-align:center; padding: 20px; color: var(--text-muted);">No hay reservaciones encontradas.</div>`;
                 return;
             }
 
@@ -466,47 +523,59 @@
                 const ant1 = parseMonto(row.anticipo1);
                 const ant2 = parseMonto(row.anticipo2);
                 const saldo = parseMonto(row.saldo);
-                const comision = parseMonto(row.comision);
 
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td class="folio-tag">#${row.folio}</td>
-                    <td style="text-transform: capitalize;">${row.mes_renta || ''}</td>
-                    <td><strong>${row.nombre || ''}</strong></td>
-                    <td>${row.telefono || ''}</td>
-                    <td>${row.hospedaje || '—'}</td>
-                    <td>${row.evento || '—'}</td>
-                    <td>${row.fecha_entrada || ''}</td>
-                    <td>${row.fecha_salida || ''}</td>
-                    <td class="monto-total">${fmtMoneda(total)}</td>
-                    <td class="monto-anticipo">${fmtMoneda(ant1)}</td>
-                    <td>${row.fecha_anticipo1 || ''}</td>
-                    <td class="monto-anticipo">${fmtMoneda(ant2)}</td>
-                    <td>${row.fecha_anticipo2 || ''}</td>
-                    <td class="monto-saldo">${fmtMoneda(saldo)}</td>
-                    <td>${fmtMoneda(comision)}</td>
-                    <td>
-                        <div class="action-btns">
-                            <button class="icon-btn icon-btn-edit" onclick="abrirModalEditar(${row.folio})" title="Editar"><i class="fas fa-pen"></i></button>
-                            <button class="icon-btn icon-btn-delete" onclick="eliminarRegistro(${row.folio})" title="Eliminar"><i class="fas fa-trash"></i></button>
+                const card = document.createElement('div');
+                card.className = 'renta-card';
+                card.innerHTML = `
+                    <div class="card-header-row">
+                        <span class="card-folio">Folio #${row.folio}</span>
+                        <span style="font-size: 11px; text-transform: uppercase; font-weight:700; color: var(--text-muted);">${row.mes_renta || ''}</span>
+                    </div>
+
+                    <div class="card-cliente">${row.nombre || 'Sin nombre'}</div>
+                    <div class="card-subtext">
+                        <span><i class="fas fa-phone"></i> ${row.telefono || 'N/A'}</span>
+                        ${row.hospedaje ? `<span><i class="fas fa-bed"></i> ${row.hospedaje}</span>` : ''}
+                    </div>
+
+                    <div class="card-grid-info">
+                        <div class="info-item">
+                            <span>Total Venta</span>
+                            <strong style="color: var(--primary-accent);">${fmtMoneda(total)}</strong>
                         </div>
-                    </td>
+                        <div class="info-item">
+                            <span>Anticipos</span>
+                            <strong style="color: var(--success);">${fmtMoneda(ant1 + ant2)}</strong>
+                        </div>
+                        <div class="info-item">
+                            <span>Saldo Pendiente</span>
+                            <strong style="color: var(--danger);">${fmtMoneda(saldo)}</strong>
+                        </div>
+                        <div class="info-item">
+                            <span>Fechas</span>
+                            <strong>${row.fecha_entrada || '—'}</strong>
+                        </div>
+                    </div>
+
+                    <div class="card-actions">
+                        <button class="btn-card-action btn-card-edit" onclick="abrirModalEditar(${row.folio})">
+                            <i class="fas fa-pen"></i> Editar
+                        </button>
+                        <button class="btn-card-action btn-card-delete" onclick="eliminarRegistro(${row.folio})">
+                            <i class="fas fa-trash"></i> Eliminar
+                        </button>
+                    </div>
                 `;
-                tbody.appendChild(tr);
+                container.appendChild(card);
             });
         }
 
         function actualizarKPIs(registros) {
             let totalVentas = 0, totalCobrado = 0, totalSaldo = 0;
             registros.forEach(r => {
-                const t = parseMonto(r.total_venta);
-                const a1 = parseMonto(r.anticipo1);
-                const a2 = parseMonto(r.anticipo2);
-                const s = parseMonto(r.saldo);
-
-                totalVentas += t;
-                totalCobrado += (a1 + a2);
-                totalSaldo += s;
+                totalVentas += parseMonto(r.total_venta);
+                totalCobrado += (parseMonto(r.anticipo1) + parseMonto(r.anticipo2));
+                totalSaldo += parseMonto(r.saldo);
             });
 
             document.getElementById('kpi-total').textContent = fmtMoneda(totalVentas);
@@ -520,7 +589,7 @@
                 String(r.folio).includes(query) || 
                 (r.nombre && r.nombre.toLowerCase().includes(query))
             );
-            renderizarTabla(filtrados);
+            renderizarTarjetas(filtrados);
         }
 
         function calcularSaldoForm() {
@@ -542,7 +611,7 @@
             const row = registrosGlobales.find(r => String(r.folio) === String(folio));
             if (!row) return;
 
-            document.getElementById('modal-title').textContent = `Editar Reservación #${folio}`;
+            document.getElementById('modal-title').textContent = `Editar Folio #${folio}`;
             document.getElementById('field-folio').value = row.folio;
             document.getElementById('field-nombre').value = row.nombre || '';
             document.getElementById('field-mes').value = (row.mes_renta || 'octubre').toLowerCase();
@@ -610,12 +679,12 @@
                 alert("Error al guardar en el servidor: " + err);
             } finally {
                 btn.disabled = false;
-                btn.textContent = "Guardar Registro";
+                btn.textContent = "Guardar";
             }
         }
 
         async function eliminarRegistro(folio) {
-            if (!confirm(`¿Está seguro de que desea eliminar la reservación #${folio}?`)) return;
+            if (!confirm(`¿Eliminar la reservación #${folio}?`)) return;
 
             try {
                 await fetch(SCRIPT_URL, {
@@ -624,7 +693,7 @@
                 });
                 cargarDatos();
             } catch (err) {
-                alert("Error al eliminar el registro: " + err);
+                alert("Error al eliminar: " + err);
             }
         }
 
