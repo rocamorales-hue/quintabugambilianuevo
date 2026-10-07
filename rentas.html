@@ -561,7 +561,6 @@
             return `$${parseMonto(val).toLocaleString('es-MX', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
         }
 
-        // Parsea fechas en string a objeto Date para ordenar
         function parseFecha(str) {
             if (!str) return new Date(0);
             if (str.includes('/')) {
@@ -595,13 +594,11 @@
             const query = document.getElementById('input-search').value.toLowerCase();
             const criterioOrden = document.getElementById('select-orden').value;
 
-            // 1. Filtrar por texto
             let resultado = registrosGlobales.filter(r => 
                 String(r.folio).includes(query) || 
                 (r.nombre && r.nombre.toLowerCase().includes(query))
             );
 
-            // 2. Filtrar por chip de estado
             if (filtroEstadoActual === 'pendientes') {
                 resultado = resultado.filter(r => parseMonto(r.saldo) > 0);
             } else if (filtroEstadoActual === 'pagados') {
@@ -611,7 +608,6 @@
                 resultado = resultado.filter(r => (r.mes_renta || '').toLowerCase() === mesHoy);
             }
 
-            // 3. Ordenar (Por defecto: fecha_asc, rentas más antiguas arriba, más lejanas al final)
             resultado.sort((a, b) => {
                 if (criterioOrden === 'fecha_asc') {
                     return parseFecha(a.fecha_entrada) - parseFecha(b.fecha_entrada);
