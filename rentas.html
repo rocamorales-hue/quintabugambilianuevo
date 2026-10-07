@@ -103,6 +103,8 @@ input,select{font-family:inherit}
 .b1{background:var(--accent);color:#fff}.b2{background:var(--bg);color:var(--text)}
 .toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 90px);transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--card);padding:11px 18px;border-radius:12px;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:200}
 .toast.on{opacity:1;transform:translateX(-50%)}
+.btn-disp{width:100%;margin-top:14px;padding:13px;border-radius:12px;border:0;background:var(--accent);color:#fff;font-size:15px;font-weight:700}
+#disp-canvas{width:100%;height:auto;border-radius:14px;border:1px solid var(--line);margin:4px 0 12px;display:block}
 @media(min-width:768px){.modal{align-items:center}.sheet{border-radius:20px}.cd{min-height:90px}.cd small{font-size:11px}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -110,7 +112,7 @@ input,select{font-family:inherit}
 <body>
 <div class="top">
   <div class="brand">Quinta Bugambilia<small id="hoy-txt"></small></div>
-  <div><button class="ibtn" onclick="exportarCSV()" title="Exportar CSV" aria-label="Exportar CSV"><i class="fas fa-file-arrow-down"></i></button><button class="ibtn" onclick="toggleTema()" title="Tema" aria-label="Cambiar tema"><i class="fas fa-circle-half-stroke"></i></button><button class="ibtn" onclick="cargarDatos(true)" title="Actualizar" aria-label="Actualizar"><i class="fas fa-rotate" id="ic-sync"></i></button></div>
+  <div><button class="ibtn" onclick="abrirDisp()" title="Disponibilidad para clientes" aria-label="Disponibilidad para clientes"><i class="fas fa-share-nodes"></i></button><button class="ibtn" onclick="exportarCSV()" title="Exportar CSV" aria-label="Exportar CSV"><i class="fas fa-file-arrow-down"></i></button><button class="ibtn" onclick="toggleTema()" title="Tema" aria-label="Cambiar tema"><i class="fas fa-circle-half-stroke"></i></button><button class="ibtn" onclick="cargarDatos(true)" title="Actualizar" aria-label="Actualizar"><i class="fas fa-rotate" id="ic-sync"></i></button></div>
 </div>
 
 <div class="hero">
@@ -138,6 +140,7 @@ input,select{font-family:inherit}
   <div class="cal-h"><button class="ibtn" onclick="mesCal(-1)" aria-label="Mes anterior"><i class="fas fa-chevron-left"></i></button><h3 id="cal-t"></h3><button class="ibtn" onclick="mesCal(1)" aria-label="Mes siguiente"><i class="fas fa-chevron-right"></i></button></div>
   <div class="cal" id="cal"></div>
   <div class="leg"><span><i class="d-in"></i>Llega</span><span><i class="d-mid"></i>Ocupado</span><span><i class="d-out"></i>Sale</span></div>
+  <button class="btn-disp" onclick="abrirDisp()"><i class="fas fa-image"></i> Disponibilidad para cliente</button>
 </div>
 
 <div id="v-res" class="view">
@@ -177,6 +180,15 @@ input,select{font-family:inherit}
 <div class="modal" id="m-dia"><div class="sheet">
   <div class="sheet-h"><h3 id="dia-t"></h3><button class="ibtn" onclick="cerrar('m-dia')" aria-label="Cerrar"><i class="fas fa-xmark"></i></button></div>
   <div id="dia-b"></div>
+</div></div>
+<div class="modal" id="m-disp"><div class="sheet">
+  <div class="sheet-h"><h3>Disponibilidad</h3><button class="ibtn" onclick="cerrar('m-disp')" aria-label="Cerrar"><i class="fas fa-xmark"></i></button></div>
+  <div class="g2">
+    <div class="f"><label>Mes a consultar</label><select id="disp-mes" onchange="dibujarDisp()"></select></div>
+    <div class="f"><label>Contacto en la imagen</label><input id="disp-contacto" placeholder="Tel. o WhatsApp" oninput="dibujarDisp()"></div>
+  </div>
+  <canvas id="disp-canvas" width="1080" height="1350"></canvas>
+  <div class="foot"><button class="btn b2" onclick="bajarDisp()"><i class="fas fa-download"></i> Descargar</button><button class="btn b1" onclick="compartirDisp()"><i class="fas fa-share-nodes"></i> Compartir</button></div>
 </div></div>
 <div class="toast" id="toast"></div>
 
@@ -386,6 +398,60 @@ function exportarCSV(){
   const c=["folio","nombre","mes_renta","telefono","hospedaje","evento","fecha_entrada","fecha_salida","total_venta","anticipo1","anticipo2","saldo","comision"];
   const l=[c.join(",")].concat(delAnio().map(r=>c.map(k=>'"'+String(k==="saldo"?saldoDe(r):(r[k]??"")).replace(/"/g,'""')+'"').join(",")));
   const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\ufeff"+l.join("\n")],{type:"text/csv"}));a.download="rentas-"+anio+".csv";a.click();
+}
+
+/* ---------- Disponibilidad para clientes (imagen) ---------- */
+const cap=s=>s[0].toUpperCase()+s.slice(1);
+function abrirDisp(){
+  const s=$("disp-mes");
+  if(!s.options.length){const h=new Date();let o="";for(let i=0;i<12;i++){const d=new Date(h.getFullYear(),h.getMonth()+i,1);o+=`<option value="${d.getFullYear()}-${d.getMonth()}">${cap(MESES[d.getMonth()])} ${d.getFullYear()}</option>`}s.innerHTML=o}
+  try{$("disp-contacto").value=localStorage.getItem("qb-contacto")||""}catch(e){}
+  $("m-disp").classList.add("on");dibujarDisp();
+}
+async function dibujarDisp(){
+  const [a,m]=$("disp-mes").value.split("-").map(Number);
+  try{localStorage.setItem("qb-contacto",$("disp-contacto").value)}catch(e){}
+  try{await Promise.all([document.fonts.load('700 70px Fraunces'),document.fonts.load('500 30px "DM Sans"'),document.fonts.load('700 30px "DM Sans"')])}catch(e){}
+  const cv=$("disp-canvas"),c=cv.getContext("2d"),W=1080,H=1350,h0=hoy0().getTime();
+  const rr=(x,y,w,h,col)=>{c.fillStyle=col;c.beginPath();(c.roundRect||c.rect).call(c,x,y,w,h,16);c.fill()};
+  const tx=(t,x,y,f,col,al)=>{c.font=f;c.fillStyle=col;c.textAlign=al||"center";c.fillText(t,x,y)};
+  c.fillStyle="#f5f3f6";c.fillRect(0,0,W,H);
+  c.fillStyle="#1f3a34";c.fillRect(0,0,W,250);c.fillStyle="#c2185b";c.fillRect(0,250,W,12);
+  tx("Quinta Bugambilia",W/2,128,'700 76px Fraunces,serif',"#fff");
+  tx("Fechas disponibles para tu evento o hospedaje",W/2,190,'500 30px "DM Sans",sans-serif',"#cfe3da");
+  const dias=new Date(a,m+1,0).getDate(),est=[];let libres=0,tarde=0;
+  for(let d=1;d<=dias;d++){
+    const f=new Date(a,m,d),t=f.getTime(),rs=reservasDia(f);
+    let e="libre";
+    if(t<h0)e="pasado";else if(rs.length){e=rs.every(x=>x.k==="out")?"tarde":"ocupado"}
+    if(e==="libre")libres++;if(e==="tarde")tarde++;est.push(e);
+  }
+  tx(cap(MESES[m])+" "+a,W/2,360,'700 68px Fraunces,serif',"#1f3a34");
+  tx(libres+" día"+(libres===1?"":"s")+" disponible"+(libres===1?"":"s")+(tarde?" + "+tarde+" desde la tarde":""),W/2,410,'500 30px "DM Sans",sans-serif',"#6b7773");
+  const mx=60,cw=(W-mx*2)/7,rh=124,y0=520;
+  ["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"].forEach((n,i)=>tx(n,mx+cw*i+cw/2,490,'700 26px "DM Sans",sans-serif',"#6b7773"));
+  const off=new Date(a,m,1).getDay();
+  const col={libre:["#dff3e8","#2e7d5b"],tarde:["#fdf0d5","#b7791f"],ocupado:["#fde3e3","#c62828"],pasado:["#eceaed","#b9b5bb"]};
+  est.forEach((e,i)=>{
+    const p=i+off,x=mx+cw*(p%7)+5,y=y0+rh*Math.floor(p/7),w=cw-10,h=rh-10;
+    rr(x,y,w,h,col[e][0]);
+    tx(String(i+1),x+w/2,y+h/2+(e==="ocupado"?4:12),'700 44px "DM Sans",sans-serif',col[e][1]);
+    if(e==="ocupado"){c.strokeStyle="#c62828";c.lineWidth=4;c.beginPath();c.moveTo(x+w/2-24,y+h-26);c.lineTo(x+w/2+24,y+h-26);c.stroke()}
+  });
+  const ly=1215,items=[["libre","Disponible"],["tarde","Desde la tarde"],["ocupado","Ocupado"]];
+  items.forEach((it,i)=>{const x=110+i*300;rr(x,ly-22,30,30,col[it[0]][1]);tx(it[1],x+44,ly+2,'500 28px "DM Sans",sans-serif',"#26302d","left")});
+  const ct=$("disp-contacto").value.trim();
+  tx(ct?"Reserva con nosotros: "+ct:"Escríbenos para reservar tu fecha",W/2,1300,'700 32px "DM Sans",sans-serif',"#c2185b");
+}
+function nombreImg(){return "disponibilidad-"+$("disp-mes").selectedOptions[0].textContent.toLowerCase().replace(/\s/g,"-")+".png"}
+function bajarDisp(){const a=document.createElement("a");a.href=$("disp-canvas").toDataURL("image/png");a.download=nombreImg();a.click();toast("Imagen descargada")}
+function compartirDisp(){
+  $("disp-canvas").toBlob(async b=>{
+    const f=new File([b],nombreImg(),{type:"image/png"});
+    if(navigator.canShare&&navigator.canShare({files:[f]})){
+      try{await navigator.share({files:[f],title:"Disponibilidad Quinta Bugambilia",text:"Fechas disponibles en Quinta Bugambilia"})}catch(e){}
+    }else{bajarDisp();toast("Tu navegador no comparte archivos; se descargó la imagen")}
+  },"image/png");
 }
 
 /* ---------- Navegación ---------- */
