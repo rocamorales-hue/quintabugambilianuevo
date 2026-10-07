@@ -3,33 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Rentas - Quinta Bugambilia</title>
-    <!-- Estilos de FontAwesome para íconos -->
+    <title>Control de Rentas | Quinta Bugambilia</title>
+    <!-- Google Fonts & FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
-            --primary-color: #2c3e50;
-            --border-color: #e2e8f0;
-            --bg-hover: #f8fafc;
-            --text-color: #334155;
-            --accent-color: #eab308;
+            --bg-body: #f1f5f9;
+            --surface: #ffffff;
+            --primary: #1e293b;
+            --primary-accent: #2563eb;
+            --success: #059669;
+            --danger: #dc2626;
+            --warning: #d97706;
+            --border: #e2e8f0;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
         }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background-color: #f1f5f9;
-            margin: 0;
-            padding: 20px;
-            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            padding: 24px;
         }
 
-        .table-container {
-            background: #ffffff;
+        /* Topbar & Dashboard Layout */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .brand-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* KPI Cards */
+        .kpi-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .kpi-card {
+            background: var(--surface);
+            padding: 16px 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .kpi-card span { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; }
+        .kpi-card h3 { font-size: 22px; font-weight: 700; margin-top: 4px; }
+        .kpi-total h3 { color: var(--primary-accent); }
+        .kpi-cobrado h3 { color: var(--success); }
+        .kpi-saldo h3 { color: var(--danger); }
+
+        /* Actions Bar */
+        .actions-bar {
+            background: var(--surface);
+            padding: 16px;
+            border-radius: 12px 12px 0 0;
+            border: 1px solid var(--border);
+            border-bottom: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            max-width: 360px;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 9px 12px 9px 36px;
             border-radius: 8px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--border);
+            font-size: 14px;
+            outline: none;
+        }
+
+        .btn {
+            padding: 9px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-primary { background: var(--primary-accent); color: #fff; }
+        .btn-primary:hover { background: #1d4ed8; }
+        .btn-secondary { background: #f8fafc; border: 1px solid var(--border); color: var(--text-main); }
+        .btn-secondary:hover { background: #e2e8f0; }
+
+        /* Table Area */
+        .table-container {
+            background: var(--surface);
+            border-radius: 0 0 12px 12px;
+            border: 1px solid var(--border);
             overflow-x: auto;
-            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
         }
 
         table {
@@ -40,258 +142,492 @@
         }
 
         th {
-            background-color: #f8fafc;
-            color: #64748b;
+            background: #f8fafc;
+            color: var(--text-muted);
             font-weight: 700;
             text-transform: uppercase;
-            padding: 14px 12px;
+            padding: 12px 14px;
             text-align: left;
-            border-bottom: 2px solid var(--border-color);
+            border-bottom: 2px solid var(--border);
             font-size: 11px;
-            letter-spacing: 0.5px;
         }
 
         td {
-            padding: 12px;
-            border-bottom: 1px solid var(--border-color);
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border);
             vertical-align: middle;
         }
 
-        tr:hover {
-            background-color: var(--bg-hover);
-        }
+        tr:hover { background-color: #f8fafc; }
 
-        .checkbox-cell {
-            text-align: center;
+        .folio-tag { font-weight: 700; color: var(--primary-accent); }
+        .monto-total { font-weight: 700; color: var(--primary-accent); }
+        .monto-anticipo { font-weight: 600; color: var(--success); }
+        .monto-saldo { font-weight: 700; color: var(--danger); }
+
+        .action-btns { display: flex; gap: 8px; }
+        .icon-btn {
             width: 30px;
-        }
-
-        .folio-cell {
-            font-weight: 700;
-            color: #2563eb;
-        }
-
-        .mes-cell {
-            text-transform: lowercase;
-            font-weight: 600;
-        }
-
-        .monto {
-            font-weight: 600;
-        }
-
-        .monto-total {
-            color: #059669; /* Verde para totales */
-            font-weight: 700;
-        }
-
-        .monto-anticipo {
-            color: #059669;
-        }
-
-        .monto-saldo {
-            color: #dc2626; /* Rojo para saldos pendientes */
-            font-weight: 700;
-        }
-
-        .editable-field {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .btn-icon {
-            background: none;
+            height: 30px;
+            border-radius: 6px;
             border: none;
+            background: #f1f5f9;
+            color: var(--text-muted);
             cursor: pointer;
-            color: #94a3b8;
-            padding: 2px 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .icon-btn-edit:hover { background: #fef3c7; color: var(--warning); }
+        .icon-btn-delete:hover { background: #fee2e2; color: var(--danger); }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active { display: flex; }
+
+        .modal-content {
+            background: var(--surface);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 750px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 24px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+        }
+
+        .form-group { display: flex; flex-direction: column; gap: 4px; }
+        .form-group.span-2 { grid-column: span 2; }
+        .form-group label { font-size: 12px; font-weight: 600; color: var(--text-muted); }
+        .form-group input, .form-group select {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
             font-size: 13px;
-            transition: color 0.2s;
+            outline: none;
         }
+        .form-group input:focus { border-color: var(--primary-accent); }
 
-        .btn-icon:hover {
-            color: var(--primary-color);
-        }
-
-        .btn-edit {
-            color: #eab308;
-        }
-
-        .btn-edit:hover {
-            color: #ca8a04;
-        }
-
-        .btn-delete {
-            color: #cbd5e1;
-        }
-
-        .btn-delete:hover {
-            color: #ef4444;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 40px;
-            font-size: 16px;
-            color: #64748b;
+        .modal-footer {
+            margin-top: 24px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
         }
     </style>
 </head>
 <body>
 
+    <!-- Header -->
+    <div class="header">
+        <div class="brand-title">
+            <i class="fas fa-house-user" style="color: var(--primary-accent);"></i>
+            Quinta Bugambilia - Panel de Rentas
+        </div>
+        <button class="btn btn-primary" onclick="abrirModalNuevo()">
+            <i class="fas fa-plus"></i> Nueva Reservación
+        </button>
+    </div>
+
+    <!-- KPI Dashboard -->
+    <div class="kpi-container">
+        <div class="kpi-card kpi-total">
+            <span>Total Ventas</span>
+            <h3 id="kpi-total">$0.00</h3>
+        </div>
+        <div class="kpi-card kpi-cobrado">
+            <span>Total Cobrado</span>
+            <h3 id="kpi-cobrado">$0.00</h3>
+        </div>
+        <div class="kpi-card kpi-saldo">
+            <span>Saldo por Cobrar</span>
+            <h3 id="kpi-saldo">$0.00</h3>
+        </div>
+    </div>
+
+    <!-- Actions Bar -->
+    <div class="actions-bar">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="input-search" placeholder="Buscar por cliente o folio..." onkeyup="filtrarTabla()">
+        </div>
+        <button class="btn btn-secondary" onclick="cargarDatos()">
+            <i class="fas fa-sync-alt"></i> Actualizar
+        </button>
+    </div>
+
+    <!-- Data Table -->
     <div class="table-container">
         <table id="tabla-rentas">
             <thead>
                 <tr>
-                    <th class="checkbox-cell"><input type="checkbox" id="select-all"></th>
                     <th>FOLIO</th>
-                    <th>MES DE RENTA</th>
-                    <th>NOMBRE</th>
+                    <th>MES</th>
+                    <th>NOMBRE CLIENTE</th>
                     <th>TELÉFONO</th>
                     <th>HOSPEDAJE</th>
                     <th>EVENTO</th>
-                    <th>FECHA ENTRADA</th>
-                    <th>FECHA SALIDA</th>
+                    <th>F. ENTRADA</th>
+                    <th>F. SALIDA</th>
                     <th>TOTAL VENTA</th>
                     <th>ANTICIPO 1</th>
-                    <th>FECHA ANTICPO</th>
+                    <th>F. ANTICIPO 1</th>
                     <th>ANTICIPO 2</th>
-                    <th>FECHA ANTICPO</th>
+                    <th>F. ANTICIPO 2</th>
                     <th>SALDO</th>
                     <th>COMISIÓN</th>
-                    <th>FECHA COBRADO</th>
-                    <th>COMISION NO.</th>
-                    <th>TELÉFONO 2</th>
-                    <th>ACCIÓN</th>
+                    <th>ACCIONES</th>
                 </tr>
             </thead>
             <tbody id="tabla-body">
                 <tr>
-                    <td colspan="20" class="loading">
-                        <i class="fas fa-spinner fa-spin"></i> Cargando datos de reservaciones...
+                    <td colspan="16" style="text-align: center; padding: 40px; color: var(--text-muted);">
+                        <i class="fas fa-spinner fa-spin fa-2x"></i><br><br>Cargando información del sistema...
                     </td>
                 </tr>
             </tbody>
         </table>
     </div>
 
+    <!-- Modal Form (Crear / Editar) -->
+    <div class="modal" id="modal-form">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Nueva Reservación</h3>
+                <button class="icon-btn" onclick="cerrarModal()"><i class="fas fa-times"></i></button>
+            </div>
+            
+            <form id="renta-form" onsubmit="guardarRegistro(event)">
+                <input type="hidden" id="field-folio">
+
+                <div class="form-grid">
+                    <div class="form-group span-2">
+                        <label>Nombre del Cliente</label>
+                        <input type="text" id="field-nombre" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Mes de Renta</label>
+                        <select id="field-mes">
+                            <option value="enero">Enero</option>
+                            <option value="febrero">Febrero</option>
+                            <option value="marzo">Marzo</option>
+                            <option value="abril">Abril</option>
+                            <option value="mayo">Mayo</option>
+                            <option value="junio">Junio</option>
+                            <option value="julio">Julio</option>
+                            <option value="agosto">Agosto</option>
+                            <option value="septiembre">Septiembre</option>
+                            <option value="octubre">Octubre</option>
+                            <option value="noviembre">Noviembre</option>
+                            <option value="diciembre">Diciembre</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Teléfono Principal</label>
+                        <input type="text" id="field-telefono">
+                    </div>
+                    <div class="form-group">
+                        <label>Hospedaje</label>
+                        <input type="text" id="field-hospedaje" placeholder="Ej. 12 personas">
+                    </div>
+                    <div class="form-group">
+                        <label>Evento</label>
+                        <input type="text" id="field-evento" placeholder="Ej. 50 personas">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Fecha Entrada</label>
+                        <input type="date" id="field-fecha-entrada">
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha Salida</label>
+                        <input type="date" id="field-fecha-salida">
+                    </div>
+                    <div class="form-group">
+                        <label>Total Venta ($)</label>
+                        <input type="number" step="0.01" id="field-total" oninput="calcularSaldoForm()" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Anticipo 1 ($)</label>
+                        <input type="number" step="0.01" id="field-anticipo1" oninput="calcularSaldoForm()">
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha Anticipo 1</label>
+                        <input type="date" id="field-f-anticipo1">
+                    </div>
+                    <div class="form-group">
+                        <label>Saldo Pendiente ($)</label>
+                        <input type="number" step="0.01" id="field-saldo" readonly style="background: #f8fafc; font-weight: 700; color: var(--danger);">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Anticipo 2 ($)</label>
+                        <input type="number" step="0.01" id="field-anticipo2" oninput="calcularSaldoForm()">
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha Anticipo 2</label>
+                        <input type="date" id="field-f-anticipo2">
+                    </div>
+                    <div class="form-group">
+                        <label>Comisión ($)</label>
+                        <input type="number" step="0.01" id="field-comision">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Fecha Cobrado</label>
+                        <input type="date" id="field-f-cobrado">
+                    </div>
+                    <div class="form-group">
+                        <label>Comisión No.</label>
+                        <input type="text" id="field-comision-no">
+                    </div>
+                    <div class="form-group">
+                        <label>Teléfono 2</label>
+                        <input type="text" id="field-telefono2">
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="cerrarModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" id="btn-guardar">Guardar Registro</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
-        // URL de tu WebApp desplegada en Google Apps Script
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyUuSbd7XOIskwITU6wPbw7jDajpHvTHcOYaVSwWW83y9tOHzECOmk8yzMASq8eNJNT/exec";
+        let registrosGlobales = [];
 
-        // Función para parsear montos en dinero y evitar $NaN
-        function parseMonto(valor) {
-            if (valor === null || valor === undefined || valor === '') return 0;
-            if (typeof valor === 'number') return isNaN(valor) ? 0 : valor;
-            
-            const limpio = String(valor).replace(/[^0-9.-]+/g, "");
-            const numero = parseFloat(limpio);
-            
-            return isNaN(numero) ? 0 : numero;
+        function parseMonto(val) {
+            if (!val) return 0;
+            if (typeof val === 'number') return isNaN(val) ? 0 : val;
+            let num = parseFloat(String(val).replace(/[^0-9.-]+/g, ""));
+            return isNaN(num) ? 0 : num;
         }
 
-        // Función para formatear a moneda ($X,XXX.XX)
-        function formatearMoneda(valor) {
-            const num = parseMonto(valor);
-            return `$${num.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        function fmtMoneda(val) {
+            return `$${parseMonto(val).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
         }
 
-        // Cargar registros desde Apps Script corrigiendo el problema de CORS y redirección
         async function cargarDatos() {
-            const tbody = document.getElementById('tabla-body');
-            
             try {
-                // Si la página corre internamente dentro del proyecto de Apps Script
-                if (typeof google !== 'undefined' && google.script && google.script.run) {
-                    google.script.run.withSuccessHandler(renderizarTabla).obtenerDatosRentas();
-                } else {
-                    // Petición Fetch externa con redirección habilitada (CRÍTICO para evitar CORS en Google Apps Script)
-                    const respuesta = await fetch(SCRIPT_URL, {
-                        method: 'GET',
-                        redirect: 'follow'
-                    });
-
-                    if (!respuesta.ok) {
-                        throw new Error(`Error HTTP: ${respuesta.status}`);
-                    }
-                    
-                    const datos = await respuesta.json();
-                    renderizarTabla(datos);
-                }
-            } catch (error) {
-                console.error("Error al cargar datos:", error);
-                tbody.innerHTML = `<tr><td colspan="20" style="text-align:center; color: #ef4444; padding: 20px;">
-                    Error al consultar los datos. Asegúrate de haber publicado una <strong>Nueva Versión</strong> de la WebApp en Apps Script.
-                </td></tr>`;
+                const res = await fetch(SCRIPT_URL, { method: 'GET', redirect: 'follow' });
+                registrosGlobales = await res.json();
+                renderizarTabla(registrosGlobales);
+                actualizarKPIs(registrosGlobales);
+            } catch (err) {
+                console.error(err);
+                document.getElementById('tabla-body').innerHTML = `<tr><td colspan="16" style="text-align:center; color: var(--danger); padding:20px;">Error al conectar con la base de datos. Verifique la versión publicada en Apps Script.</td></tr>`;
             }
         }
 
-        // Renderizar filas en la tabla
         function renderizarTabla(registros) {
             const tbody = document.getElementById('tabla-body');
             tbody.innerHTML = '';
 
-            if (!registros || registros.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="20" style="text-align:center; padding: 20px;">No se encontraron registros.</td></tr>`;
+            if (registros.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="16" style="text-align:center; padding: 20px;">No hay reservaciones registradas.</td></tr>`;
                 return;
             }
 
             registros.forEach(row => {
-                // Parseo seguro de montos
-                const anticipo1 = parseMonto(row.anticipo1 || row.anticipo_1);
-                const anticipo2 = parseMonto(row.anticipo2 || row.anticipo_2);
+                const total = parseMonto(row.total_venta);
+                const ant1 = parseMonto(row.anticipo1);
+                const ant2 = parseMonto(row.anticipo2);
                 const saldo = parseMonto(row.saldo);
                 const comision = parseMonto(row.comision);
 
-                // Cálculo seguro del TOTAL VENTA para evitar $NaN
-                let totalVenta = parseMonto(row.total_venta);
-                if (totalVenta === 0 && (anticipo1 > 0 || anticipo2 > 0)) {
-                    totalVenta = anticipo1 + anticipo2 + saldo;
-                }
-
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td class="checkbox-cell"><input type="checkbox" value="${row.folio}"></td>
-                    <td class="folio-cell">#${row.folio || ''}</td>
-                    <td class="mes-cell">${row.mes_renta || ''}</td>
-                    <td>${row.nombre || ''}</td>
+                    <td class="folio-tag">#${row.folio}</td>
+                    <td style="text-transform: capitalize;">${row.mes_renta || ''}</td>
+                    <td><strong>${row.nombre || ''}</strong></td>
                     <td>${row.telefono || ''}</td>
                     <td>${row.hospedaje || '—'}</td>
                     <td>${row.evento || '—'}</td>
                     <td>${row.fecha_entrada || ''}</td>
                     <td>${row.fecha_salida || ''}</td>
-                    
-                    <!-- Total corregido sin $NaN -->
-                    <td class="monto monto-total">${formatearMoneda(totalVenta)}</td>
-                    
-                    <td class="monto monto-anticipo">${formatearMoneda(anticipo1)}</td>
-                    <td>${row.fecha_anticipo || row.fecha_anticpo_1 || ''}</td>
-                    
-                    <td class="monto monto-anticipo">
-                        <div class="editable-field">
-                            <span>${formatearMoneda(anticipo2)}</span>
-                            <button class="btn-icon" title="Notas / Editar"><i class="far fa-sticky-note"></i></button>
-                        </div>
-                    </td>
-                    <td>${row.fecha_anticpo_2 || ''}</td>
-                    
-                    <td class="monto monto-saldo">${formatearMoneda(saldo)}</td>
-                    <td class="monto">${formatearMoneda(comision)}</td>
-                    <td>${row.fecha_cobrado || ''}</td>
-                    <td>${row.comision_no || ''}</td>
-                    <td>${row.telefono_2 || ''}</td>
-                    
+                    <td class="monto-total">${fmtMoneda(total)}</td>
+                    <td class="monto-anticipo">${fmtMoneda(ant1)}</td>
+                    <td>${row.fecha_anticipo1 || ''}</td>
+                    <td class="monto-anticipo">${fmtMoneda(ant2)}</td>
+                    <td>${row.fecha_anticipo2 || ''}</td>
+                    <td class="monto-saldo">${fmtMoneda(saldo)}</td>
+                    <td>${fmtMoneda(comision)}</td>
                     <td>
-                        <button class="btn-icon btn-edit" title="Editar Registro"><i class="fas fa-pencil-alt"></i></button>
-                        <button class="btn-icon btn-delete" title="Eliminar Registro"><i class="fas fa-trash-alt"></i></button>
+                        <div class="action-btns">
+                            <button class="icon-btn icon-btn-edit" onclick="abrirModalEditar(${row.folio})" title="Editar"><i class="fas fa-pen"></i></button>
+                            <button class="icon-btn icon-btn-delete" onclick="eliminarRegistro(${row.folio})" title="Eliminar"><i class="fas fa-trash"></i></button>
+                        </div>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        // Cargar datos al abrir la página
+        function actualizarKPIs(registros) {
+            let totalVentas = 0, totalCobrado = 0, totalSaldo = 0;
+            registros.forEach(r => {
+                const t = parseMonto(r.total_venta);
+                const a1 = parseMonto(r.anticipo1);
+                const a2 = parseMonto(r.anticipo2);
+                const s = parseMonto(r.saldo);
+
+                totalVentas += t;
+                totalCobrado += (a1 + a2);
+                totalSaldo += s;
+            });
+
+            document.getElementById('kpi-total').textContent = fmtMoneda(totalVentas);
+            document.getElementById('kpi-cobrado').textContent = fmtMoneda(totalCobrado);
+            document.getElementById('kpi-saldo').textContent = fmtMoneda(totalSaldo);
+        }
+
+        function filtrarTabla() {
+            const query = document.getElementById('input-search').value.toLowerCase();
+            const filtrados = registrosGlobales.filter(r => 
+                String(r.folio).includes(query) || 
+                (r.nombre && r.nombre.toLowerCase().includes(query))
+            );
+            renderizarTabla(filtrados);
+        }
+
+        function calcularSaldoForm() {
+            const total = parseMonto(document.getElementById('field-total').value);
+            const a1 = parseMonto(document.getElementById('field-anticipo1').value);
+            const a2 = parseMonto(document.getElementById('field-anticipo2').value);
+            const saldo = total - (a1 + a2);
+            document.getElementById('field-saldo').value = saldo > 0 ? saldo.toFixed(2) : 0;
+        }
+
+        function abrirModalNuevo() {
+            document.getElementById('modal-title').textContent = "Nueva Reservación";
+            document.getElementById('renta-form').reset();
+            document.getElementById('field-folio').value = "";
+            document.getElementById('modal-form').classList.add('active');
+        }
+
+        function abrirModalEditar(folio) {
+            const row = registrosGlobales.find(r => String(r.folio) === String(folio));
+            if (!row) return;
+
+            document.getElementById('modal-title').textContent = `Editar Reservación #${folio}`;
+            document.getElementById('field-folio').value = row.folio;
+            document.getElementById('field-nombre').value = row.nombre || '';
+            document.getElementById('field-mes').value = (row.mes_renta || 'octubre').toLowerCase();
+            document.getElementById('field-telefono').value = row.telefono || '';
+            document.getElementById('field-hospedaje').value = row.hospedaje || '';
+            document.getElementById('field-evento').value = row.evento || '';
+            document.getElementById('field-fecha-entrada').value = row.fecha_entrada || '';
+            document.getElementById('field-fecha-salida').value = row.fecha_salida || '';
+            document.getElementById('field-total').value = row.total_venta || '';
+            document.getElementById('field-anticipo1').value = row.anticipo1 || '';
+            document.getElementById('field-f-anticipo1').value = row.fecha_anticipo1 || '';
+            document.getElementById('field-anticipo2').value = row.anticipo2 || '';
+            document.getElementById('field-f-anticipo2').value = row.fecha_anticipo2 || '';
+            document.getElementById('field-saldo').value = row.saldo || '';
+            document.getElementById('field-comision').value = row.comision || '';
+            document.getElementById('field-f-cobrado').value = row.fecha_cobrado || '';
+            document.getElementById('field-comision-no').value = row.comision_no || '';
+            document.getElementById('field-telefono2').value = row.telefono_2 || '';
+
+            document.getElementById('modal-form').classList.add('active');
+        }
+
+        function cerrarModal() {
+            document.getElementById('modal-form').classList.remove('active');
+        }
+
+        async function guardarRegistro(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-guardar');
+            btn.disabled = true;
+            btn.textContent = "Guardando...";
+
+            const folio = document.getElementById('field-folio').value;
+            const payload = {
+                folio: folio,
+                nombre: document.getElementById('field-nombre').value,
+                mes_renta: document.getElementById('field-mes').value,
+                telefono: document.getElementById('field-telefono').value,
+                hospedaje: document.getElementById('field-hospedaje').value,
+                evento: document.getElementById('field-evento').value,
+                fecha_entrada: document.getElementById('field-fecha-entrada').value,
+                fecha_salida: document.getElementById('field-fecha-salida').value,
+                total_venta: document.getElementById('field-total').value,
+                anticipo1: document.getElementById('field-anticipo1').value,
+                fecha_anticipo1: document.getElementById('field-f-anticipo1').value,
+                anticipo2: document.getElementById('field-anticipo2').value,
+                fecha_anticipo2: document.getElementById('field-f-anticipo2').value,
+                saldo: document.getElementById('field-saldo').value,
+                comision: document.getElementById('field-comision').value,
+                fecha_cobrado: document.getElementById('field-f-cobrado').value,
+                comision_no: document.getElementById('field-comision-no').value,
+                telefono_2: document.getElementById('field-telefono2').value
+            };
+
+            const accion = folio ? "actualizar" : "crear";
+
+            try {
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ accion: accion, payload: payload })
+                });
+                cerrarModal();
+                cargarDatos();
+            } catch (err) {
+                alert("Error al guardar en el servidor: " + err);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "Guardar Registro";
+            }
+        }
+
+        async function eliminarRegistro(folio) {
+            if (!confirm(`¿Está seguro de que desea eliminar la reservación #${folio}?`)) return;
+
+            try {
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ accion: "eliminar", folio: folio })
+                });
+                cargarDatos();
+            } catch (err) {
+                alert("Error al eliminar el registro: " + err);
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', cargarDatos);
     </script>
 </body>
