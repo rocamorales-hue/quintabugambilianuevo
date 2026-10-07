@@ -177,15 +177,14 @@
     </div>
 
     <script>
-        // URL de tu WebApp de Google Apps Script
+        // URL de tu WebApp desplegada en Google Apps Script
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyUuSbd7XOIskwITU6wPbw7jDajpHvTHcOYaVSwWW83y9tOHzECOmk8yzMASq8eNJNT/exec";
 
-        // Función robusta para parsear montos en dinero y evitar NaN
+        // Función para parsear montos en dinero y evitar $NaN
         function parseMonto(valor) {
             if (valor === null || valor === undefined || valor === '') return 0;
             if (typeof valor === 'number') return isNaN(valor) ? 0 : valor;
             
-            // Eliminar cualquier símbolo de pesos, comas o letras
             const limpio = String(valor).replace(/[^0-9.-]+/g, "");
             const numero = parseFloat(limpio);
             
@@ -198,50 +197,58 @@
             return `$${num.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
         }
 
-        // Cargar registros desde la WebApp
+        // Cargar registros desde Apps Script corrigiendo el problema de CORS y redirección
         async function cargarDatos() {
             const tbody = document.getElementById('tabla-body');
             
             try {
-                // Si la WebApp se ejecuta directamente dentro de Apps Script usamos google.script.run
+                // Si la página corre internamente dentro del proyecto de Apps Script
                 if (typeof google !== 'undefined' && google.script && google.script.run) {
                     google.script.run.withSuccessHandler(renderizarTabla).obtenerDatosRentas();
                 } else {
-                    // Si se consume vía Fetch API externa
-                    const respuesta = await fetch(SCRIPT_URL);
+                    // Petición Fetch externa con redirección habilitada (CRÍTICO para evitar CORS en Google Apps Script)
+                    const respuesta = await fetch(SCRIPT_URL, {
+                        method: 'GET',
+                        redirect: 'follow'
+                    });
+
+                    if (!respuesta.ok) {
+                        throw new Error(`Error HTTP: ${respuesta.status}`);
+                    }
+                    
                     const datos = await respuesta.json();
                     renderizarTabla(datos);
                 }
             } catch (error) {
                 console.error("Error al cargar datos:", error);
-                // Si falla el fetch directo por CORS/permisos, mostramos una simulación segura
-                renderizarTabla([]);
+                tbody.innerHTML = `<tr><td colspan="20" style="text-align:center; color: #ef4444; padding: 20px;">
+                    Error al consultar los datos. Asegúrate de haber publicado una <strong>Nueva Versión</strong> de la WebApp en Apps Script.
+                </td></tr>`;
             }
         }
 
-        // Renderizar filas de la tabla
+        // Renderizar filas en la tabla
         function renderizarTabla(registros) {
             const tbody = document.getElementById('tabla-body');
             tbody.innerHTML = '';
 
             if (!registros || registros.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="20" style="text-align:center; padding: 20px;">No se encontraron registros de rentas.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="20" style="text-align:center; padding: 20px;">No se encontraron registros.</td></tr>`;
                 return;
             }
 
             registros.forEach(row => {
-                // Cálculo seguro de importes
-                const anticipo1 = parseMonto(row.anticipo_1 || row.anticipo1);
-                const anticipo2 = parseMonto(row.anticipo_2 || row.anticipo2);
-                
-                // Si total_venta viene nulo/vacío, lo calculamos como la suma de anticipo1 + anticipo2 + saldo
-                let totalVenta = parseMonto(row.total_venta);
-                if (totalVenta === 0 && (anticipo1 > 0 || anticipo2 > 0)) {
-                    totalVenta = anticipo1 + anticipo2 + parseMonto(row.saldo);
-                }
-
+                // Parseo seguro de montos
+                const anticipo1 = parseMonto(row.anticipo1 || row.anticipo_1);
+                const anticipo2 = parseMonto(row.anticipo2 || row.anticipo_2);
                 const saldo = parseMonto(row.saldo);
                 const comision = parseMonto(row.comision);
+
+                // Cálculo seguro del TOTAL VENTA para evitar $NaN
+                let totalVenta = parseMonto(row.total_venta);
+                if (totalVenta === 0 && (anticipo1 > 0 || anticipo2 > 0)) {
+                    totalVenta = anticipo1 + anticipo2 + saldo;
+                }
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
@@ -255,16 +262,16 @@
                     <td>${row.fecha_entrada || ''}</td>
                     <td>${row.fecha_salida || ''}</td>
                     
-                    <!-- Columna TOTAL VENTA protegida contra $NaN -->
+                    <!-- Total corregido sin $NaN -->
                     <td class="monto monto-total">${formatearMoneda(totalVenta)}</td>
                     
                     <td class="monto monto-anticipo">${formatearMoneda(anticipo1)}</td>
-                    <td>${row.fecha_anticpo_1 || row.fecha_anticipo || ''}</td>
+                    <td>${row.fecha_anticipo || row.fecha_anticpo_1 || ''}</td>
                     
                     <td class="monto monto-anticipo">
                         <div class="editable-field">
                             <span>${formatearMoneda(anticipo2)}</span>
-                            <button class="btn-icon" title="Editar Anticipo 2"><i class="far fa-sticky-note"></i></button>
+                            <button class="btn-icon" title="Notas / Editar"><i class="far fa-sticky-note"></i></button>
                         </div>
                     </td>
                     <td>${row.fecha_anticpo_2 || ''}</td>
@@ -284,7 +291,7 @@
             });
         }
 
-        // Inicializar al cargar la página
+        // Cargar datos al abrir la página
         document.addEventListener('DOMContentLoaded', cargarDatos);
     </script>
 </body>
