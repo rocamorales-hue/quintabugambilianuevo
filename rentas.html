@@ -29,7 +29,7 @@
             background-color: var(--bg-body);
             color: var(--text-main);
             padding: 12px;
-            padding-bottom: 80px; /* Espacio para botón flotante */
+            padding-bottom: 90px;
         }
 
         /* Topbar Header Mobile */
@@ -37,7 +37,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             padding: 4px 0;
         }
 
@@ -50,17 +50,17 @@
             gap: 8px;
         }
 
-        /* KPI Dashboard Mobile */
+        /* KPI Dashboard */
         .kpi-container {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 8px;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
 
         .kpi-card {
             background: var(--surface);
-            padding: 12px 8px;
+            padding: 10px 6px;
             border-radius: 10px;
             border: 1px solid var(--border);
             text-align: center;
@@ -68,16 +68,22 @@
         }
 
         .kpi-card span { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; display: block; }
-        .kpi-card h3 { font-size: 14px; font-weight: 700; margin-top: 2px; }
+        .kpi-card h3 { font-size: 13px; font-weight: 700; margin-top: 2px; }
         .kpi-total h3 { color: var(--primary-accent); }
         .kpi-cobrado h3 { color: var(--success); }
         .kpi-saldo h3 { color: var(--danger); }
 
-        /* Actions Bar */
-        .actions-bar {
+        /* Controles de Filtro y Búsqueda */
+        .controls-section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .search-row {
             display: flex;
             gap: 8px;
-            margin-bottom: 16px;
         }
 
         .search-box {
@@ -95,7 +101,7 @@
 
         .search-box input {
             width: 100%;
-            padding: 12px 12px 12px 36px;
+            padding: 10px 12px 10px 36px;
             border-radius: 10px;
             border: 1px solid var(--border);
             font-size: 14px;
@@ -103,24 +109,56 @@
             background: var(--surface);
         }
 
-        .btn {
-            padding: 12px 16px;
+        .select-sort {
+            padding: 10px;
             border-radius: 10px;
-            font-size: 14px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            font-size: 12px;
             font-weight: 600;
+            color: var(--text-main);
+            outline: none;
+        }
+
+        /* Chips de Filtro */
+        .filter-chips {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            scrollbar-width: none;
+        }
+        .filter-chips::-webkit-scrollbar { display: none; }
+
+        .chip {
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            white-space: nowrap;
             cursor: pointer;
-            border: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
             transition: all 0.2s;
         }
 
-        .btn-primary { background: var(--primary-accent); color: #fff; }
-        .btn-secondary { background: var(--surface); border: 1px solid var(--border); color: var(--text-main); }
+        .chip.active {
+            background: var(--primary-accent);
+            color: #ffffff;
+            border-color: var(--primary-accent);
+        }
 
-        /* Botón Flotante para Agregar Renta en Celular */
+        .btn-icon-head {
+            padding: 10px 12px;
+            border-radius: 10px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            cursor: pointer;
+        }
+
+        /* Botón Flotante para Agregar Renta */
         .btn-float {
             position: fixed;
             bottom: 20px;
@@ -140,7 +178,7 @@
             cursor: pointer;
         }
 
-        /* VISTA DE TARJETAS PARA CELULAR (Renta Cards) */
+        /* Tarjetas de Rentas */
         .cards-container {
             display: flex;
             flex-direction: column;
@@ -151,55 +189,55 @@
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 16px;
+            padding: 14px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-            position: relative;
         }
 
         .card-header-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             border-bottom: 1px dashed var(--border);
-            padding-bottom: 8px;
+            padding-bottom: 6px;
         }
 
         .card-folio {
             font-weight: 700;
             color: var(--primary-accent);
-            font-size: 15px;
+            font-size: 14px;
         }
 
         .card-cliente {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
             color: var(--primary);
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
 
         .card-subtext {
-            font-size: 13px;
+            font-size: 12px;
             color: var(--text-muted);
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         .card-grid-info {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
+            gap: 6px;
             background: #f8fafc;
-            padding: 10px;
+            padding: 8px 10px;
             border-radius: 8px;
             font-size: 12px;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
         .info-item span { display: block; color: var(--text-muted); font-size: 10px; text-transform: uppercase; }
-        .info-item strong { font-size: 13px; }
+        .info-item strong { font-size: 12px; }
 
         .card-actions {
             display: flex;
@@ -208,7 +246,7 @@
         }
 
         .btn-card-action {
-            padding: 8px 14px;
+            padding: 6px 12px;
             border-radius: 6px;
             font-size: 12px;
             font-weight: 600;
@@ -222,7 +260,7 @@
         .btn-card-edit { background: #fef3c7; color: var(--warning); }
         .btn-card-delete { background: #fee2e2; color: var(--danger); }
 
-        /* Modal / Formulario Flotante Móvil */
+        /* Modal / Formulario Flotante */
         .modal {
             display: none;
             position: fixed;
@@ -230,7 +268,7 @@
             background: rgba(15, 23, 42, 0.6);
             backdrop-filter: blur(4px);
             z-index: 1000;
-            align-items: flex-end; /* Abre desde abajo en celular */
+            align-items: flex-end;
             justify-content: center;
         }
 
@@ -240,7 +278,7 @@
             background: var(--surface);
             border-radius: 20px 20px 0 0;
             width: 100%;
-            max-height: 92vh;
+            max-height: 90vh;
             overflow-y: auto;
             padding: 20px;
             box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
@@ -256,24 +294,24 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
             padding-bottom: 8px;
             border-bottom: 1px solid var(--border);
         }
 
         .form-grid {
             display: grid;
-            grid-template-columns: 1fr; /* Una sola columna en celular */
-            gap: 12px;
+            grid-template-columns: 1fr;
+            gap: 10px;
         }
 
         .form-group { display: flex; flex-direction: column; gap: 4px; }
-        .form-group label { font-size: 12px; font-weight: 600; color: var(--text-muted); }
+        .form-group label { font-size: 11px; font-weight: 600; color: var(--text-muted); }
         .form-group input, .form-group select {
-            padding: 12px;
+            padding: 10px;
             border-radius: 8px;
             border: 1px solid var(--border);
-            font-size: 14px;
+            font-size: 13px;
             outline: none;
             background: #fff;
         }
@@ -285,21 +323,31 @@
         }
 
         .modal-footer {
-            margin-top: 20px;
+            margin-top: 16px;
             display: flex;
             gap: 10px;
         }
 
-        .modal-footer .btn { flex: 1; padding: 14px; }
+        .btn {
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            flex: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-        /* Estilos Desktop / Pantallas Grandes */
+        .btn-primary { background: var(--primary-accent); color: #fff; }
+        .btn-secondary { background: #f1f5f9; color: var(--text-main); }
+
         @media (min-width: 768px) {
-            body { padding: 24px; }
-            .kpi-container { grid-template-columns: repeat(3, 1fr); gap: 16px; }
-            .kpi-card span { font-size: 12px; }
-            .kpi-card h3 { font-size: 22px; }
+            body { padding: 24px; max-width: 900px; margin: 0 auto; }
             .modal { align-items: center; }
-            .modal-content { border-radius: 16px; max-width: 700px; }
+            .modal-content { border-radius: 16px; max-width: 650px; }
             .form-grid { grid-template-columns: repeat(3, 1fr); }
             .form-group.span-2 { grid-column: span 2; }
         }
@@ -313,7 +361,7 @@
             <i class="fas fa-house-user" style="color: var(--primary-accent);"></i>
             Quinta Bugambilia
         </div>
-        <button class="btn btn-secondary" onclick="cargarDatos()" title="Actualizar">
+        <button class="btn-icon-head" onclick="cargarDatos()" title="Actualizar">
             <i class="fas fa-sync-alt"></i>
         </button>
     </div>
@@ -334,15 +382,31 @@
         </div>
     </div>
 
-    <!-- Buscador -->
-    <div class="actions-bar">
-        <div class="search-box">
-            <i class="fas fa-search"></i>
-            <input type="text" id="input-search" placeholder="Buscar por cliente o folio..." onkeyup="filtrarTabla()">
+    <!-- Filtros y Búsqueda -->
+    <div class="controls-section">
+        <div class="search-row">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="input-search" placeholder="Buscar cliente o folio..." onkeyup="aplicarFiltros()">
+            </div>
+            <select id="select-orden" class="select-sort" onchange="aplicarFiltros()">
+                <option value="fecha_asc">📅 Fecha (Más antigua primero)</option>
+                <option value="fecha_desc">📅 Fecha (Más nueva primero)</option>
+                <option value="folio_asc"># Folio (1 a N)</option>
+                <option value="folio_desc"># Folio (N a 1)</option>
+            </select>
+        </div>
+
+        <!-- Chips de Filtros Rápidos -->
+        <div class="filter-chips">
+            <button class="chip active" onclick="seleccionarChip(this, 'todos')">Todos</button>
+            <button class="chip" onclick="seleccionarChip(this, 'pendientes')">🔴 Con Saldo</button>
+            <button class="chip" onclick="seleccionarChip(this, 'pagados')">🟢 Liquidados</button>
+            <button class="chip" onclick="seleccionarChip(this, 'mes_actual')">📅 Este Mes</button>
         </div>
     </div>
 
-    <!-- Contenedor de Tarjetas (Vista Celular) -->
+    <!-- Contenedor de Tarjetas de Renta -->
     <div class="cards-container" id="cards-container">
         <div style="text-align: center; padding: 40px; color: var(--text-muted);">
             <i class="fas fa-spinner fa-spin fa-2x"></i><br><br>Cargando reservaciones...
@@ -358,8 +422,8 @@
     <div class="modal" id="modal-form">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 id="modal-title">Nueva Reservación</h3>
-                <button class="btn btn-secondary" onclick="cerrarModal()" style="padding: 6px 10px;"><i class="fas fa-times"></i></button>
+                <h3 id="modal-title" style="font-size: 16px;">Nueva Reservación</h3>
+                <button class="btn-icon-head" onclick="cerrarModal()"><i class="fas fa-times"></i></button>
             </div>
             
             <form id="renta-form" onsubmit="guardarRegistro(event)">
@@ -398,11 +462,11 @@
                     <div class="form-row-2">
                         <div class="form-group">
                             <label>Hospedaje</label>
-                            <input type="text" id="field-hospedaje" placeholder="Ej. 12 personas">
+                            <input type="text" id="field-hospedaje" placeholder="Ej. 12 pers.">
                         </div>
                         <div class="form-group">
                             <label>Evento</label>
-                            <input type="text" id="field-evento" placeholder="Ej. 50 personas">
+                            <input type="text" id="field-evento" placeholder="Ej. 50 pers.">
                         </div>
                     </div>
 
@@ -484,6 +548,7 @@
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyUuSbd7XOIskwITU6wPbw7jDajpHvTHcOYaVSwWW83y9tOHzECOmk8yzMASq8eNJNT/exec";
         let registrosGlobales = [];
+        let filtroEstadoActual = 'todos';
 
         function parseMonto(val) {
             if (!val) return 0;
@@ -496,17 +561,70 @@
             return `$${parseMonto(val).toLocaleString('es-MX', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
         }
 
+        // Parsea fechas en string a objeto Date para ordenar
+        function parseFecha(str) {
+            if (!str) return new Date(0);
+            if (str.includes('/')) {
+                const p = str.split('/');
+                return new Date(p[2], p[1] - 1, p[0]);
+            }
+            return new Date(str);
+        }
+
         async function cargarDatos() {
             const container = document.getElementById('cards-container');
             try {
                 const res = await fetch(SCRIPT_URL, { method: 'GET', redirect: 'follow' });
                 registrosGlobales = await res.json();
-                renderizarTarjetas(registrosGlobales);
+                aplicarFiltros();
                 actualizarKPIs(registrosGlobales);
             } catch (err) {
                 console.error(err);
-                container.innerHTML = `<div style="text-align:center; color: var(--danger); padding:20px;">Error al conectar con la base de datos.</div>`;
+                container.innerHTML = `<div style="text-align:center; color: var(--danger); padding:20px;">Error al conectar con el servidor.</div>`;
             }
+        }
+
+        function seleccionarChip(btn, estado) {
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
+            filtroEstadoActual = estado;
+            aplicarFiltros();
+        }
+
+        function aplicarFiltros() {
+            const query = document.getElementById('input-search').value.toLowerCase();
+            const criterioOrden = document.getElementById('select-orden').value;
+
+            // 1. Filtrar por texto
+            let resultado = registrosGlobales.filter(r => 
+                String(r.folio).includes(query) || 
+                (r.nombre && r.nombre.toLowerCase().includes(query))
+            );
+
+            // 2. Filtrar por chip de estado
+            if (filtroEstadoActual === 'pendientes') {
+                resultado = resultado.filter(r => parseMonto(r.saldo) > 0);
+            } else if (filtroEstadoActual === 'pagados') {
+                resultado = resultado.filter(r => parseMonto(r.saldo) <= 0);
+            } else if (filtroEstadoActual === 'mes_actual') {
+                const mesHoy = new Date().toLocaleString('es-ES', { month: 'long' }).toLowerCase();
+                resultado = resultado.filter(r => (r.mes_renta || '').toLowerCase() === mesHoy);
+            }
+
+            // 3. Ordenar (Por defecto: fecha_asc, rentas más antiguas arriba, más lejanas al final)
+            resultado.sort((a, b) => {
+                if (criterioOrden === 'fecha_asc') {
+                    return parseFecha(a.fecha_entrada) - parseFecha(b.fecha_entrada);
+                } else if (criterioOrden === 'fecha_desc') {
+                    return parseFecha(b.fecha_entrada) - parseFecha(a.fecha_entrada);
+                } else if (criterioOrden === 'folio_asc') {
+                    return parseMonto(a.folio) - parseMonto(b.folio);
+                } else if (criterioOrden === 'folio_desc') {
+                    return parseMonto(b.folio) - parseMonto(a.folio);
+                }
+            });
+
+            renderizarTarjetas(resultado);
         }
 
         function renderizarTarjetas(registros) {
@@ -514,7 +632,7 @@
             container.innerHTML = '';
 
             if (registros.length === 0) {
-                container.innerHTML = `<div style="text-align:center; padding: 20px; color: var(--text-muted);">No hay reservaciones encontradas.</div>`;
+                container.innerHTML = `<div style="text-align:center; padding: 20px; color: var(--text-muted);">No se encontraron reservaciones.</div>`;
                 return;
             }
 
@@ -548,11 +666,11 @@
                             <strong style="color: var(--success);">${fmtMoneda(ant1 + ant2)}</strong>
                         </div>
                         <div class="info-item">
-                            <span>Saldo Pendiente</span>
-                            <strong style="color: var(--danger);">${fmtMoneda(saldo)}</strong>
+                            <span>Saldo</span>
+                            <strong style="color: ${saldo > 0 ? 'var(--danger)' : 'var(--success)'};">${fmtMoneda(saldo)}</strong>
                         </div>
                         <div class="info-item">
-                            <span>Fechas</span>
+                            <span>F. Entrada</span>
                             <strong>${row.fecha_entrada || '—'}</strong>
                         </div>
                     </div>
@@ -581,15 +699,6 @@
             document.getElementById('kpi-total').textContent = fmtMoneda(totalVentas);
             document.getElementById('kpi-cobrado').textContent = fmtMoneda(totalCobrado);
             document.getElementById('kpi-saldo').textContent = fmtMoneda(totalSaldo);
-        }
-
-        function filtrarTabla() {
-            const query = document.getElementById('input-search').value.toLowerCase();
-            const filtrados = registrosGlobales.filter(r => 
-                String(r.folio).includes(query) || 
-                (r.nombre && r.nombre.toLowerCase().includes(query))
-            );
-            renderizarTarjetas(filtrados);
         }
 
         function calcularSaldoForm() {
@@ -676,7 +785,7 @@
                 cerrarModal();
                 cargarDatos();
             } catch (err) {
-                alert("Error al guardar en el servidor: " + err);
+                alert("Error al guardar: " + err);
             } finally {
                 btn.disabled = false;
                 btn.textContent = "Guardar";
