@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1f3a34">
+<title>Rentas | Quinta Bugambilia</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{--bg:#f5f3f6;--card:#fff;--ink:#1f3a34;--text:#26302d;--muted:#6b7773;--line:#e6e2e8;--accent:#c2185b;--accent-soft:#fce4ee;--ok:#2e7d5b;--ok-soft:#dff3e8;--warn:#b7791f;--warn-soft:#fdf0d5;--bad:#c62828;--bad-soft:#fde3e3;--shadow:0 1px 3px rgba(31,58,52,.08)}
+:root[data-theme=dark]{--bg:#121816;--card:#1b2421;--ink:#e8f1ed;--text:#dbe6e1;--muted:#8fa19a;--line:#2b3733;--accent:#f06292;--accent-soft:#3a1d2a;--ok:#5fd0a0;--ok-soft:#173226;--warn:#f0b955;--warn-soft:#382c12;--bad:#ff8a80;--bad-soft:#3a1c1c;--shadow:none}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);padding:calc(env(safe-area-inset-top) + 12px) 14px calc(env(safe-area-inset-bottom) + 96px);max-width:900px;margin:0 auto}
+button{font-family:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.brand{font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--ink);line-height:1.1}
+.brand small{display:block;font-family:'DM Sans';font-size:12px;font-weight:500;color:var(--muted)}
+.ibtn{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);margin-left:6px}
+.hero{background:var(--ink);color:#fff;border-radius:18px;padding:16px;margin-bottom:14px}
+:root[data-theme=dark] .hero{background:#22332e}
+.hero-row{display:flex;justify-content:space-between;align-items:flex-end;gap:10px}
+.hero .lbl{font-size:12px;opacity:.75}
+.hero .big{font-family:'Fraunces',serif;font-size:30px;font-weight:700}
+.hero select{background:rgba(255,255,255,.12);color:#fff;border:0;border-radius:10px;padding:6px 8px;font-size:13px}
+.hero select option{color:#000}
+.bar{height:8px;border-radius:8px;background:rgba(255,255,255,.18);margin:12px 0 10px;overflow:hidden}
+.bar i{display:block;height:100%;background:#7ee0b0;border-radius:8px;transition:width .6s}
+.hero-sub{display:flex;justify-content:space-between;font-size:13px}
+.hero-sub b{display:block;font-size:15px}
+.next{display:flex;gap:12px;align-items:center;background:var(--accent-soft);border-radius:14px;padding:12px 14px;margin-bottom:14px;color:var(--text)}
+.next i{color:var(--accent);font-size:20px}.next b{display:block}.next span{font-size:12px;color:var(--muted)}
+.view{display:none}.view.on{display:block}
+.search{display:flex;gap:8px;margin-bottom:10px}
+.search div{position:relative;flex:1}
+.search div i{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted)}
+input,select{font-family:inherit}
+.search input{width:100%;padding:11px 12px 11px 36px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--text);font-size:14px}
+.search select,.f select,.f input{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:10px;padding:10px;font-size:14px}
+.chips{display:flex;gap:6px;overflow-x:auto;margin-bottom:14px;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}
+.chip{padding:7px 14px;border-radius:20px;border:1px solid var(--line);background:var(--card);color:var(--muted);font-size:13px;font-weight:500;white-space:nowrap}
+.chip.on{background:var(--ink);color:var(--card);border-color:var(--ink)}
+.list{display:flex;flex-direction:column;gap:12px}
+.rc{background:var(--card);border-radius:16px;padding:14px;box-shadow:var(--shadow);border:1px solid var(--line);border-left:5px solid var(--ok)}
+.rc.debe{border-left-color:var(--bad)}
+.rc-h{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.rc-n{font-weight:700;font-size:16px;color:var(--ink)}
+.rc-m{font-size:12px;color:var(--muted);margin-top:2px}
+.badge{font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px;white-space:nowrap}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.tag{font-size:12px;padding:4px 9px;border-radius:8px;background:var(--bg);color:var(--text)}
+.tag i{color:var(--accent);margin-right:4px}
+.money{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px}
+.money span{display:block;font-size:11px;color:var(--muted)}.money b{font-size:15px}
+.pbar{height:6px;border-radius:6px;background:var(--line);overflow:hidden;margin-bottom:12px}
+.pbar i{display:block;height:100%;background:var(--ok)}
+.acts{display:flex;gap:6px}
+.acts button{flex:1;padding:9px 6px;border-radius:10px;border:0;font-size:13px;font-weight:600}
+.a-wa{background:var(--ok-soft);color:var(--ok)}.a-ed{background:var(--warn-soft);color:var(--warn)}.a-del{background:var(--bad-soft);color:var(--bad);flex:0 0 44px!important}
+.empty{text-align:center;padding:36px 16px;color:var(--muted)}.empty i{font-size:34px;color:var(--line);display:block;margin-bottom:10px}
+.sk{height:150px;border-radius:16px;background:linear-gradient(90deg,var(--line),var(--card),var(--line));background-size:200% 100%;animation:sk 1.2s infinite}
+@keyframes sk{to{background-position:-200% 0}}
+.cal-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.cal-h h3{font-family:'Fraunces',serif;font-size:20px;color:var(--ink)}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.dh{text-align:center;font-size:11px;color:var(--muted);font-weight:700;padding-bottom:3px}
+.cd{background:var(--card);border:1px solid var(--line);border-radius:8px;min-height:62px;padding:3px;overflow:hidden;cursor:pointer}
+.cd.void{background:transparent;border-color:transparent;cursor:default}
+.cd.hoy{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.cd.libre{background:var(--card)}
+.cn{font-size:11px;font-weight:700;color:var(--muted);text-align:right}
+.hoy .cn{color:var(--accent)}
+.dot{display:block;height:6px;border-radius:3px;margin-top:3px}
+.d-in{background:var(--accent)}.d-out{background:var(--warn)}.d-mid{background:var(--ok)}
+.cd small{display:block;font-size:9px;line-height:1.2;margin-top:2px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.leg{display:flex;gap:14px;justify-content:center;font-size:12px;color:var(--muted);margin-top:12px;flex-wrap:wrap}
+.leg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px}
+.res-box{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px}
+.res-box h4{font-family:'Fraunces',serif;color:var(--ink);margin-bottom:10px;font-size:16px}
+.mrow{display:grid;grid-template-columns:78px 1fr 84px;gap:8px;align-items:center;font-size:12px;margin-bottom:7px}
+.mrow .t{height:12px;background:var(--line);border-radius:6px;overflow:hidden}.mrow .t i{display:block;height:100%;background:var(--accent);border-radius:6px}
+.mrow b{text-align:right}
+.nav{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:8px 10px calc(env(safe-area-inset-bottom) + 8px);z-index:50}
+.nav button{flex:1;border:0;background:none;color:var(--muted);font-size:11px;font-weight:600;display:flex;flex-direction:column;gap:3px;align-items:center;padding:4px;max-width:120px}
+.nav button i{font-size:19px}.nav button.on{color:var(--accent)}
+.fab{position:fixed;right:18px;bottom:calc(env(safe-area-inset-bottom) + 76px);width:56px;height:56px;border-radius:18px;border:0;background:var(--accent);color:#fff;font-size:22px;box-shadow:0 6px 16px rgba(194,24,91,.4);z-index:60}
+.modal{position:fixed;inset:0;background:rgba(10,20,17,.55);display:none;align-items:flex-end;justify-content:center;z-index:100}
+.modal.on{display:flex}
+.sheet{background:var(--card);width:100%;max-width:640px;max-height:92vh;overflow-y:auto;border-radius:22px 22px 0 0;padding:18px;animation:up .25s ease-out}
+@keyframes up{from{transform:translateY(100%)}}
+.sheet-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.sheet-h h3{font-family:'Fraunces',serif;color:var(--ink);font-size:20px}
+.fs{font-size:12px;font-weight:700;color:var(--accent);margin:14px 0 6px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.f{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
+.f label{font-size:12px;color:var(--muted);font-weight:500}
+.f input[readonly]{background:var(--bg);font-weight:700}
+.warn{display:none;background:var(--warn-soft);color:var(--warn);padding:10px 12px;border-radius:10px;font-size:13px;margin-bottom:10px}
+.foot{display:flex;gap:10px;margin-top:8px}
+.btn{flex:1;padding:13px;border-radius:12px;border:0;font-size:15px;font-weight:700}
+.b1{background:var(--accent);color:#fff}.b2{background:var(--bg);color:var(--text)}
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 90px);transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--card);padding:11px 18px;border-radius:12px;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:200}
+.toast.on{opacity:1;transform:translateX(-50%)}
+.mt{display:flex;gap:2px;margin-top:3px}.mt i{flex:1;font-style:normal;font-size:9px;font-weight:700;text-align:center;border-radius:3px;padding:1px 0}.mt .fre{background:var(--ok-soft);color:var(--ok)}.mt .occ{background:var(--bad);color:var(--card)}
+.btn-disp{width:100%;margin-top:14px;padding:13px;border-radius:12px;border:0;background:var(--accent);color:#fff;font-size:15px;font-weight:700}
+#disp-canvas{width:100%;height:auto;border-radius:14px;border:1px solid var(--line);margin:4px 0 12px;display:block}
+@media(min-width:768px){.modal{align-items:center}.sheet{border-radius:20px}.cd{min-height:90px}.cd small{font-size:11px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="brand">Quinta Bugambilia<small id="hoy-txt"></small></div>
+  <div><button class="ibtn" onclick="abrirDisp()" title="Disponibilidad para clientes" aria-label="Disponibilidad para clientes"><i class="fas fa-share-nodes"></i></button><button class="ibtn" onclick="exportarCSV()" title="Exportar CSV" aria-label="Exportar CSV"><i class="fas fa-file-arrow-down"></i></button><button class="ibtn" onclick="toggleTema()" title="Tema" aria-label="Cambiar tema"><i class="fas fa-circle-half-stroke"></i></button><button class="ibtn" onclick="cargarDatos(true)" title="Actualizar" aria-label="Actualizar"><i class="fas fa-rotate" id="ic-sync"></i></button></div>
+</div>
+
+<div class="hero">
+  <div class="hero-row">
+    <div><div class="lbl">Ventas del periodo</div><div class="big" id="k-total">$0</div></div>
+    <select id="sel-anio" onchange="cambiarAnio()" aria-label="Año"></select>
+  </div>
+  <div class="bar"><i id="k-bar" style="width:0"></i></div>
+  <div class="hero-sub"><div>Cobrado<b id="k-cobrado">$0</b></div><div style="text-align:right">Por cobrar<b id="k-saldo">$0</b></div></div>
+</div>
+<div id="next"></div>
+
+<div id="v-lista" class="view on">
+  <div class="search">
+    <div><i class="fas fa-search"></i><input id="q" placeholder="Buscar cliente o folio" oninput="render()" aria-label="Buscar"></div>
+    <select id="orden" onchange="render()" aria-label="Orden"><option value="fa">Fecha ↑</option><option value="fd">Fecha ↓</option><option value="na">Folio ↑</option><option value="nd">Folio ↓</option></select>
+  </div>
+  <div class="chips" id="chips">
+    <button class="chip on" data-f="todos">Todos</button><button class="chip" data-f="proximas">Próximas</button><button class="chip" data-f="saldo">Con saldo</button><button class="chip" data-f="liq">Liquidados</button><button class="chip" data-f="mes">Este mes</button>
+  </div>
+  <div class="list" id="list"><div class="sk"></div><div class="sk"></div></div>
+</div>
+
+<div id="v-cal" class="view">
+  <div class="cal-h"><button class="ibtn" onclick="mesCal(-1)" aria-label="Mes anterior"><i class="fas fa-chevron-left"></i></button><h3 id="cal-t"></h3><button class="ibtn" onclick="mesCal(1)" aria-label="Mes siguiente"><i class="fas fa-chevron-right"></i></button></div>
+  <div class="cal" id="cal"></div>
+  <div class="leg"><span><i style="background:var(--ok)"></i>Libre</span><span><i style="background:var(--bad)"></i>Ocupado</span><span>M = mañana · T = tarde</span></div>
+  <button class="btn-disp" onclick="abrirDisp()"><i class="fas fa-image"></i> Disponibilidad para cliente</button>
+</div>
+
+<div id="v-res" class="view">
+  <div class="res-box"><h4>Ventas por mes</h4><div id="res-meses"></div></div>
+  <div class="res-box"><h4>Resumen</h4><div id="res-info"></div></div>
+</div>
+
+<button class="fab" onclick="abrirNuevo()" aria-label="Nueva reservación"><i class="fas fa-plus"></i></button>
+<nav class="nav">
+  <button class="on" data-v="lista"><i class="fas fa-list-ul"></i>Reservas</button>
+  <button data-v="cal"><i class="fas fa-calendar-days"></i>Calendario</button>
+  <button data-v="res"><i class="fas fa-chart-simple"></i>Resumen</button>
+</nav>
+
+<div class="modal" id="m-form"><div class="sheet">
+  <div class="sheet-h"><h3 id="m-title">Nueva reservación</h3><button class="ibtn" onclick="cerrar('m-form')" aria-label="Cerrar"><i class="fas fa-xmark"></i></button></div>
+  <form id="form" onsubmit="guardar(event)">
+    <input type="hidden" id="f-folio">
+    <div class="f"><label>Cliente</label><input id="f-nombre" required placeholder="Nombre completo"></div>
+    <div class="g2"><div class="f"><label>Teléfono</label><input id="f-tel" type="tel" placeholder="662..."></div><div class="f"><label>Teléfono 2</label><input id="f-tel2" type="tel"></div></div>
+    <div class="fs">Estancia</div>
+    <div class="g2"><div class="f"><label>Entrada</label><input type="date" id="f-ent" onchange="autoMes();revisar()"></div><div class="f"><label>Salida</label><input type="date" id="f-sal" onchange="revisar()"></div></div>
+    <div class="g2"><div class="f"><label>Hospedaje</label><input id="f-hosp" placeholder="Ej. 12 personas"></div><div class="f"><label>Evento</label><input id="f-evt" placeholder="Ej. 50 personas"></div></div>
+    <div class="f"><label>Mes de renta</label><select id="f-mes"></select></div>
+    <div class="warn" id="f-warn"></div>
+    <div class="fs">Pagos</div>
+    <div class="g2"><div class="f"><label>Total venta ($)</label><input type="number" step="0.01" id="f-total" oninput="saldo()" required></div><div class="f"><label>Saldo ($)</label><input id="f-saldo" readonly></div></div>
+    <div class="g2"><div class="f"><label>Anticipo 1 ($)</label><input type="number" step="0.01" id="f-a1" oninput="saldo()"></div><div class="f"><label>Fecha anticipo 1</label><input type="date" id="f-fa1"></div></div>
+    <div class="g2"><div class="f"><label>Anticipo 2 ($)</label><input type="number" step="0.01" id="f-a2" oninput="saldo()"></div><div class="f"><label>Fecha anticipo 2</label><input type="date" id="f-fa2"></div></div>
+    <div class="fs">Comisión</div>
+    <div class="g2"><div class="f"><label>Comisión ($)</label><input type="number" step="0.01" id="f-com"></div><div class="f"><label>Fecha cobrado</label><input type="date" id="f-fc"></div></div>
+    <div class="f"><label>Comisión No.</label><input id="f-comno"></div>
+    <div class="foot"><button type="button" class="btn b2" onclick="cerrar('m-form')">Cancelar</button><button class="btn b1" id="btn-g">Guardar</button></div>
+  </form>
+</div></div>
+
+<div class="modal" id="m-dia"><div class="sheet">
+  <div class="sheet-h"><h3 id="dia-t"></h3><button class="ibtn" onclick="cerrar('m-dia')" aria-label="Cerrar"><i class="fas fa-xmark"></i></button></div>
+  <div id="dia-b"></div>
+</div></div>
+<div class="modal" id="m-disp"><div class="sheet">
+  <div class="sheet-h"><h3>Disponibilidad</h3><button class="ibtn" onclick="cerrar('m-disp')" aria-label="Cerrar"><i class="fas fa-xmark"></i></button></div>
+  <div class="g2">
+    <div class="f"><label>Mes a consultar</label><select id="disp-mes" onchange="dibujarDisp()"></select></div>
+    <div class="f"><label>Contacto en la imagen</label><input id="disp-contacto" placeholder="Tel. o WhatsApp" oninput="dibujarDisp()"></div>
+  </div>
+  <canvas id="disp-canvas" width="1080" height="1350"></canvas>
+  <div class="foot"><button class="btn b2" onclick="bajarDisp()"><i class="fas fa-download"></i> Descargar</button><button class="btn b1" onclick="compartirDisp()"><i class="fas fa-share-nodes"></i> Compartir</button></div>
+</div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const URL_API="https://script.google.com/macros/s/AKfycbyUuSbd7XOIskwITU6wPbw7jDajpHvTHcOYaVSwWW83y9tOHzECOmk8yzMASq8eNJNT/exec";
+const MESES=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+const MC=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+const $=id=>document.getElementById(id);
+let datos=[],filtro="todos",anio=new Date().getFullYear(),calF=new Date();
+calF.setDate(1);
+
+/* ---------- Utilidades ---------- */
+const num=v=>{if(typeof v==="number")return isNaN(v)?0:v;const n=parseFloat(String(v||"").replace(/[^0-9.-]/g,""));return isNaN(n)?0:n};
+const $$=v=>"$"+num(v).toLocaleString("es-MX",{maximumFractionDigits:0});
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const iso=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+/* Convierte cualquier formato (dd/mm/aaaa, m/d/aaaa, ISO) a Date local. mdy=true para columnas de anticipo que vienen como m/d/aaaa */
+function aFecha(s,mdy){
+  if(!s||s==="-")return null;
+  s=String(s).trim();
+  let m=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})(T.*)?$/);
+  if(m){ if(m[4]){const d=new Date(s);return isNaN(d)?null:new Date(d.getFullYear(),d.getMonth(),d.getDate())} return new Date(+m[1],m[2]-1,+m[3]) }
+  m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if(m){let a=+m[1],b=+m[2];let dia=mdy?b:a,mes=mdy?a:b;if(mes>12){[dia,mes]=[mes,dia]}return new Date(+m[3],mes-1,dia)}
+  const d=new Date(s);return isNaN(d)?null:new Date(d.getFullYear(),d.getMonth(),d.getDate());
+}
+const aISO=(s,mdy)=>{const d=aFecha(s,mdy);return d?iso(d):""};
+const fmtF=d=>d?d.getDate()+" "+MC[d.getMonth()]+(d.getFullYear()!==new Date().getFullYear()?" "+d.getFullYear():""):"—";
+const hoy0=()=>{const d=new Date();d.setHours(0,0,0,0);return d};
+const saldoDe=r=>Math.max(0,num(r.total_venta)-num(r.anticipo1)-num(r.anticipo2));
+const ent=r=>aFecha(r.fecha_entrada), sal=r=>aFecha(r.fecha_salida)||ent(r);
+function toast(t){const e=$("toast");e.textContent=t;e.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove("on"),2600)}
+function cerrar(id){$(id).classList.remove("on")}
+function toggleTema(){const r=document.documentElement;const d=r.dataset.theme==="dark"?"":"dark";if(d)r.dataset.theme="dark";else r.removeAttribute("data-theme");try{localStorage.setItem("qb-tema",d)}catch(e){}}
+try{if(localStorage.getItem("qb-tema")==="dark")document.documentElement.dataset.theme="dark"}catch(e){}
+
+/* ---------- Carga con caché local ---------- */
+async function cargarDatos(manual){
+  $("ic-sync").classList.toggle("fa-spin",true);
+  try{
+    const res=await fetch(URL_API,{method:"GET",redirect:"follow"});
+    datos=await res.json();
+    try{localStorage.setItem("qb-cache",JSON.stringify(datos))}catch(e){}
+    if(manual)toast("Datos actualizados");
+  }catch(err){
+    console.error(err);
+    try{const c=localStorage.getItem("qb-cache");if(c&&!datos.length){datos=JSON.parse(c);toast("Sin conexión: mostrando últimos datos guardados")}else toast("No se pudo conectar. Revisa tu internet.")}catch(e){toast("No se pudo conectar.")}
+  }
+  $("ic-sync").classList.remove("fa-spin");
+  llenarAnios();pintarTodo();
+}
+function pintarTodo(){render();pintarCal();kpis();proxima();resumen()}
+function delAnio(){return datos.filter(r=>{const e=ent(r);return e&&e.getFullYear()===anio})}
+function llenarAnios(){
+  const s=new Set(datos.map(r=>{const e=ent(r);return e&&e.getFullYear()}).filter(Boolean));s.add(new Date().getFullYear());
+  const a=[...s].sort((x,y)=>y-x);if(!a.includes(anio))anio=a[0];
+  $("sel-anio").innerHTML=a.map(y=>`<option ${y===anio?"selected":""}>${y}</option>`).join("");
+}
+function cambiarAnio(){anio=+$("sel-anio").value;pintarTodo()}
+
+/* ---------- KPIs y próxima llegada ---------- */
+function kpis(){
+  let t=0,c=0,s=0;delAnio().forEach(r=>{t+=num(r.total_venta);c+=num(r.anticipo1)+num(r.anticipo2);s+=saldoDe(r)});
+  $("k-total").textContent=$$(t);$("k-cobrado").textContent=$$(c);$("k-saldo").textContent=$$(s);
+  $("k-bar").style.width=(t?Math.min(100,c/t*100):0)+"%";
+}
+function proxima(){
+  const h=hoy0();
+  const p=datos.filter(r=>{const e=ent(r);return e&&e>=h}).sort((a,b)=>ent(a)-ent(b))[0];
+  if(!p){$("next").innerHTML="";return}
+  const dias=Math.round((ent(p)-h)/864e5);
+  const cuando=dias===0?"Hoy":dias===1?"Mañana":"En "+dias+" días";
+  $("next").innerHTML=`<div class="next"><i class="fas fa-champagne-glasses"></i><div><b>${cuando}: ${esc(p.nombre)}</b><span>${fmtF(ent(p))}${saldoDe(p)>0?" · debe "+$$(saldoDe(p)):" · liquidado"}</span></div></div>`;
+}
+
+/* ---------- Lista ---------- */
+document.getElementById("chips").addEventListener("click",e=>{
+  const b=e.target.closest(".chip");if(!b)return;
+  document.querySelectorAll(".chip").forEach(c=>c.classList.remove("on"));b.classList.add("on");filtro=b.dataset.f;render();
+});
+function render(){
+  const q=$("q").value.toLowerCase().trim(),h=hoy0();
+  let r=delAnio().filter(x=>String(x.folio).includes(q)||(x.nombre||"").toLowerCase().includes(q));
+  if(filtro==="saldo")r=r.filter(x=>saldoDe(x)>0);
+  else if(filtro==="liq")r=r.filter(x=>saldoDe(x)===0);
+  else if(filtro==="proximas")r=r.filter(x=>ent(x)&&ent(x)>=h);
+  else if(filtro==="mes")r=r.filter(x=>{const e=ent(x);return e&&e.getMonth()===h.getMonth()});
+  const o=$("orden").value;
+  r.sort((a,b)=>o==="fa"?ent(a)-ent(b):o==="fd"?ent(b)-ent(a):o==="na"?num(a.folio)-num(b.folio):num(b.folio)-num(a.folio));
+  if(!r.length){$("list").innerHTML=`<div class="empty"><i class="fas fa-calendar-xmark"></i>No hay reservaciones con estos filtros.<br>Toca + para agregar una.</div>`;return}
+  $("list").innerHTML=r.map(tarjeta).join("");
+}
+function tarjeta(x){
+  const t=num(x.total_venta),p=num(x.anticipo1)+num(x.anticipo2),s=saldoDe(x),e=ent(x),sa=sal(x);
+  const noches=e&&sa?Math.round((sa-e)/864e5):0;
+  const tel=String(x.telefono||x.telefono_2||"").replace(/\D/g,"");
+  const fecha=e?(noches>0?fmtF(e)+" → "+fmtF(sa):fmtF(e)):"Sin fecha";
+  return `<div class="rc ${s>0?"debe":""}">
+  <div class="rc-h"><div><div class="rc-n">${esc(x.nombre||"Sin nombre")}</div><div class="rc-m">Folio ${esc(x.folio)} · ${esc(x.mes_renta||"")}</div></div><span class="badge ${s>0?"bad":"ok"}">${s>0?"Debe "+$$(s):"Liquidado"}</span></div>
+  <div class="tags"><span class="tag"><i class="fas fa-calendar"></i>${fecha}</span>${noches>0?`<span class="tag">${noches} noche${noches>1?"s":""}</span>`:""}${x.hospedaje?`<span class="tag"><i class="fas fa-bed"></i>${esc(x.hospedaje)}</span>`:""}${x.evento?`<span class="tag"><i class="fas fa-champagne-glasses"></i>${esc(x.evento)}</span>`:""}</div>
+  <div class="money"><div><span>Total</span><b>${$$(t)}</b></div><div><span>Pagado</span><b style="color:var(--ok)">${$$(p)}</b></div><div><span>Saldo</span><b style="color:${s>0?"var(--bad)":"var(--ok)"}">${$$(s)}</b></div></div>
+  <div class="pbar"><i style="width:${t?Math.min(100,p/t*100):0}%"></i></div>
+  <div class="acts">${tel?`<button class="a-wa" onclick="whats('${x.folio}')"><i class="fab fa-whatsapp"></i> WhatsApp</button>`:""}<button class="a-ed" onclick="abrirEditar('${x.folio}')"><i class="fas fa-pen"></i> Editar</button><button class="a-del" onclick="eliminar('${x.folio}')" aria-label="Eliminar"><i class="fas fa-trash"></i></button></div></div>`;
+}
+function whats(folio){
+  const x=datos.find(r=>String(r.folio)===String(folio));if(!x)return;
+  let n=String(x.telefono||x.telefono_2).replace(/\D/g,"");if(n.length===10)n="52"+n;
+  const s=saldoDe(x);
+  const msg=`Hola ${(x.nombre||"").split(" ")[0]}, te escribimos de Quinta Bugambilia sobre tu reservación del ${fmtF(ent(x))}.`+(s>0?` Tu saldo pendiente es de ${$$(s)}.`:` Tu reservación está liquidada, ¡te esperamos!`);
+  window.open("https://wa.me/"+n+"?text="+encodeURIComponent(msg),"_blank");
+}
+
+/* ---------- Calendario ---------- */
+function mesCal(d){calF.setMonth(calF.getMonth()+d);pintarCal()}
+function reservasDia(d){
+  const out=[];datos.forEach(r=>{
+    const e=ent(r),s=sal(r);if(!e)return;const t=d.getTime();
+    if(t===e.getTime())out.push({r,k:"in"});
+    else if(t===s.getTime())out.push({r,k:"out"});
+    else if(t>e.getTime()&&t<s.getTime())out.push({r,k:"mid"});
+  });return out;
+}
+/* Mañana ocupada: alguien sale o se hospeda. Tarde ocupada: alguien llega, evento de un día, o se hospeda. */
+function jornadas(f){const rs=reservasDia(f);return{m:rs.some(x=>x.k==="out"||x.k==="mid"),t:rs.some(x=>x.k==="in"||x.k==="mid")}}
+function pintarCal(){
+  const a=calF.getFullYear(),m=calF.getMonth(),h=hoy0().getTime();
+  $("cal-t").textContent=MESES[m][0].toUpperCase()+MESES[m].slice(1)+" "+a;
+  let html=["D","L","M","M","J","V","S"].map(x=>`<div class="dh">${x}</div>`).join("");
+  for(let i=0;i<new Date(a,m,1).getDay();i++)html+=`<div class="cd void"></div>`;
+  for(let d=1;d<=new Date(a,m+1,0).getDate();d++){
+    const f=new Date(a,m,d),rs=reservasDia(f);
+    html+=`<div class="cd ${f.getTime()===h?"hoy":""}" onclick="verDia(${a},${m},${d})"><div class="cn">${d}</div>${(()=>{const j=jornadas(f);return `<div class="mt"><i class="${j.m?"occ":"fre"}">M</i><i class="${j.t?"occ":"fre"}">T</i></div>`})()}${rs[0]?`<small>${esc((rs[0].r.nombre||"").split(" ")[0])}${rs.length>1?" +"+(rs.length-1):""}</small>`:""}</div>`;
+  }
+  $("cal").innerHTML=html;
+}
+function verDia(a,m,d){
+  const f=new Date(a,m,d),rs=reservasDia(f),L={in:"Llega",mid:"Ocupado",out:"Sale"};
+  $("dia-t").textContent=d+" de "+MESES[m];
+  $("dia-b").innerHTML=rs.length?rs.map(x=>`<div class="rc ${saldoDe(x.r)>0?"debe":""}" style="margin-bottom:10px"><div class="rc-h"><div><div class="rc-n">${esc(x.r.nombre)}</div><div class="rc-m">${L[x.k]} · Folio ${esc(x.r.folio)}</div></div><span class="badge ${saldoDe(x.r)>0?"bad":"ok"}">${saldoDe(x.r)>0?"Debe "+$$(saldoDe(x.r)):"Liquidado"}</span></div><div class="acts" style="margin-top:10px"><button class="a-ed" onclick="cerrar('m-dia');abrirEditar('${x.r.folio}')"><i class="fas fa-pen"></i> Ver / editar</button></div></div>`).join("")
+   :`<div class="empty"><i class="fas fa-circle-check"></i>Día libre.<br><button class="btn b1" style="margin-top:14px;max-width:220px" onclick="cerrar('m-dia');abrirNuevo('${iso(f)}')">Reservar este día</button></div>`;
+  $("m-dia").classList.add("on");
+}
+
+/* ---------- Resumen ---------- */
+function resumen(){
+  const v=Array(12).fill(0),r=delAnio();
+  r.forEach(x=>{const e=ent(x);if(e)v[e.getMonth()]+=num(x.total_venta)});
+  const mx=Math.max(...v,1);
+  $("res-meses").innerHTML=v.map((n,i)=>`<div class="mrow"><span>${MESES[i][0].toUpperCase()+MESES[i].slice(1)}</span><div class="t"><i style="width:${n/mx*100}%"></i></div><b>${$$(n)}</b></div>`).join("");
+  const com=r.reduce((s,x)=>s+num(x.comision),0),ev=r.filter(x=>x.evento).length,ho=r.filter(x=>x.hospedaje).length;
+  const prom=r.length?r.reduce((s,x)=>s+num(x.total_venta),0)/r.length:0;
+  $("res-info").innerHTML=`<div class="money"><div><span>Reservas</span><b>${r.length}</b></div><div><span>Con evento</span><b>${ev}</b></div><div><span>Con hospedaje</span><b>${ho}</b></div></div><div class="money"><div><span>Ticket promedio</span><b>${$$(prom)}</b></div><div><span>Comisiones</span><b>${$$(com)}</b></div></div>`;
+}
+
+/* ---------- Formulario ---------- */
+$("f-mes").innerHTML=MESES.map(m=>`<option value="${m}">${m[0].toUpperCase()+m.slice(1)}</option>`).join("");
+function saldo(){const s=num($("f-total").value)-num($("f-a1").value)-num($("f-a2").value);$("f-saldo").value=Math.max(0,s).toFixed(2)}
+function autoMes(){const d=aFecha($("f-ent").value);if(d)$("f-mes").value=MESES[d.getMonth()]}
+function revisar(){
+  const e=aFecha($("f-ent").value),s=aFecha($("f-sal").value)||e,w=$("f-warn"),fol=$("f-folio").value;
+  w.style.display="none";if(!e)return;
+  if(s<e){w.innerHTML="<i class='fas fa-triangle-exclamation'></i> La salida es anterior a la entrada.";w.style.display="block";return}
+  const c=datos.find(r=>{
+    if(String(r.folio)===String(fol))return false;
+    const re=ent(r),rs=sal(r);if(!re)return false;
+    if(e<rs&&re<s)return true;
+    return e.getTime()===re.getTime();
+  });
+  if(c){w.innerHTML=`<i class="fas fa-triangle-exclamation"></i> Se empalma con la reservación de ${esc(c.nombre)} (folio ${esc(c.folio)}).`;w.style.display="block"}
+}
+function abrirNuevo(fecha){
+  $("m-title").textContent="Nueva reservación";$("form").reset();$("f-folio").value="";
+  if(fecha){$("f-ent").value=fecha;$("f-sal").value=fecha;autoMes()}else $("f-mes").value=MESES[new Date().getMonth()];
+  $("f-warn").style.display="none";$("m-form").classList.add("on");
+}
+function abrirEditar(folio){
+  const r=datos.find(x=>String(x.folio)===String(folio));if(!r)return;
+  $("m-title").textContent="Folio "+folio;$("f-folio").value=r.folio;
+  const set=(id,v)=>$(id).value=v==null?"":v;
+  set("f-nombre",r.nombre);set("f-tel",r.telefono);set("f-tel2",r.telefono_2);set("f-hosp",r.hospedaje);set("f-evt",r.evento);
+  $("f-mes").value=(r.mes_renta||"").toLowerCase()||MESES[new Date().getMonth()];
+  set("f-ent",aISO(r.fecha_entrada));set("f-sal",aISO(r.fecha_salida));
+  set("f-total",r.total_venta);set("f-a1",r.anticipo1);set("f-a2",r.anticipo2);
+  set("f-fa1",aISO(r.fecha_anticipo1,true));set("f-fa2",aISO(r.fecha_anticipo2,true));
+  set("f-com",r.comision);set("f-fc",aISO(r.fecha_cobrado));set("f-comno",r.comision_no);
+  saldo();revisar();$("m-form").classList.add("on");
+}
+async function guardar(ev){
+  ev.preventDefault();
+  const b=$("btn-g");b.disabled=true;b.textContent="Guardando…";
+  const folio=$("f-folio").value;
+  const payload={folio,nombre:$("f-nombre").value.trim(),mes_renta:$("f-mes").value,telefono:$("f-tel").value,hospedaje:$("f-hosp").value,evento:$("f-evt").value,
+    fecha_entrada:$("f-ent").value,fecha_salida:$("f-sal").value,total_venta:$("f-total").value,anticipo1:$("f-a1").value,fecha_anticipo1:$("f-fa1").value,
+    anticipo2:$("f-a2").value,fecha_anticipo2:$("f-fa2").value,saldo:$("f-saldo").value,comision:$("f-com").value,fecha_cobrado:$("f-fc").value,comision_no:$("f-comno").value,telefono_2:$("f-tel2").value};
+  try{
+    await fetch(URL_API,{method:"POST",body:JSON.stringify({accion:folio?"actualizar":"crear",payload})});
+    cerrar("m-form");toast(folio?"Reservación actualizada":"Reservación guardada");await cargarDatos();
+  }catch(e){toast("No se pudo guardar: "+e)}
+  b.disabled=false;b.textContent="Guardar";
+}
+async function eliminar(folio){
+  if(!confirm("¿Eliminar la reservación #"+folio+"? Esta acción no se puede deshacer."))return;
+  try{await fetch(URL_API,{method:"POST",body:JSON.stringify({accion:"eliminar",folio})});toast("Reservación eliminada");cargarDatos()}
+  catch(e){toast("No se pudo eliminar: "+e)}
+}
+
+/* ---------- Exportar ---------- */
+function exportarCSV(){
+  const c=["folio","nombre","mes_renta","telefono","hospedaje","evento","fecha_entrada","fecha_salida","total_venta","anticipo1","anticipo2","saldo","comision"];
+  const l=[c.join(",")].concat(delAnio().map(r=>c.map(k=>'"'+String(k==="saldo"?saldoDe(r):(r[k]??"")).replace(/"/g,'""')+'"').join(",")));
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\ufeff"+l.join("\n")],{type:"text/csv"}));a.download="rentas-"+anio+".csv";a.click();
+}
+
+/* ---------- Disponibilidad para clientes (imagen) ---------- */
+const cap=s=>s[0].toUpperCase()+s.slice(1);
+function abrirDisp(){
+  const s=$("disp-mes");
+  if(!s.options.length){const h=new Date();let o="";for(let i=0;i<12;i++){const d=new Date(h.getFullYear(),h.getMonth()+i,1);o+=`<option value="${d.getFullYear()}-${d.getMonth()}">${cap(MESES[d.getMonth()])} ${d.getFullYear()}</option>`}s.innerHTML=o}
+  try{$("disp-contacto").value=localStorage.getItem("qb-contacto")||""}catch(e){}
+  $("m-disp").classList.add("on");dibujarDisp();
+}
+async function dibujarDisp(){
+  const [a,m]=$("disp-mes").value.split("-").map(Number);
+  try{localStorage.setItem("qb-contacto",$("disp-contacto").value)}catch(e){}
+  try{await Promise.all([document.fonts.load('700 70px Fraunces'),document.fonts.load('500 30px "DM Sans"'),document.fonts.load('700 30px "DM Sans"')])}catch(e){}
+  const cv=$("disp-canvas"),c=cv.getContext("2d"),W=1080,H=1350,h0=hoy0().getTime();
+  const rr=(x,y,w,h,col)=>{c.fillStyle=col;c.beginPath();(c.roundRect||c.rect).call(c,x,y,w,h,16);c.fill()};
+  const tx=(t,x,y,f,col,al)=>{c.font=f;c.fillStyle=col;c.textAlign=al||"center";c.fillText(t,x,y)};
+  c.fillStyle="#f5f3f6";c.fillRect(0,0,W,H);
+  c.fillStyle="#1f3a34";c.fillRect(0,0,W,250);c.fillStyle="#c2185b";c.fillRect(0,250,W,12);
+  tx("Quinta Bugambilia",W/2,128,'700 76px Fraunces,serif',"#fff");
+  tx("Fechas disponibles para tu evento o hospedaje",W/2,190,'500 30px "DM Sans",sans-serif',"#cfe3da");
+  const dias=new Date(a,m+1,0).getDate(),est=[];let full=0,medio=0;
+  for(let d=1;d<=dias;d++){
+    const f=new Date(a,m,d),pas=f.getTime()<h0,jj=jornadas(f);
+    est.push({pas,m:jj.m,t:jj.t});
+    if(!pas){if(!jj.m&&!jj.t)full++;else if(!jj.m||!jj.t)medio++}
+  }
+  tx(cap(MESES[m])+" "+a,W/2,360,'700 68px Fraunces,serif',"#1f3a34");
+  tx(full+" día"+(full===1?"":"s")+" libre"+(full===1?"":"s")+" completo"+(full===1?"":"s")+(medio?" · "+medio+" con una jornada libre":""),W/2,410,'500 30px "DM Sans",sans-serif',"#6b7773");
+  const mx=60,cw=(W-mx*2)/7,rh=112,y0=510;
+  ["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"].forEach((n,i)=>tx(n,mx+cw*i+cw/2,490,'700 26px "DM Sans",sans-serif',"#6b7773"));
+  const off=new Date(a,m,1).getDay();
+  est.forEach((e,i)=>{
+    const p=i+off,x=mx+cw*(p%7)+4,y=y0+rh*Math.floor(p/7),w=cw-8,hh=rh-8;
+    rr(x,y,w,hh,e.pas?"#eceaed":"#fff");
+    c.strokeStyle="#e6e2e8";c.lineWidth=2;c.beginPath();(c.roundRect||c.rect).call(c,x,y,w,hh,16);c.stroke();
+    tx(String(i+1),x+12,y+30,'700 28px "DM Sans",sans-serif',e.pas?"#b9b5bb":"#1f3a34","left");
+    if(e.pas)return;
+    [["Mañana",e.m],["Tarde",e.t]].forEach((q,k)=>{const py=y+38+k*30;rr(x+6,py,w-12,26,q[1]?"#c62828":"#bfe8d2");tx(q[0],x+w/2,py+19,'700 18px "DM Sans",sans-serif',q[1]?"#fff":"#1e6b4a")});
+  });
+  const ly=1235;
+  [["#bfe8d2","Disponible"],["#c62828","Ocupado"]].forEach((it,k)=>{const x=290+k*300;rr(x,ly-22,30,30,it[0]);tx(it[1],x+44,ly+2,'500 28px "DM Sans",sans-serif',"#26302d","left")});
+  const ct=$("disp-contacto").value.trim();
+  tx(ct?"Reserva con nosotros: "+ct:"Escríbenos para reservar tu fecha",W/2,1300,'700 32px "DM Sans",sans-serif',"#c2185b");
+}
+function nombreImg(){return "disponibilidad-"+$("disp-mes").selectedOptions[0].textContent.toLowerCase().replace(/\s/g,"-")+".png"}
+function bajarDisp(){const a=document.createElement("a");a.href=$("disp-canvas").toDataURL("image/png");a.download=nombreImg();a.click();toast("Imagen descargada")}
+function compartirDisp(){
+  $("disp-canvas").toBlob(async b=>{
+    const f=new File([b],nombreImg(),{type:"image/png"});
+    if(navigator.canShare&&navigator.canShare({files:[f]})){
+      try{await navigator.share({files:[f],title:"Disponibilidad Quinta Bugambilia",text:"Fechas disponibles en Quinta Bugambilia"})}catch(e){}
+    }else{bajarDisp();toast("Tu navegador no comparte archivos; se descargó la imagen")}
+  },"image/png");
+}
+
+/* ---------- Navegación ---------- */
+document.querySelector(".nav").addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b)return;
+  document.querySelectorAll(".nav button").forEach(x=>x.classList.toggle("on",x===b));
+  document.querySelectorAll(".view").forEach(v=>v.classList.toggle("on",v.id==="v-"+b.dataset.v));
+});
+document.querySelectorAll(".modal").forEach(m=>m.addEventListener("click",e=>{if(e.target===m)m.classList.remove("on")}));
+$("hoy-txt").textContent=new Date().toLocaleDateString("es-MX",{weekday:"long",day:"numeric",month:"long"});
+try{const c=localStorage.getItem("qb-cache");if(c){datos=JSON.parse(c);llenarAnios();pintarTodo()}}catch(e){}
+cargarDatos();
+</script>
+</body>
+</html>
