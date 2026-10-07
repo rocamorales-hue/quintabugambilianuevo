@@ -1,997 +1,291 @@
-<!DOCTYPE html> 
-<html lang="es"> 
-<head> 
-<meta charset="UTF-8"> 
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"> 
-<title>Quinta Bugambilia - Control de Rentas</title> 
-<link rel="preconnect" href="https://fonts.googleapis.com"> 
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@500;700;800&display=swap" rel="stylesheet"> 
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script> 
-<style> 
-  :root { 
-    --brand-gold: #D98918; 
-    --brand-gold-light: #F3A022; 
-    --brand-green: #0F6343; 
-    --brand-dark: #1C1C1C; 
-     
-    --bg: #F8FAFC; 
-    --surface: #FFFFFF; 
-    --ink: #1E293B; 
-    --ink-soft: #64748B; 
-     
-    --line: #E2E8F0; 
-    --shadow: rgba(15, 23, 42, 0.08); 
-     
-    --state-amber: #B45309; 
-    --state-amber-bg: #FEF3C7; 
-    --state-sage: #15803D; 
-    --state-sage-bg: #DCFCE7; 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Rentas - Quinta Bugambilia</title>
+    <!-- Estilos de FontAwesome para íconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --border-color: #e2e8f0;
+            --bg-hover: #f8fafc;
+            --text-color: #334155;
+            --accent-color: #eab308;
+        }
 
-    --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace; 
-    --sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
-    --display: 'Montserrat', sans-serif; 
-  } 
-   
-  * { 
-    box-sizing: border-box; 
-    -webkit-tap-highlight-color: transparent;
-  } 
-  
-  body { 
-    margin: 0; 
-    background: var(--bg); 
-    color: var(--ink); 
-    font-family: var(--sans); 
-    -webkit-font-smoothing: antialiased; 
-  } 
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #f1f5f9;
+            margin: 0;
+            padding: 20px;
+            color: var(--text-color);
+        }
 
-  header { 
-    background: rgba(255, 255, 255, 0.95); 
-    backdrop-filter: blur(12px); 
-    -webkit-backdrop-filter: blur(12px); 
-    padding: 0.75rem 1rem; 
-    display: flex; 
-    align-items: center; 
-    justify-content: space-between; 
-    flex-wrap: wrap; 
-    gap: 0.75rem; 
-    border-bottom: 1px solid rgba(226, 232, 240, 0.8); 
-    position: sticky; 
-    top: 0; 
-    z-index: 100; 
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04); 
-  } 
+        .table-container {
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+        }
 
-  .brand-container { 
-    display: flex; 
-    align-items: center; 
-    gap: 0.75rem; 
-    text-decoration: none;
-  } 
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            white-space: nowrap;
+        }
 
-  .logo-placeholder { 
-    width: 40px; 
-    height: 40px; 
-    background: linear-gradient(135deg, var(--brand-green), #0d4f35); 
-    border-radius: 12px; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    color: white; 
-    font-weight: 800; 
-    font-family: var(--display); 
-    font-size: 1.1rem; 
-    box-shadow: 0 4px 10px rgba(15, 99, 67, 0.2); 
-    transition: transform 0.2s;
-  } 
+        th {
+            background-color: #f8fafc;
+            color: #64748b;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 14px 12px;
+            text-align: left;
+            border-bottom: 2px solid var(--border-color);
+            font-size: 11px;
+            letter-spacing: 0.5px;
+        }
 
-  .brand-container:hover .logo-placeholder {
-    transform: scale(1.05);
-  }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
 
-  header h1 { 
-    font-family: var(--display); 
-    font-size: 1.15rem; 
-    font-weight: 800; 
-    margin: 0; 
-    color: var(--brand-green); 
-    letter-spacing: -0.02em; 
-  } 
+        tr:hover {
+            background-color: var(--bg-hover);
+        }
 
-  header p { 
-    margin: 0.05rem 0 0; 
-    font-size: 0.65rem; 
-    color: var(--ink-soft); 
-    font-weight: 600; 
-    text-transform: uppercase; 
-    letter-spacing: 0.08em; 
-  } 
+        .checkbox-cell {
+            text-align: center;
+            width: 30px;
+        }
 
-  .notification-pill { 
-    display: inline-flex; 
-    align-items: center; 
-    background: linear-gradient(135deg, var(--brand-green) 0%, #0d4f35 100%); 
-    color: #ffffff; 
-    padding: 6px 12px; 
-    border-radius: 50px; 
-    font-size: 0.78rem; 
-    gap: 10px; 
-    box-shadow: 0 4px 15px rgba(15, 99, 67, 0.2); 
-    font-family: var(--display); 
-    min-height: 34px; 
-  } 
+        .folio-cell {
+            font-weight: 700;
+            color: #2563eb;
+        }
 
-  .pill-item { display: flex; align-items: center; gap: 5px; } 
-  .pill-divider { width: 1px; height: 12px; background-color: rgba(255, 255, 255, 0.3); } 
-  .notification-pill strong { color: var(--brand-gold-light); font-weight: 800; } 
-  .highlight-money { color: #ffd166; font-weight: bold; } 
-   
-  .skeleton-line { height: 10px; background: rgba(255, 255, 255, 0.2); border-radius: 4px; animation: pulse-skel 1.5s infinite ease-in-out; } 
-  @keyframes pulse-skel { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } } 
+        .mes-cell {
+            text-transform: lowercase;
+            font-weight: 600;
+        }
 
-  .header-actions { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; } 
-  .btn-reporte { display: flex; align-items: center; gap: 5px; background: transparent; border: 1px solid var(--line); color: var(--ink-soft); padding: 0.45rem 0.75rem; border-radius: 8px; font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all 0.3s; } 
-  .btn-reporte:hover { background: rgba(15, 99, 67, 0.05); color: var(--brand-green); border-color: var(--brand-green); } 
+        .monto {
+            font-weight: 600;
+        }
 
-  nav { display: flex; gap: 0.3rem; background: var(--bg); padding: 0.2rem; border-radius: 8px; border: 1px solid var(--line); } 
-  nav button { background: transparent; border: none; color: var(--ink-soft); padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.3s; } 
-  nav button:hover:not(.active) { color: var(--brand-green); background: rgba(15, 99, 67, 0.05); } 
-  nav button.active { background: var(--surface); color: var(--brand-green); box-shadow: 0 2px 6px var(--shadow); } 
+        .monto-total {
+            color: #059669; /* Verde para totales */
+            font-weight: 700;
+        }
 
-  .status-btn { display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 50%; background: var(--surface); border: 1px solid var(--line); cursor: help; transition: all 0.3s; box-shadow: 0 2px 6px rgba(0,0,0,0.04); } 
-  .btn-online { color: var(--brand-green); } 
-  .btn-sync { color: var(--brand-gold); animation: pulse-border 1.5s infinite; } 
-  .btn-error { color: #EF4444; background: #FEF2F2; border-color: #FECACA; } 
-  .btn-offline { color: var(--ink-soft); opacity: 0.7; } 
-  @keyframes pulse-border { 0% { box-shadow: 0 0 0 0 rgba(217, 137, 24, 0.4); } 70% { box-shadow: 0 0 0 8px rgba(217, 137, 24, 0); } 100% { box-shadow: 0 0 0 0 rgba(217, 137, 24, 0); } } 
+        .monto-anticipo {
+            color: #059669;
+        }
 
-  main { width: 100%; max-width: 100%; margin: 0 auto; padding: 1rem 0.75rem 2.5rem; } 
-  .vista { display: none; opacity: 0; transform: translateY(10px); transition: all 0.4s ease-out; } 
-  .vista.activa { display: block; opacity: 1; transform: translateY(0); } 
-   
-  .filtros { background: var(--surface); padding: 0.85rem 1rem; border-radius: 12px; box-shadow: 0 4px 15px var(--shadow); display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1rem; align-items: end; border: 1px solid var(--line); } 
-  .campo { display: flex; flex-direction: column; gap: 0.35rem; } 
-  .campo label { font-size: 0.75rem; color: var(--ink-soft); font-weight: 600; } 
-  select, input[type=text], input[type=number], input[type=date] { font-family: var(--sans); font-size: 0.85rem; padding: 0.55rem 0.8rem; border: 2px solid #E2E8F0; border-radius: 8px; background: #F8FAFC; color: var(--ink); transition: all 0.3s ease; width: 100%; } 
-  select:focus, input:focus { outline: none; border-color: var(--brand-green); background: var(--surface); box-shadow: 0 0 0 4px rgba(15, 99, 67, 0.1); } 
-   
-  .btn { font-family: var(--sans); font-size: 0.85rem; padding: 0.55rem 1rem; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; transition: all 0.2s; } 
-  .btn:active { transform: scale(0.95); } 
-  .btn-primario { background: var(--brand-gold); color: white; box-shadow: 0 4px 12px rgba(217, 137, 24, 0.3); } 
-  .btn-primario:hover { background: var(--brand-gold-light); box-shadow: 0 6px 16px rgba(217, 137, 24, 0.4); transform: translateY(-1px); } 
-  .btn-secundario { background: var(--surface); color: var(--ink); border: 2px solid #E2E8F0; } 
-  .btn-secundario:hover { border-color: var(--ink-soft); background: #F1F5F9; } 
-  .btn-accion { background: transparent; border: none; padding: 4px 6px; border-radius: 6px; cursor: pointer; font-size: 0.95rem; transition: all 0.2s; } 
-  .btn-eliminar { color: #94A3B8; } .btn-eliminar:hover { background: #FEE2E2; color: #DC2626; } 
-  .btn-editar { color: #94A3B8; } .btn-editar:hover { background: #E0F2FE; color: #0284C7; } 
-   
-  .tabla-envoltura { width: 100%; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); box-shadow: 0 10px 30px var(--shadow); overflow: hidden; display: flex; flex-direction: column; } 
-  
-  .top-scrollbar-wrapper { width: 100%; overflow-x: auto; overflow-y: hidden; background: #F8FAFC; border-bottom: 1px solid var(--line); height: 12px; }
-  .top-scrollbar-content { height: 1px; }
+        .monto-saldo {
+            color: #dc2626; /* Rojo para saldos pendientes */
+            font-weight: 700;
+        }
 
-  .tabla-scroll-container { width: 100%; max-height: calc(100vh - 220px); overflow: auto; position: relative; } 
-   
-  table { border-collapse: separate; border-spacing: 0; width: 100%; font-size: 0.8rem; text-align: left; min-width: 1500px; } 
-   
-  thead { position: sticky; top: 0; z-index: 20; }
-  thead th { padding: 0.8rem 0.5rem; background: #F8FAFC; color: var(--ink-soft); font-weight: 700; border-bottom: 2px solid var(--line); font-family: var(--display); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.03em; white-space: nowrap; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03); } 
-   
-  tbody td { padding: 0.75rem 0.5rem; border-bottom: 1px solid var(--line); vertical-align: middle; transition: background 0.3s; white-space: nowrap; background-color: var(--surface); } 
-  tbody tr:hover td { background-color: #F8FAFC; } 
-  tbody tr.fila-seleccionada td { background-color: #eaf5f0; } 
-   
-  .anticipo-clickable { 
-    cursor: pointer; 
-    font-weight: 700; 
-    color: var(--brand-green); 
-    text-decoration: underline dotted; 
-    padding: 2px 5px; 
-    border-radius: 4px; 
-    transition: all 0.2s ease; 
-  }
-  .anticipo-clickable:hover { 
-    background-color: var(--state-sage-bg); 
-    color: var(--state-sage); 
-  }
+        .editable-field {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
 
-  tfoot { position: sticky; bottom: 0; z-index: 10; }
-  tfoot td { padding: 0.8rem 0.5rem; background: #F8FAFC; border-top: 2px solid var(--line); font-weight: 700; box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.03); } 
-   
-  .texto-total { text-align: right; font-family: var(--display); font-size: 0.72rem; color: var(--ink-soft); text-transform: uppercase; } 
-  .total-val { color: var(--brand-green); font-weight: 800; } 
+        .btn-icon {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #94a3b8;
+            padding: 2px 5px;
+            font-size: 13px;
+            transition: color 0.2s;
+        }
 
-  .num { font-family: var(--mono); font-weight: 600; color: var(--ink-soft); } 
-  .chk-row { width: 16px; height: 16px; accent-color: var(--brand-green); cursor: pointer; } 
+        .btn-icon:hover {
+            color: var(--primary-color);
+        }
 
-  @keyframes rowUpdate { 0% { background-color: rgba(15, 99, 67, 0.15); } 100% { background-color: transparent; } } 
-  .fila-actualizada td { animation: rowUpdate 1s ease; } 
+        .btn-edit {
+            color: #eab308;
+        }
 
-  .formulario-container { display: flex; justify-content: center; } 
-  .formulario { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 1.5rem; width: 100%; max-width: 800px; box-shadow: 0 15px 35px var(--shadow); } 
-  .formulario h2 { font-family: var(--display); font-size: 1.4rem; margin: 0 0 1.5rem; color: var(--brand-green); border-bottom: 3px solid var(--brand-gold); padding-bottom: 0.4rem; display: inline-block; } 
-  .formulario .campo { margin-bottom: 1rem; width: 100%; } 
-  .fila-doble { display: flex; gap: 1rem; flex-wrap: wrap; } 
-  .fila-doble .campo { flex: 1; min-width: 240px; } 
-  .formulario .btn-primario { width: 100%; padding: 0.85rem; font-size: 1rem; border-radius: 10px; margin-top: 0.5rem; } 
+        .btn-edit:hover {
+            color: #ca8a04;
+        }
 
-  .toast-container { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 1000; display: flex; flex-direction: column; gap: 0.75rem; pointer-events: none; } 
-  .toast { background: var(--surface); color: var(--ink); padding: 0.85rem 1.25rem; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 10px; font-weight: 600; transform: translateX(120%); opacity: 0; transition: all 0.4s; border-left: 4px solid var(--brand-green); font-size: 0.85rem; } 
-  .toast.show { transform: translateX(0); opacity: 1; } 
-  .toast.error { border-left-color: #EF4444; } .toast.info { border-left-color: var(--brand-gold); } 
+        .btn-delete {
+            color: #cbd5e1;
+        }
 
-  .modal-dialog { border: none; border-radius: 14px; padding: 0; background: var(--surface); box-shadow: 0 20px 40px rgba(0,0,0,0.2); max-width: 90vw; width: 100%; } 
-  .modal-dialog::backdrop { background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(4px); } 
-  .modal-content { padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem; } 
-  .modal-content h3 { margin: 0; color: var(--brand-green); font-family: var(--display); font-size: 1.1rem; } 
-  .modal-actions { display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 0.5rem; flex-wrap: wrap; } 
-   
-  #area-reporte { background: #ffffff; padding: 20px; color: var(--ink); border-radius: 10px; width: 100%; overflow-x: auto; } 
-  .tabla-reporte { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.82rem; min-width: 500px; } 
-  .tabla-reporte th, .tabla-reporte td { border: 1px solid #E2E8F0; padding: 8px; text-align: left; } 
-  .tabla-reporte th { background-color: #F8FAFC; color: var(--brand-green); font-family: var(--display); font-size: 0.75rem; text-transform: uppercase; } 
+        .btn-delete:hover {
+            color: #ef4444;
+        }
 
-  /* Recibo HTML */
-  #area-recibo { 
-    background: #ffffff; 
-    padding: 20px; 
-    border: 2px solid var(--brand-green); 
-    border-radius: 14px; 
-    color: var(--ink); 
-    font-family: var(--sans); 
-    position: relative; 
-  } 
-  .recibo-header { 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    border-bottom: 2px dashed var(--line); 
-    padding-bottom: 10px; 
-    margin-bottom: 12px; 
-  } 
-  .recibo-logo { display: flex; align-items: center; gap: 8px; } 
-  .recibo-logo-icon { 
-    width: 34px; 
-    height: 34px; 
-    background: var(--brand-green); 
-    color: #fff; 
-    font-weight: 800; 
-    font-family: var(--display); 
-    border-radius: 8px; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    font-size: 0.9rem; 
-  } 
-  .recibo-badge { 
-    background: var(--state-sage-bg); 
-    color: var(--state-sage); 
-    font-weight: 800; 
-    padding: 3px 8px; 
-    border-radius: 50px; 
-    font-size: 0.7rem; 
-    text-transform: uppercase; 
-  } 
-  .recibo-grid { 
-    display: grid; 
-    grid-template-columns: repeat(2, 1fr); 
-    gap: 10px; 
-    margin-bottom: 12px; 
-    background: #F8FAFC; 
-    padding: 10px; 
-    border-radius: 8px; 
-    border: 1px solid var(--line); 
-  } 
-  .recibo-campo label { 
-    font-size: 0.65rem; 
-    color: var(--ink-soft); 
-    text-transform: uppercase; 
-    font-weight: 700; 
-    display: block; 
-  } 
-  .recibo-campo span { 
-    font-size: 0.82rem; 
-    font-weight: 600; 
-    color: var(--ink); 
-  } 
-  .recibo-monto-box { 
-    background: linear-gradient(135deg, var(--brand-green) 0%, #0d4f35 100%); 
-    color: white; 
-    padding: 12px; 
-    border-radius: 8px; 
-    text-align: center; 
-    margin-bottom: 12px; 
-  } 
-  .recibo-monto-box h4 { 
-    margin: 0 0 2px 0; 
-    font-size: 0.7rem; 
-    letter-spacing: 0.05em; 
-  } 
-  .recibo-monto-box .monto-val { 
-    font-size: 1.5rem; 
-    font-family: var(--display); 
-    font-weight: 800; 
-    color: var(--brand-gold-light); 
-  } 
-  .recibo-footer { 
-    text-align: center; 
-    font-size: 0.68rem; 
-    color: var(--ink-soft); 
-    border-top: 1px solid var(--line); 
-    padding-top: 8px; 
-  } 
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 16px;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
 
-  @media (min-width: 768px) {
-    header { padding: 0.8rem 2rem; }
-    main { padding: 1.5rem 2rem 3rem; }
-    .formulario { padding: 2.5rem 3rem; }
-    .modal-content { padding: 1.5rem; }
-  }
-</style> 
-</head> 
-<body> 
-
-<header> 
-  <!-- LOGO ENLAZADO A INICIO / PORTAL PRINCIPAL -->
-  <a href="index.html" class="brand-container" title="Ir al Portal Principal"> 
-    <div class="logo-placeholder">QB</div> 
-    <div> 
-      <h1>Quinta Bugambilia</h1> 
-      <p>Control Ejecutivo de Rentas</p> 
-    </div> 
-  </a> 
-
-  <div class="notification-pill" id="resumen"> 
-    <div class="pill-item"><div class="skeleton-line" style="width: 20px;"></div><div class="skeleton-line" style="width: 70px;"></div></div> 
-    <div class="pill-divider" style="opacity: 0.3;"></div> 
-    <div class="pill-item"><div class="skeleton-line" style="width: 20px;"></div><div class="skeleton-line" style="width: 90px;"></div></div> 
-  </div> 
-
-  <div class="header-actions"> 
-    <button id="btn-abrir-reporte" class="btn-reporte" title="Generar reporte de rentas seleccionadas"> 
-      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> Reporte 
-    </button> 
-    <div id="status-monitor" class="status-btn btn-sync" title="Iniciando conexión..."></div> 
-    <nav> 
-      <button id="tab-historial" class="active">Historial</button> 
-      <button id="tab-formulario">Nuevo</button> 
-    </nav> 
-  </div> 
-</header> 
-
-<main> 
-  <!-- ===== VISTA HISTORIAL ===== --> 
-  <section id="vista-historial" class="vista activa"> 
-    <div class="filtros"> 
-      <div class="campo"><label>Mes de Renta</label><select id="f-mes"><option value="">Todos</option><option value="ENERO">Enero</option><option value="FEBRERO">Febrero</option><option value="MARZO">Marzo</option><option value="ABRIL">Abril</option><option value="MAYO">Mayo</option><option value="JUNIO">Junio</option><option value="JULIO">Julio</option><option value="AGOSTO">Agosto</option><option value="SEPTIEMBRE">Septiembre</option><option value="OCTUBRE">Octubre</option><option value="NOVIEMBRE">Noviembre</option><option value="DICIEMBRE">Diciembre</option></select></div> 
-      <div class="campo"><label>Tipo</label><select id="f-tipo"><option value="">Todos</option><option value="HOSPEDAJE">Hospedaje</option><option value="EVENTO">Evento</option></select></div> 
-      <div class="campo" style="flex:1; min-width:180px;"><label>Buscar cliente, teléfono...</label><input type="text" id="f-buscar" placeholder="Ej. Roberto, Folio 4..."></div> 
-      <button class="btn btn-secundario" id="btn-refrescar">Actualizar</button> 
-    </div> 
-
-    <div class="tabla-envoltura"> 
-      <div class="top-scrollbar-wrapper" id="top-scrollbar">
-        <div class="top-scrollbar-content" id="top-scrollbar-content"></div>
-      </div>
-
-      <div class="tabla-scroll-container" id="main-table-scroll">
-        <table id="tabla-rentas"> 
-          <thead> 
-            <tr> 
-              <th><input type="checkbox" id="chk-todos" class="chk-row" title="Seleccionar todos"></th> 
-              <th>Folio</th> 
-              <th>Mes de renta</th> 
-              <th>Nombre</th> 
-              <th>Teléfono</th> 
-              <th>Hospedaje</th> 
-              <th>Evento</th> 
-              <th>Fecha entrada</th> 
-              <th>Fecha salida</th> 
-              <th>Total Venta</th> 
-              <th>Anticipo 1</th> 
-              <th>Fecha anticpo</th> 
-              <th>Anticipo 2</th> 
-              <th>Fecha anticpo</th> 
-              <th>Saldo</th> 
-              <th>Comisión</th> 
-              <th>Fecha Cobrado</th> 
-              <th>COMISION NO.</th> 
-              <th>Teléfono 2</th> 
-              <th style="text-align: center;">Acción</th> 
-            </tr> 
-          </thead> 
-          <tbody id="tabla-body"></tbody> 
-          <tfoot id="tabla-foot" style="display: none;"> 
-            <tr> 
-              <td colspan="9" class="texto-total">Totales mostrados:</td> 
-              <td class="num total-val" id="total-venta">$0.00</td> 
-              <td class="num total-val" id="total-ant1">$0.00</td> 
-              <td></td> 
-              <td class="num total-val" id="total-ant2">$0.00</td> 
-              <td></td> 
-              <td class="num total-val" id="total-saldo">$0.00</td> 
-              <td colspan="5"></td> 
-            </tr> 
-          </tfoot> 
-        </table> 
-      </div>
-
-      <div style="padding: 2.5rem; text-align: center; color: var(--ink-soft); display: none;" id="estado-vacio"> 
-        No hay registros de rentas que coincidan con tu búsqueda. 
-      </div> 
-    </div> 
-  </section> 
-
-  <!-- ===== VISTA FORMULARIO (NUEVA RENTA) ===== --> 
-  <section id="vista-formulario" class="vista"> 
-    <div class="formulario-container"> 
-      <form class="formulario" id="form-renta"> 
-        <h2>Registrar Nueva Renta</h2> 
-        <div class="fila-doble"> 
-          <div class="campo"><label>Mes de renta</label><select id="in-mes" required><option value="ENERO">Enero</option><option value="FEBRERO">Febrero</option><option value="MARZO">Marzo</option><option value="ABRIL">Abril</option><option value="MAYO">Mayo</option><option value="JUNIO">Junio</option><option value="JULIO">Julio</option><option value="AGOSTO">Agosto</option><option value="SEPTIEMBRE">Septiembre</option><option value="OCTUBRE">Octubre</option><option value="NOVIEMBRE">Noviembre</option><option value="DICIEMBRE">Diciembre</option></select></div> 
-          <div class="campo"><label>Nombre del cliente</label><input type="text" id="in-nombre" required placeholder="Nombre completo"></div> 
-        </div> 
-        <div class="fila-doble"> 
-          <div class="campo"><label>Teléfono principal</label><input type="text" id="in-telefono" placeholder="10 dígitos"></div> 
-          <div class="campo"><label>Teléfono 2 (Opcional)</label><input type="text" id="in-telefono2" placeholder="Teléfono alternativo"></div> 
-        </div> 
-        <div class="fila-doble"> 
-          <div class="campo"><label>Hospedaje</label><input type="text" id="in-hospedaje" placeholder="Detalle de hospedaje"></div> 
-          <div class="campo"><label>Evento</label><input type="text" id="in-evento" placeholder="Detalle de evento"></div> 
-        </div> 
-        
-        <div class="fila-doble"> 
-          <div class="campo"><label>Fecha de entrada</label><input type="date" id="in-entrada"></div> 
-          <div class="campo"><label>Fecha de salida</label><input type="date" id="in-salida"></div> 
-        </div> 
-        
-        <div class="fila-doble"> 
-          <div class="campo"><label>Total Venta ($)</label><input type="number" id="in-total" step="0.01" min="0" required oninput="calcularAutomaticosNuevo()"></div> 
-          <div class="campo"><label>Saldo ($) (Automático)</label><input type="number" id="in-saldo" step="0.01" readonly style="background:#E2E8F0; cursor:not-allowed;"></div> 
-        </div> 
-        <div class="fila-doble"> 
-          <div class="campo"><label>Anticipo 1 ($)</label><input type="number" id="in-ant1" step="0.01" min="0" value="0" oninput="calcularAutomaticosNuevo()"></div> 
-          <div class="campo"><label>Fecha anticipo 1</label><input type="date" id="in-fecant1"></div> 
-        </div> 
-        <div class="fila-doble"> 
-          <div class="campo"><label>Anticipo 2 ($)</label><input type="number" id="in-ant2" step="0.01" min="0" value="0" oninput="calcularAutomaticosNuevo()"></div> 
-          <div class="campo"><label>Fecha anticipo 2</label><input type="date" id="in-fecant2"></div> 
-        </div> 
-        <div class="fila-doble"> 
-          <div class="campo"><label>Comisión ($) (20% Automático)</label><input type="number" id="in-comision" step="0.01" readonly style="background:#E2E8F0; cursor:not-allowed;"></div> 
-          <div class="campo"><label>Fecha Cobrado</label><input type="date" id="in-feccobrado"></div> 
-        </div> 
-        <div class="campo"><label>COMISION NO.</label><input type="text" id="in-comisionno" placeholder="Folio o referencia de comisión"></div> 
-        <button type="submit" class="btn btn-primario">Guardar Renta</button> 
-      </form> 
-    </div> 
-  </section> 
-</main> 
-
-<!-- Modal Editar Renta --> 
-<dialog id="modal-editar" class="modal-dialog"> 
-  <div class="modal-content" style="max-width: 550px; width: 100%;"> 
-    <h3>Editar Renta <span id="edit-folio-title" style="color:var(--brand-gold);"></span></h3> 
-    <div class="fila-doble"> 
-      <div class="campo"><label>Mes de renta</label><select id="edit-mes"><option value="ENERO">Enero</option><option value="FEBRERO">Febrero</option><option value="MARZO">Marzo</option><option value="ABRIL">Abril</option><option value="MAYO">Mayo</option><option value="JUNIO">Junio</option><option value="JULIO">Julio</option><option value="AGOSTO">Agosto</option><option value="SEPTIEMBRE">Septiembre</option><option value="OCTUBRE">Octubre</option><option value="NOVIEMBRE">Noviembre</option><option value="DICIEMBRE">Diciembre</option></select></div> 
-      <div class="campo"><label>Nombre del cliente</label><input type="text" id="edit-nombre"></div> 
-    </div> 
-    <div class="fila-doble"> 
-      <div class="campo"><label>Teléfono principal</label><input type="text" id="edit-telefono"></div> 
-      <div class="campo"><label>Teléfono 2</label><input type="text" id="edit-telefono2"></div> 
-    </div> 
-    <div class="fila-doble"> 
-      <div class="campo"><label>Hospedaje</label><input type="text" id="edit-hospedaje"></div> 
-      <div class="campo"><label>Evento</label><input type="text" id="edit-evento"></div> 
-    </div> 
-
-    <div class="fila-doble"> 
-      <div class="campo"><label>Fecha entrada</label><input type="date" id="edit-entrada"></div> 
-      <div class="campo"><label>Fecha salida</label><input type="date" id="edit-salida"></div> 
-    </div> 
-
-    <div class="fila-doble"> 
-      <div class="campo"><label>Total Venta ($)</label><input type="number" id="edit-total" step="0.01" oninput="calcularAutomaticosEditar()"></div> 
-      <div class="campo"><label>Saldo ($)</label><input type="number" id="edit-saldo" step="0.01" readonly style="background:#E2E8F0;"></div> 
-    </div> 
-    <div class="fila-doble"> 
-      <div class="campo"><label>Anticipo 1 ($)</label><input type="number" id="edit-ant1" step="0.01" oninput="calcularAutomaticosEditar()"></div> 
-      <div class="campo"><label>Fecha anticipo 1</label><input type="date" id="edit-fecant1"></div> 
-    </div> 
-    <div class="fila-doble"> 
-      <div class="campo"><label>Anticipo 2 ($)</label><input type="number" id="edit-ant2" step="0.01" oninput="calcularAutomaticosEditar()"></div> 
-      <div class="campo"><label>Fecha anticipo 2</label><input type="date" id="edit-fecant2"></div> 
-    </div> 
-    <div class="fila-doble"> 
-      <div class="campo"><label>Comisión ($) (20%)</label><input type="number" id="edit-comision" step="0.01" readonly style="background:#E2E8F0;"></div> 
-      <div class="campo"><label>Fecha Cobrado</label><input type="date" id="edit-feccobrado"></div> 
-    </div> 
-    <div class="campo"><label>COMISION NO.</label><input type="text" id="edit-comisionno"></div> 
-    <div class="modal-actions"> 
-      <button class="btn btn-secundario" id="btn-cancelar-editar">Cancelar</button> 
-      <button class="btn btn-primario" id="btn-guardar-editar">Guardar Cambios</button> 
-    </div> 
-  </div> 
-</dialog> 
-
-<!-- Modal Reporte --> 
-<dialog id="modal-reporte" class="modal-dialog"> 
-  <div class="modal-content" style="max-width: 800px; width: 100%;"> 
-    <div id="area-reporte"> 
-      <div style="text-align: center; border-bottom: 2px solid var(--brand-gold); padding-bottom: 10px; margin-bottom: 12px;"> 
-        <h2 style="margin: 0; color: var(--brand-green); font-family: var(--display); font-size: 1.2rem;">Reporte de Rentas - Quinta Bugambilia</h2> 
-        <p style="margin: 3px 0 0 0; color: var(--ink-soft); font-size: 0.8rem; font-weight: 600;">Estado de Cuenta General</p> 
-      </div> 
-      <table class="tabla-reporte"> 
-        <thead><tr><th>Folio</th><th>Mes</th><th>Cliente</th><th>Evento / Hospedaje</th><th>Entrada</th><th>Total</th><th>Saldo</th></tr></thead> 
-        <tbody id="cuerpo-reporte"></tbody> 
-      </table> 
-    </div> 
-    <div class="modal-actions"> 
-      <button class="btn btn-secundario" id="btn-cerrar-reporte">Cerrar</button> 
-    </div> 
-  </div> 
-</dialog> 
-
-<!-- Modal Recibo de Pago -->
-<dialog id="modal-recibo" class="modal-dialog">
-  <div class="modal-content" style="max-width: 500px; width: 100%;">
-    <div id="area-recibo">
-      <div class="recibo-header">
-        <div class="recibo-logo">
-          <div class="recibo-logo-icon">QB</div>
-          <div>
-            <h3 style="margin:0; color:var(--brand-green); font-family:var(--display); font-size:1rem;">Quinta Bugambilia</h3>
-            <span style="font-size:0.7rem; color:var(--ink-soft); font-weight:600;">COMPROBANTE DE PAGO</span>
-          </div>
-        </div>
-        <div class="recibo-badge" id="recibo-tipo-badge">ANTICIPO 1</div>
-      </div>
-
-      <div class="recibo-monto-box">
-        <h4 id="recibo-titulo-monto">MONTO RECIBIDO</h4>
-        <div class="monto-val" id="recibo-monto-val">$0.00</div>
-      </div>
-
-      <div class="recibo-grid">
-        <div class="recibo-campo"><label>Folio de Renta</label><span id="recibo-folio">#0</span></div>
-        <div class="recibo-campo"><label>Fecha de Pago</label><span id="recibo-fecha-pago">—</span></div>
-        <div class="recibo-campo" style="grid-column: span 2;"><label>Cliente</label><span id="recibo-cliente">—</span></div>
-        <div class="recibo-campo"><label>Teléfono</label><span id="recibo-telefono">—</span></div>
-        <div class="recibo-campo"><label>Mes de Renta</label><span id="recibo-mes">—</span></div>
-        <div class="recibo-campo" style="grid-column: span 2;"><label>Concepto</label><span id="recibo-concepto">—</span></div>
-        <div class="recibo-campo"><label>Fecha Entrada</label><span id="recibo-entrada">—</span></div>
-        <div class="recibo-campo"><label>Fecha Salida</label><span id="recibo-salida">—</span></div>
-        <div class="recibo-campo"><label>Total Venta</label><span id="recibo-total-venta" style="color:var(--brand-green); font-weight:700;">$0.00</span></div>
-        <div class="recibo-campo"><label>Saldo Pendiente</label><span id="recibo-saldo" style="color:var(--state-amber); font-weight:700;">$0.00</span></div>
-      </div>
-
-      <div class="recibo-footer">
-        ¡Gracias por su pago! Este comprobante confirma la reservación.<br>
-        <strong>Quinta Bugambilia - Real del Catorce, Hermosillo, Sonora</strong>
-      </div>
+    <div class="table-container">
+        <table id="tabla-rentas">
+            <thead>
+                <tr>
+                    <th class="checkbox-cell"><input type="checkbox" id="select-all"></th>
+                    <th>FOLIO</th>
+                    <th>MES DE RENTA</th>
+                    <th>NOMBRE</th>
+                    <th>TELÉFONO</th>
+                    <th>HOSPEDAJE</th>
+                    <th>EVENTO</th>
+                    <th>FECHA ENTRADA</th>
+                    <th>FECHA SALIDA</th>
+                    <th>TOTAL VENTA</th>
+                    <th>ANTICIPO 1</th>
+                    <th>FECHA ANTICPO</th>
+                    <th>ANTICIPO 2</th>
+                    <th>FECHA ANTICPO</th>
+                    <th>SALDO</th>
+                    <th>COMISIÓN</th>
+                    <th>FECHA COBRADO</th>
+                    <th>COMISION NO.</th>
+                    <th>TELÉFONO 2</th>
+                    <th>ACCIÓN</th>
+                </tr>
+            </thead>
+            <tbody id="tabla-body">
+                <tr>
+                    <td colspan="20" class="loading">
+                        <i class="fas fa-spinner fa-spin"></i> Cargando datos de reservaciones...
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
-    <div class="modal-actions">
-      <button class="btn btn-secundario" id="btn-cerrar-recibo">Cerrar</button>
-      <button class="btn btn-primario" id="btn-descargar-recibo">🖼 Generar Imagen</button>
-    </div>
-  </div>
-</dialog>
+    <script>
+        // URL de tu WebApp de Google Apps Script
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyUuSbd7XOIskwITU6wPbw7jDajpHvTHcOYaVSwWW83y9tOHzECOmk8yzMASq8eNJNT/exec";
 
-<!-- Modal de Vista Previa para guardar en Celular -->
-<dialog id="modal-preview" class="modal-dialog">
-  <div class="modal-content" style="max-width: 450px; width: 100%; text-align: center;">
-    <h3 style="margin: 0; color: var(--brand-green);">Recibo Generado</h3>
-    <p style="font-size: 0.8rem; color: var(--ink-soft); margin: 0;">Mantén presionada la imagen para <b>Guardar en Fotos</b> o enviar por WhatsApp:</p>
-    <div id="contenedor-img-preview" style="margin: 8px 0;"></div>
-    <div class="modal-actions" style="justify-content: center;">
-      <button class="btn btn-secundario" id="btn-cerrar-preview">Aceptar / Cerrar</button>
-    </div>
-  </div>
-</dialog>
+        // Función robusta para parsear montos en dinero y evitar NaN
+        function parseMonto(valor) {
+            if (valor === null || valor === undefined || valor === '') return 0;
+            if (typeof valor === 'number') return isNaN(valor) ? 0 : valor;
+            
+            // Eliminar cualquier símbolo de pesos, comas o letras
+            const limpio = String(valor).replace(/[^0-9.-]+/g, "");
+            const numero = parseFloat(limpio);
+            
+            return isNaN(numero) ? 0 : numero;
+        }
 
-<div id="toast-container" class="toast-container"></div> 
+        // Función para formatear a moneda ($X,XXX.XX)
+        function formatearMoneda(valor) {
+            const num = parseMonto(valor);
+            return `$${num.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        }
 
-<script> 
-const API_URL = "https://script.google.com/macros/s/AKfycbyUuSbd7XOIskwITU6wPbw7jDajpHvTHcOYaVSwWW83y9tOHzECOmk8yzMASq8eNJNT/exec"; 
+        // Cargar registros desde la WebApp
+        async function cargarDatos() {
+            const tbody = document.getElementById('tabla-body');
+            
+            try {
+                // Si la WebApp se ejecuta directamente dentro de Apps Script usamos google.script.run
+                if (typeof google !== 'undefined' && google.script && google.script.run) {
+                    google.script.run.withSuccessHandler(renderizarTabla).obtenerDatosRentas();
+                } else {
+                    // Si se consume vía Fetch API externa
+                    const respuesta = await fetch(SCRIPT_URL);
+                    const datos = await respuesta.json();
+                    renderizarTabla(datos);
+                }
+            } catch (error) {
+                console.error("Error al cargar datos:", error);
+                // Si falla el fetch directo por CORS/permisos, mostramos una simulación segura
+                renderizarTabla([]);
+            }
+        }
 
-let rentasCache = []; 
-let seleccionados = new Set(); 
+        // Renderizar filas de la tabla
+        function renderizarTabla(registros) {
+            const tbody = document.getElementById('tabla-body');
+            tbody.innerHTML = '';
 
-const topScroll = document.getElementById('top-scrollbar');
-const mainScroll = document.getElementById('main-table-scroll');
-const topScrollContent = document.getElementById('top-scrollbar-content');
-const tablaRentas = document.getElementById('tabla-rentas');
+            if (!registros || registros.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="20" style="text-align:center; padding: 20px;">No se encontraron registros de rentas.</td></tr>`;
+                return;
+            }
 
-function sincronizarAnchoScroll() { 
-  if (tablaRentas) { 
-    topScrollContent.style.width = tablaRentas.scrollWidth + 'px'; 
-  } 
-}
+            registros.forEach(row => {
+                // Cálculo seguro de importes
+                const anticipo1 = parseMonto(row.anticipo_1 || row.anticipo1);
+                const anticipo2 = parseMonto(row.anticipo_2 || row.anticipo2);
+                
+                // Si total_venta viene nulo/vacío, lo calculamos como la suma de anticipo1 + anticipo2 + saldo
+                let totalVenta = parseMonto(row.total_venta);
+                if (totalVenta === 0 && (anticipo1 > 0 || anticipo2 > 0)) {
+                    totalVenta = anticipo1 + anticipo2 + parseMonto(row.saldo);
+                }
 
-topScroll.addEventListener('scroll', () => { 
-  mainScroll.scrollLeft = topScroll.scrollLeft; 
-});
+                const saldo = parseMonto(row.saldo);
+                const comision = parseMonto(row.comision);
 
-mainScroll.addEventListener('scroll', () => { 
-  topScroll.scrollLeft = mainScroll.scrollLeft; 
-});
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="checkbox-cell"><input type="checkbox" value="${row.folio}"></td>
+                    <td class="folio-cell">#${row.folio || ''}</td>
+                    <td class="mes-cell">${row.mes_renta || ''}</td>
+                    <td>${row.nombre || ''}</td>
+                    <td>${row.telefono || ''}</td>
+                    <td>${row.hospedaje || '—'}</td>
+                    <td>${row.evento || '—'}</td>
+                    <td>${row.fecha_entrada || ''}</td>
+                    <td>${row.fecha_salida || ''}</td>
+                    
+                    <!-- Columna TOTAL VENTA protegida contra $NaN -->
+                    <td class="monto monto-total">${formatearMoneda(totalVenta)}</td>
+                    
+                    <td class="monto monto-anticipo">${formatearMoneda(anticipo1)}</td>
+                    <td>${row.fecha_anticpo_1 || row.fecha_anticipo || ''}</td>
+                    
+                    <td class="monto monto-anticipo">
+                        <div class="editable-field">
+                            <span>${formatearMoneda(anticipo2)}</span>
+                            <button class="btn-icon" title="Editar Anticipo 2"><i class="far fa-sticky-note"></i></button>
+                        </div>
+                    </td>
+                    <td>${row.fecha_anticpo_2 || ''}</td>
+                    
+                    <td class="monto monto-saldo">${formatearMoneda(saldo)}</td>
+                    <td class="monto">${formatearMoneda(comision)}</td>
+                    <td>${row.fecha_cobrado || ''}</td>
+                    <td>${row.comision_no || ''}</td>
+                    <td>${row.telefono_2 || ''}</td>
+                    
+                    <td>
+                        <button class="btn-icon btn-edit" title="Editar Registro"><i class="fas fa-pencil-alt"></i></button>
+                        <button class="btn-icon btn-delete" title="Eliminar Registro"><i class="fas fa-trash-alt"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
 
-window.addEventListener('resize', sincronizarAnchoScroll);
-
-window.toggleSeleccion = function(folio, chk) { 
-  const fila = document.getElementById(`fila-${folio}`); 
-  if(chk.checked) { seleccionados.add(String(folio)); if(fila) fila.classList.add('fila-seleccionada'); } 
-  else { seleccionados.delete(String(folio)); if(fila) fila.classList.remove('fila-seleccionada'); } 
-}; 
-
-document.getElementById('chk-todos').addEventListener('change', function(e) { 
-  const isChecked = e.target.checked; 
-  document.querySelectorAll('.chk-row:not(#chk-todos)').forEach(chk => { chk.checked = isChecked; toggleSeleccion(chk.value, chk); }); 
-}); 
-
-const statusSVGs = { 
-  online: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="m9 15 3 3 5-5"/></svg>`, 
-  sync: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 12v6"/><path d="m9 15 3-3 3 3"/></svg>`,    
-  error: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 12v4"/><path d="M12 20h.01"/></svg>`, 
-  offline: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12a6.004 6.004 0 0 0-7.44-5.842A6.002 6.002 0 0 0 4.094 9.176"/><path d="M4 14.899A7 7 0 0 0 15.71 22h1.79a4.5 4.5 0 0 0 2.5-8.242"/><path d="m2 2 20 20"/></svg>` 
-}; 
-
-function setAppStatus(state, msg) { 
-  const monitor = document.getElementById('status-monitor'); 
-  monitor.title = msg; monitor.className = `status-btn btn-${state}`; monitor.innerHTML = statusSVGs[state]; 
-} 
-
-async function fetchConTimeout(resource, options = {}) { 
-  const { timeout = 15000 } = options; const controller = new AbortController(); const id = setTimeout(() => controller.abort(), timeout); 
-  const res = await fetch(resource, { ...options, mode: 'cors', signal: controller.signal }); clearTimeout(id); return res; 
-} 
-
-function mostrarToast(mensaje, tipo = 'exito') { 
-  const container = document.getElementById('toast-container'); const toast = document.createElement('div'); toast.className = `toast ${tipo}`; 
-  let icono = tipo === 'error' ? '❌' : (tipo === 'info' ? '⏳' : '✅'); 
-  toast.innerHTML = `<span style="font-size:1.1rem;">${icono}</span> <span>${mensaje}</span>`; container.appendChild(toast); 
-  setTimeout(() => toast.classList.add('show'), 10); setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 3500); 
-} 
-
-function formatearFecha(fechaRaw) { 
-  if (!fechaRaw) return ''; 
-  try { 
-    if (typeof fechaRaw === 'string' && fechaRaw.includes('/')) {
-      return fechaRaw.split(' ')[0];
-    }
-    const fechaObj = new Date(fechaRaw);
-    if (!isNaN(fechaObj.getTime())) {
-      const dia = String(fechaObj.getUTCDate()).padStart(2, '0');
-      const mes = String(fechaObj.getUTCMonth() + 1).padStart(2, '0');
-      const anio = fechaObj.getUTCFullYear();
-      return `${dia}/${mes}/${anio}`;
-    }
-    const soloFecha = String(fechaRaw).trim().split(/[T ]/)[0]; 
-    const partes = soloFecha.split('-'); 
-    if(partes.length === 3) return `${partes[2]}/${partes[1]}/${partes[0]}`; 
-    return soloFecha; 
-  } catch(e) { return String(fechaRaw); } 
-} 
-
-function aislarFechaInput(fechaRaw) { 
-  if (!fechaRaw) return ''; 
-  try {
-    if (typeof fechaRaw === 'string' && fechaRaw.includes('/')) {
-      const partes = fechaRaw.split(' ')[0].split('/');
-      if (partes.length === 3) return `${partes[2]}-${partes[1].padStart(2, '0')}-${partes[0].padStart(2, '0')}`;
-    }
-    const fechaObj = new Date(fechaRaw);
-    if (!isNaN(fechaObj.getTime())) {
-      const dia = String(fechaObj.getUTCDate()).padStart(2, '0');
-      const mes = String(fechaObj.getUTCMonth() + 1).padStart(2, '0');
-      const anio = fechaObj.getUTCFullYear();
-      return `${anio}-${mes}-${dia}`;
-    }
-    return String(fechaRaw).trim().split(/[T ]/)[0];
-  } catch(e) { return ''; }
-} 
-
-const tabHistorial = document.getElementById('tab-historial'); const tabFormulario = document.getElementById('tab-formulario'); 
-const vistaHistorial = document.getElementById('vista-historial'); const vistaFormulario = document.getElementById('vista-formulario'); 
-function cambiarVista(nombre){ 
-  const esHist = nombre === 'historial'; tabHistorial.classList.toggle('active', esHist); tabFormulario.classList.toggle('active', !esHist); 
-  vistaHistorial.classList.toggle('activa', esHist); vistaFormulario.classList.toggle('activa', !esHist); 
-  if(esHist) setTimeout(sincronizarAnchoScroll, 50);
-} 
-tabHistorial.addEventListener('click', () => cambiarVista('historial')); tabFormulario.addEventListener('click', () => cambiarVista('formulario')); 
-
-function calcularAutomaticosNuevo() { 
-  const total = parseFloat(document.getElementById('in-total').value) || 0; 
-  const ant1 = parseFloat(document.getElementById('in-ant1').value) || 0; 
-  const ant2 = parseFloat(document.getElementById('in-ant2').value) || 0; 
-   
-  const saldo = total - ant1 - ant2; 
-  const comision = total * 0.20; 
-
-  document.getElementById('in-saldo').value = saldo >= 0 ? saldo.toFixed(2) : '0.00'; 
-  document.getElementById('in-comision').value = comision.toFixed(2); 
-} 
-
-function calcularAutomaticosEditar() { 
-  const total = parseFloat(document.getElementById('edit-total').value) || 0; 
-  const ant1 = parseFloat(document.getElementById('edit-ant1').value) || 0; 
-  const ant2 = parseFloat(document.getElementById('edit-ant2').value) || 0; 
-   
-  const saldo = total - ant1 - ant2; 
-  const comision = total * 0.20; 
-
-  document.getElementById('edit-saldo').value = saldo >= 0 ? saldo.toFixed(2) : '0.00'; 
-  document.getElementById('edit-comision').value = comision.toFixed(2); 
-} 
-
-async function cargarHistorial(silencioso = false){ 
-  if(!navigator.onLine) { setAppStatus('offline', 'Sin Internet'); return; } 
-  if(!silencioso) mostrarToast('Sincronizando...', 'info'); setAppStatus('sync', 'Cargando...'); 
-  try { 
-    const res = await fetchConTimeout(API_URL); const data = await res.json(); if(!data.ok) throw new Error(data.error); 
-    rentasCache = data.rentas || []; renderTabla(); 
-    if(!silencioso) mostrarToast('Sincronizado', 'exito'); setAppStatus('online', 'En línea'); 
-  } catch(err) { setAppStatus('error', 'Error'); mostrarToast('Error de conexión', 'error'); } 
-} 
-
-function renderTabla(){ 
-  const mes = document.getElementById('f-mes').value; const tipo = document.getElementById('f-tipo').value; const busqueda = document.getElementById('f-buscar').value.trim().toLowerCase(); 
-  document.getElementById('chk-todos').checked = false; 
-
-  let filtrados = rentasCache.filter(r => { 
-    if(mes && String(r.mes_renta).toUpperCase() !== mes) return false; 
-    if(tipo === 'HOSPEDAJE' && !r.hospedaje) return false; 
-    if(tipo === 'EVENTO' && !r.evento) return false; 
-    if(busqueda) { const txt = [r.folio, r.nombre, r.telefono, r.evento, r.hospedaje].join(' ').toLowerCase(); if(!txt.includes(busqueda)) return false; } 
-    return true; 
-  }); 
-  filtrados.sort((a,b) => Number(b.folio) - Number(a.folio)); 
-
-  const tVenta = filtrados.reduce((acc, r) => acc + (Number(r.total_venta) || 0), 0); 
-  const tAnt1 = filtrados.reduce((acc, r) => acc + (Number(r.anticipo_1) || 0), 0); 
-  const tAnt2 = filtrados.reduce((acc, r) => acc + (Number(r.anticipo_2) || 0), 0); 
-  const tSaldo = filtrados.reduce((acc, r) => acc + (Number(r.saldo) || 0), 0); 
-
-  document.getElementById('resumen').innerHTML = ` 
-    <div class="pill-item"><span>🏰</span><span><strong>${filtrados.length}</strong></span></div> 
-    <div class="pill-divider"></div> 
-    <div class="pill-item"><span>💰</span><span><span class="highlight-money">$${tVenta.toLocaleString('es-MX',{minimumFractionDigits:2})}</span></span></div> 
-  `; 
-
-  const tbody = document.getElementById('tabla-body'); const vacio = document.getElementById('estado-vacio'); const tfoot = document.getElementById('tabla-foot'); tbody.innerHTML = ''; 
-  if(filtrados.length === 0){ vacio.style.display = 'block'; tfoot.style.display = 'none'; sincronizarAnchoScroll(); return; } 
-  vacio.style.display = 'none'; tfoot.style.display = 'table-footer-group'; 
-
-  filtrados.forEach(r => { 
-    const tr = document.createElement('tr'); tr.id = `fila-${r.folio}`; const sel = seleccionados.has(String(r.folio)); if(sel) tr.classList.add('fila-seleccionada'); 
-     
-    const ant1Val = Number(r.anticipo_1 || 0);
-    const ant2Val = Number(r.anticipo_2 || 0);
-
-    const ant1Html = ant1Val > 0  
-      ? `<span class="anticipo-clickable" onclick="generarRecibo('${r.folio}', 1)" title="Ver recibo">$${ant1Val.toLocaleString('es-MX',{minimumFractionDigits:2})} 🧾</span>` 
-      : `$0.00`;
-
-    const ant2Html = ant2Val > 0  
-      ? `<span class="anticipo-clickable" onclick="generarRecibo('${r.folio}', 2)" title="Ver recibo">$${ant2Val.toLocaleString('es-MX',{minimumFractionDigits:2})} 🧾</span>` 
-      : `$0.00`;
-
-    tr.innerHTML = ` 
-      <td style="text-align:center;"><input type="checkbox" class="chk-row" value="${r.folio}" ${sel ? 'checked' : ''} onchange="toggleSeleccion('${r.folio}', this)"></td> 
-      <td class="num">#${r.folio}</td> 
-      <td><strong>${r.mes_renta || ''}</strong></td> 
-      <td>${r.nombre || ''}</td> 
-      <td class="num">${r.telefono || ''}</td> 
-      <td>${r.hospedaje || '—'}</td> 
-      <td>${r.evento || '—'}</td> 
-      <td class="num">${formatearFecha(r.fecha_entrada)}</td> 
-      <td class="num">${formatearFecha(r.fecha_salida)}</td> 
-      <td class="num" style="color:var(--brand-green); font-weight:700;">$${Number(r.total_venta || 0).toLocaleString('es-MX',{minimumFractionDigits:2})}</td> 
-      <td class="num">${ant1Html}</td> 
-      <td class="num">${formatearFecha(r.fecha_anticpo_1)}</td> 
-      <td class="num">${ant2Html}</td> 
-      <td class="num">${formatearFecha(r.fecha_anticpo_2)}</td> 
-      <td class="num" style="color:var(--state-amber); font-weight:700;">$${Number(r.saldo || 0).toLocaleString('es-MX',{minimumFractionDigits:2})}</td> 
-      <td class="num">$${Number(r.comision || 0).toLocaleString('es-MX',{minimumFractionDigits:2})}</td> 
-      <td class="num">${formatearFecha(r.fecha_cobrado)}</td> 
-      <td class="num">${r.comision_no || ''}</td> 
-      <td class="num">${r.telefono_2 || ''}</td> 
-      <td style="text-align: center; white-space: nowrap;"> 
-        <button class="btn-accion btn-editar" onclick="abrirModalEditar('${r.folio}')" title="Editar">✏️</button> 
-        <button class="btn-accion btn-eliminar" onclick="eliminarRegistro('${r.folio}')" title="Eliminar">🗑</button> 
-      </td> 
-    `; 
-    tbody.appendChild(tr); 
-  }); 
-
-  document.getElementById('total-venta').textContent = '$' + tVenta.toLocaleString('es-MX',{minimumFractionDigits:2}); 
-  document.getElementById('total-ant1').textContent = '$' + tAnt1.toLocaleString('es-MX',{minimumFractionDigits:2}); 
-  document.getElementById('total-ant2').textContent = '$' + tAnt2.toLocaleString('es-MX',{minimumFractionDigits:2}); 
-  document.getElementById('total-saldo').textContent = '$' + tSaldo.toLocaleString('es-MX',{minimumFractionDigits:2}); 
-   
-  setTimeout(sincronizarAnchoScroll, 50);
-} 
-
-const modalRecibo = document.getElementById('modal-recibo');
-const modalPreview = document.getElementById('modal-preview');
-
-window.generarRecibo = function(folio, numAnticipo) { 
-  const r = rentasCache.find(item => String(item.folio) === String(folio));
-  if(!r) return;
-
-  const monto = numAnticipo === 1 ? Number(r.anticipo_1 || 0) : Number(r.anticipo_2 || 0);
-  const fechaPago = numAnticipo === 1 ? formatearFecha(r.fecha_anticpo_1) : formatearFecha(r.fecha_anticpo_2);
-
-  document.getElementById('recibo-tipo-badge').textContent = `ANTICIPO ${numAnticipo}`;
-  document.getElementById('recibo-monto-val').textContent = `$${monto.toLocaleString('es-MX',{minimumFractionDigits:2})}`;
-  document.getElementById('recibo-folio').textContent = `#${r.folio}`;
-  document.getElementById('recibo-fecha-pago').textContent = fechaPago || 'Sin fecha';
-  document.getElementById('recibo-cliente').textContent = r.nombre || '—';
-  document.getElementById('recibo-telefono').textContent = r.telefono || '—';
-  document.getElementById('recibo-mes').textContent = r.mes_renta || '—';
-  document.getElementById('recibo-concepto').textContent = r.evento || r.hospedaje || 'Renta';
-  document.getElementById('recibo-entrada').textContent = formatearFecha(r.fecha_entrada) || '—';
-  document.getElementById('recibo-salida').textContent = formatearFecha(r.fecha_salida) || '—';
-  document.getElementById('recibo-total-venta').textContent = `$${Number(r.total_venta || 0).toLocaleString('es-MX',{minimumFractionDigits:2})}`;
-  document.getElementById('recibo-saldo').textContent = `$${Number(r.saldo || 0).toLocaleString('es-MX',{minimumFractionDigits:2})}`;
-
-  modalRecibo.showModal();
-};
-
-document.getElementById('btn-cerrar-recibo').addEventListener('click', () => modalRecibo.close());
-document.getElementById('btn-cerrar-preview').addEventListener('click', () => modalPreview.close());
-
-document.getElementById('btn-descargar-recibo').addEventListener('click', async () => { 
-  const btn = document.getElementById('btn-descargar-recibo'); 
-  btn.textContent = 'Generando...'; 
-  btn.disabled = true; 
-  try { 
-    const canvas = await html2canvas(document.getElementById('area-recibo'), { scale: 2, backgroundColor: '#ffffff' }); 
-    const dataUrl = canvas.toDataURL('image/png');
-     
-    const contenedor = document.getElementById('contenedor-img-preview');
-    contenedor.innerHTML = `<img src="${dataUrl}" style="width:100%; border-radius:10px; border:1px solid var(--line);"/>`;
-
-    modalRecibo.close();
-    modalPreview.showModal();
-    mostrarToast('Mantén presionada la imagen para guardar', 'exito');
-  } catch(e) { 
-    mostrarToast('Error al generar imagen', 'error'); 
-  } finally {
-    btn.textContent = '🖼 Generar Imagen'; 
-    btn.disabled = false; 
-  }
-});
-
-document.getElementById('form-renta').addEventListener('submit', async function(e){ 
-  e.preventDefault(); if(!navigator.onLine) return mostrarToast('Sin Internet', 'error'); 
-  const btn = this.querySelector('button[type="submit"]'); btn.textContent = 'Guardando...'; btn.disabled = true; 
-   
-  const renta = { 
-    mes_renta: document.getElementById('in-mes').value, 
-    nombre: document.getElementById('in-nombre').value, 
-    telefono: document.getElementById('in-telefono').value, 
-    telefono_2: document.getElementById('in-telefono2').value, 
-    hospedaje: document.getElementById('in-hospedaje').value, 
-    evento: document.getElementById('in-evento').value, 
-    fecha_entrada: document.getElementById('in-entrada').value, 
-    fecha_salida: document.getElementById('in-salida').value, 
-    total_venta: parseFloat(document.getElementById('in-total').value) || 0, 
-    saldo: parseFloat(document.getElementById('in-saldo').value) || 0, 
-    anticipo_1: parseFloat(document.getElementById('in-ant1').value) || 0, 
-    fecha_anticpo_1: document.getElementById('in-fecant1').value, 
-    anticipo_2: parseFloat(document.getElementById('in-ant2').value) || 0, 
-    fecha_anticpo_2: document.getElementById('in-fecant2').value, 
-    comision: parseFloat(document.getElementById('in-comision').value) || 0, 
-    fecha_cobrado: document.getElementById('in-feccobrado').value, 
-    comision_no: document.getElementById('in-comisionno').value 
-  }; 
-
-  try { 
-    const res = await fetchConTimeout(API_URL, { method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify({ action: 'crear', renta }) }); 
-    const data = await res.json(); if(!data.ok) throw new Error(); 
-    mostrarToast('¡Guardado con éxito!', 'exito'); this.reset(); cargarHistorial(true); cambiarVista('historial'); 
-  } catch(err) { mostrarToast('Error al registrar', 'error'); } 
-  finally { btn.textContent = 'Guardar Renta'; btn.disabled = false; } 
-}); 
-
-let folioAEditar = null; 
-const modalEditar = document.getElementById('modal-editar'); 
-
-window.abrirModalEditar = function(folio) { 
-  const r = rentasCache.find(item => String(item.folio) === String(folio)); 
-  if(!r) return; 
-  folioAEditar = folio; 
-  document.getElementById('edit-folio-title').textContent = `#${folio}`; 
-
-  document.getElementById('edit-mes').value = r.mes_renta || 'ENERO'; 
-  document.getElementById('edit-nombre').value = r.nombre || ''; 
-  document.getElementById('edit-telefono').value = r.telefono || ''; 
-  document.getElementById('edit-telefono2').value = r.telefono_2 || ''; 
-  document.getElementById('edit-hospedaje').value = r.hospedaje || ''; 
-  document.getElementById('edit-evento').value = r.evento || ''; 
-  document.getElementById('edit-entrada').value = aislarFechaInput(r.fecha_entrada); 
-  document.getElementById('edit-salida').value = aislarFechaInput(r.fecha_salida); 
-  document.getElementById('edit-total').value = r.total_venta || 0; 
-  document.getElementById('edit-ant1').value = r.anticipo_1 || 0; 
-  document.getElementById('edit-fecant1').value = aislarFechaInput(r.fecha_anticpo_1); 
-  document.getElementById('edit-ant2').value = r.anticipo_2 || 0; 
-  document.getElementById('edit-fecant2').value = aislarFechaInput(r.fecha_anticpo_2); 
-  document.getElementById('edit-saldo').value = r.saldo || 0; 
-  document.getElementById('edit-comision').value = r.comision || 0; 
-  document.getElementById('edit-feccobrado').value = aislarFechaInput(r.fecha_cobrado); 
-  document.getElementById('edit-comisionno').value = r.comision_no || ''; 
-
-  modalEditar.showModal(); 
-}; 
-
-document.getElementById('btn-cancelar-editar').addEventListener('click', () => { modalEditar.close(); folioAEditar = null; }); 
-
-document.getElementById('btn-guardar-editar').addEventListener('click', async () => { 
-  if(!folioAEditar) return; 
-  const cambios = { 
-    mes_renta: document.getElementById('edit-mes').value, 
-    nombre: document.getElementById('edit-nombre').value, 
-    telefono: document.getElementById('edit-telefono').value, 
-    telefono_2: document.getElementById('edit-telefono2').value, 
-    hospedaje: document.getElementById('edit-hospedaje').value, 
-    evento: document.getElementById('edit-evento').value, 
-    fecha_entrada: document.getElementById('edit-entrada').value, 
-    fecha_salida: document.getElementById('edit-salida').value, 
-    total_venta: parseFloat(document.getElementById('edit-total').value) || 0, 
-    saldo: parseFloat(document.getElementById('edit-saldo').value) || 0, 
-    anticipo_1: parseFloat(document.getElementById('edit-ant1').value) || 0, 
-    fecha_anticpo_1: document.getElementById('edit-fecant1').value, 
-    anticipo_2: parseFloat(document.getElementById('edit-ant2').value) || 0, 
-    fecha_anticpo_2: document.getElementById('edit-fecant2').value, 
-    comision: parseFloat(document.getElementById('edit-comision').value) || 0, 
-    fecha_cobrado: document.getElementById('edit-feccobrado').value, 
-    comision_no: document.getElementById('edit-comisionno').value 
-  }; 
-
-  modalEditar.close(); 
-  mostrarToast('Actualizando...', 'info'); 
-  try { 
-    const res = await fetchConTimeout(API_URL, { method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify({ action: 'actualizar', folio: Number(folioAEditar), cambios }) }); 
-    const data = await res.json(); if(!data.ok) throw new Error(); 
-    mostrarToast('Actualizado con éxito', 'exito'); 
-    cargarHistorial(true); 
-  } catch(err) { mostrarToast('Error al actualizar', 'error'); } 
-  finally { folioAEditar = null; } 
-}); 
-
-async function eliminarRegistro(folio) { 
-  if(!confirm(`¿Deseas eliminar la renta #${folio}?`)) return; 
-  mostrarToast('Eliminando...', 'info'); 
-  try { 
-    await fetchConTimeout(API_URL, { method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify({ action: 'eliminar', folio: Number(folio) }) }); 
-    mostrarToast('Eliminado', 'exito'); seleccionados.delete(String(folio)); cargarHistorial(true); 
-  } catch(err) { mostrarToast('No se pudo eliminar', 'error'); } 
-} 
-
-['f-mes','f-tipo'].forEach(id => document.getElementById(id).addEventListener('change', renderTabla)); 
-document.getElementById('f-buscar').addEventListener('input', renderTabla); 
-document.getElementById('btn-refrescar').addEventListener('click', () => cargarHistorial(false)); 
-
-const modalReporte = document.getElementById('modal-reporte'); 
-document.getElementById('btn-abrir-reporte').addEventListener('click', () => { 
-  if(seleccionados.size === 0) { mostrarToast('Selecciona al menos una renta', 'error'); return; } 
-  const tbody = document.getElementById('cuerpo-reporte'); tbody.innerHTML = ''; 
-  rentasCache.forEach(r => { 
-    if(seleccionados.has(String(r.folio))) { 
-      const tr = document.createElement('tr'); 
-      tr.innerHTML = `<td>#${r.folio}</td><td>${r.mes_renta}</td><td><strong>${r.nombre}</strong></td><td>${r.evento || r.hospedaje || '—'}</td><td>${formatearFecha(r.fecha_entrada)}</td><td>$${Number(r.total_venta||0).toLocaleString('es-MX')}</td><td>$${Number(r.saldo||0).toLocaleString('es-MX')}</td>`; 
-      tbody.appendChild(tr); 
-    } 
-  }); 
-  modalReporte.showModal(); 
-}); 
-document.getElementById('btn-cerrar-reporte').addEventListener('click', () => modalReporte.close()); 
-
-setAppStatus('sync', 'Conectando...'); cargarHistorial(true); 
-</script> 
-</body> 
+        // Inicializar al cargar la página
+        document.addEventListener('DOMContentLoaded', cargarDatos);
+    </script>
+</body>
 </html>
