@@ -1,507 +1,422 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reembolsos · Quinta Bugambilia</title>
-    <!-- Usamos Tailwind CSS para un diseño rápido, limpio y profesional -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- SweetAlert2 para alertas elegantes -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <style>
-        .loader { border-top-color: #3498db; -webkit-animation: spinner 1.5s linear infinite; animation: spinner 1.5s linear infinite; }
-        @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        /* Scrollbars más limpios */
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
-        ::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
-    </style>
-</head>
-<body class="bg-gray-50 text-gray-800 font-sans">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>App Financiera - Q. Bugambilia</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    :root {
+      --bg-color: #f2f2f7;
+      --card-bg: #ffffff;
+      --primary: #007aff;
+      --success: #34c759;
+      --danger: #ff3b30;
+      --text-main: #1c1c1e;
+      --text-muted: #8e8e93;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: calc(80px + env(safe-area-inset-bottom)); /* Espacio para el Tab Bar */
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    input, select { font-size: 16px !important; } /* Previene zoom en iOS */
+
+    .app-header {
+      background: rgba(242, 242, 247, 0.9);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      padding: 15px 20px;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+
+    /* Vistas de la App */
+    .view-section { display: none; padding: 15px; animation: fadeIn 0.2s ease; }
+    .view-section.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Tarjetas de Formularios y Datos */
+    .mobile-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 8px rgba(0,0,0,0.04);
+    }
+
+    /* Diseño de Lista de Datos (Reemplazo de la Tabla) */
+    .data-row {
+      background: #fff;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 10px;
+      border-left: 4px solid transparent;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+    }
+    .data-row.border-pendiente { border-left-color: var(--danger); }
+    .data-row.border-parcial { border-left-color: #ff9500; }
+    .data-row.border-pagado { border-left-color: var(--success); }
+
+    .grid-finanzas {
+      display: flex;
+      justify-content: space-between;
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-top: 10px;
+      font-size: 0.8rem;
+    }
+    .grid-finanzas div { text-align: center; }
+
+    /* Inputs Móviles */
+    .form-control { border-radius: 10px; background: #f2f2f7; border: 1px solid transparent; padding: 12px; }
+    .form-control:focus { background: #fff; border-color: var(--primary); box-shadow: none; }
     
-    <div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+    .btn-mobile { border-radius: 12px; font-weight: 600; padding: 14px; width: 100%; border: none; }
+    .btn-mobile:active { transform: scale(0.97); opacity: 0.9; }
+
+    /* Botones de Filtro (Pills) */
+    .filter-pill {
+      border-radius: 20px; font-size: 0.8rem; padding: 6px 12px; margin-right: 5px;
+      border: 1px solid #d1d1d6; background: #fff; color: var(--text-muted); cursor: pointer; transition: 0.2s;
+    }
+    .filter-pill.active { background: var(--text-main); color: #fff; border-color: var(--text-main); }
+
+    /* Bottom Navigation Bar (Tab Bar) */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; width: 100%;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(15px);
+      display: flex; justify-content: space-around;
+      padding: 10px 0 calc(10px + env(safe-area-inset-bottom)) 0;
+      border-top: 1px solid rgba(0,0,0,0.1);
+      z-index: 1000;
+    }
+    .nav-item {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      color: var(--text-muted); font-size: 0.65rem; font-weight: 500; width: 25%; cursor: pointer;
+    }
+    .nav-item i { font-size: 1.2rem; margin-bottom: 4px; transition: 0.2s; }
+    .nav-item.active { color: var(--primary); }
+    .nav-item.active i { transform: scale(1.1); }
+
+    /* Banner de Totales Flotante */
+    .sticky-totales {
+      position: sticky; top: 60px; z-index: 900;
+      background: rgba(255,255,255,0.95); backdrop-filter: blur(5px);
+      padding: 10px 15px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      margin-bottom: 15px; font-size: 0.8rem; display: flex; justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <div class="app-header d-flex justify-content-between align-items-center">
+    <div>
+      <h5 class="fw-bold mb-0"><i class="fa-solid fa-leaf text-success me-1"></i> Quinta Bugambilia</h5>
+    </div>
+    <button class="btn btn-sm btn-light rounded-circle" onclick="cargarDatos()">
+      <i class="fa-solid fa-rotate-right"></i>
+    </button>
+  </div>
+
+  <!-- VISTA 1: REGISTRAR GASTO -->
+  <div id="vista-add-gasto" class="view-section active">
+    <div class="mobile-card">
+      <h6 class="fw-bold text-primary mb-3"><i class="fa-solid fa-plus-circle me-1"></i> Registrar Gasto</h6>
+      <div class="mb-3">
+        <label class="small text-muted mb-1 fw-bold">Fecha</label>
+        <input type="date" class="form-control" id="fechaGasto" required>
+      </div>
+      <div class="mb-3">
+        <label class="small text-muted mb-1 fw-bold">Monto ($)</label>
+        <input type="number" step="0.01" class="form-control" id="montoGasto" placeholder="0.00">
+      </div>
+      <div class="mb-4">
+        <label class="small text-muted mb-1 fw-bold">Concepto / Artículo</label>
+        <input type="text" class="form-control" id="conceptoGasto" placeholder="Ej. Cloro para alberca...">
+      </div>
+      <button class="btn-mobile bg-primary text-white" onclick="guardarGasto()">Guardar Gasto</button>
+    </div>
+  </div>
+
+  <!-- VISTA 2: REGISTRAR REEMBOLSO -->
+  <div id="vista-add-reembolso" class="view-section">
+    <div class="mobile-card">
+      <h6 class="fw-bold text-success mb-3"><i class="fa-solid fa-hand-holding-dollar me-1"></i> Recibir Reembolso</h6>
+      <div class="mb-3">
+        <label class="small text-muted mb-1 fw-bold">Fecha</label>
+        <input type="date" class="form-control" id="fechaReembolso" required>
+      </div>
+      <div class="mb-3">
+        <label class="small text-muted mb-1 fw-bold">Monto Depositado ($)</label>
+        <input type="number" step="0.01" class="form-control" id="montoReembolso" placeholder="0.00">
+      </div>
+      <div class="mb-4">
+        <label class="small text-muted mb-1 fw-bold">Notas / Referencia</label>
+        <input type="text" class="form-control" id="notasReembolso" placeholder="Opcional...">
+      </div>
+      <button class="btn-mobile bg-success text-white" onclick="procesarReembolso()">Aplicar a Deudas</button>
+    </div>
+  </div>
+
+  <!-- VISTA 3: HISTORIAL DE GASTOS -->
+  <div id="vista-historial-gastos" class="view-section">
+    
+    <!-- Filtros Superiores -->
+    <div class="mb-3">
+      <input type="text" class="form-control mb-2" id="searchConcepto" placeholder="🔍 Buscar concepto..." onkeyup="renderGastos()">
+      <div class="d-flex overflow-auto pb-1" style="white-space: nowrap;">
+        <button class="filter-pill active" id="f-Pendiente" onclick="toggleFiltro('Pendiente')">Pendientes</button>
+        <button class="filter-pill active" id="f-Parcial" onclick="toggleFiltro('Parcial')">Parciales</button>
+        <button class="filter-pill" id="f-Pagado" onclick="toggleFiltro('Pagado')">Pagados</button>
+      </div>
+    </div>
+
+    <!-- Banner de Totales Dinámico -->
+    <div class="sticky-totales">
+      <div class="text-center">
+        <div class="text-muted" style="font-size:0.7rem">COSTO TOTAL</div>
+        <div class="fw-bold" id="totalCosto">$0</div>
+      </div>
+      <div class="text-center">
+        <div class="text-muted" style="font-size:0.7rem">ABONADO</div>
+        <div class="fw-bold text-success" id="totalAbonado">$0</div>
+      </div>
+      <div class="text-center">
+        <div class="text-muted" style="font-size:0.7rem">PENDIENTE</div>
+        <div class="fw-bold text-danger" id="totalPendiente">$0</div>
+      </div>
+    </div>
+
+    <!-- Contenedor de Tarjetas de Gastos -->
+    <div id="lista-gastos"></div>
+  </div>
+
+  <!-- VISTA 4: HISTORIAL DE REEMBOLSOS -->
+  <div id="vista-historial-reembolsos" class="view-section">
+    <div class="mobile-card bg-success bg-opacity-10 mb-3 border-0">
+      <div class="text-center">
+        <div class="text-muted small fw-bold">TOTAL HISTÓRICO REEMBOLSADO</div>
+        <h2 class="text-success fw-bold mb-0" id="granTotalReembolsos">$0.00</h2>
+      </div>
+    </div>
+    <div id="lista-reembolsos"></div>
+  </div>
+
+  <!-- BOTTOM NAVIGATION BAR -->
+  <nav class="bottom-nav">
+    <div class="nav-item active" onclick="navTo('vista-add-gasto', this)">
+      <i class="fa-solid fa-cart-plus"></i><span>Gasto</span>
+    </div>
+    <div class="nav-item" onclick="navTo('vista-add-reembolso', this)">
+      <i class="fa-solid fa-money-bill-transfer"></i><span>Abono</span>
+    </div>
+    <div class="nav-item" onclick="navTo('vista-historial-gastos', this)">
+      <i class="fa-solid fa-list-check"></i><span>Gastos</span>
+    </div>
+    <div class="nav-item" onclick="navTo('vista-historial-reembolsos', this)">
+      <i class="fa-solid fa-vault"></i><span>Reembolsos</span>
+    </div>
+  </nav>
+
+<script>
+  // URL de tu API
+  const API_URL = "https://script.google.com/macros/s/AKfycbz-IgvNztN2FAmFc13XDjqtu-fRxNnOihXTWlTDfSqBVIepK8FpiommOCU6YOU9gUBB/exec";
+  
+  let DB_Gastos = [];
+  let DB_Reembolsos = [];
+  let filtrosActivos = new Set(['Pendiente', 'Parcial']); // Por defecto
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const hoy = new Date().toISOString().split('T')[0];
+    document.getElementById('fechaGasto').value = hoy;
+    document.getElementById('fechaReembolso').value = hoy;
+    cargarDatos();
+  });
+
+  // Navegación estilo App
+  function navTo(viewId, btnElement) {
+    document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+    document.getElementById(viewId).classList.add('active');
+    btnElement.classList.add('active');
+  }
+
+  // Lógica de Filtros (Pills)
+  function toggleFiltro(estatus) {
+    const btn = document.getElementById(`f-${estatus}`);
+    if (filtrosActivos.has(estatus)) {
+      filtrosActivos.delete(estatus);
+      btn.classList.remove('active');
+    } else {
+      filtrosActivos.add(estatus);
+      btn.classList.add('active');
+    }
+    renderGastos();
+  }
+
+  // Obtener Datos del Servidor
+  function cargarDatos() {
+    Swal.fire({ title: 'Sincronizando...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+    
+    fetch(API_URL + "?action=obtenerDatos")
+      .then(res => res.json())
+      .then(res => {
+        if(res.status === 'success') {
+          DB_Gastos = res.gastos.reverse(); // Más recientes arriba
+          DB_Reembolsos = res.reembolsos.reverse();
+          renderGastos();
+          renderReembolsos();
+          Swal.close();
+        } else {
+          Swal.fire('Error', res.message, 'error');
+        }
+      })
+      .catch(err => Swal.fire('Error de Red', err.message, 'error'));
+  }
+
+  // --- RENDERIZAR VISTA DE GASTOS (TARJETAS) ---
+  function renderGastos() {
+    const search = document.getElementById('searchConcepto').value.toLowerCase();
+    const contenedor = document.getElementById('lista-gastos');
+    contenedor.innerHTML = '';
+    
+    let sumCosto = 0, sumAbonado = 0, sumPend = 0;
+
+    const filtrados = DB_Gastos.filter(fila => {
+      const pasaTexto = fila[2].toLowerCase().includes(search);
+      const pasaEstatus = filtrosActivos.has(fila[6]);
+      return pasaTexto && pasaEstatus;
+    });
+
+    if (filtrados.length === 0) {
+      contenedor.innerHTML = '<div class="text-center text-muted mt-5"><i class="fa-solid fa-folder-open fs-1 mb-2"></i><br>No hay datos.</div>';
+    } else {
+      filtrados.forEach(fila => {
+        // [0]ID, [1]Fecha, [2]Concepto, [3]Costo, [4]Abonado, [5]Saldo, [6]Estatus
+        const d = new Date(fila[1]).toLocaleDateString('es-MX', {timeZone: 'UTC', day:'2-digit', month:'short', year:'numeric'});
+        const estatusClase = fila[6].toLowerCase(); // pendiente, parcial, pagado
         
-        <!-- Encabezado -->
-        <div class="flex flex-col md:flex-row justify-between items-center mb-8">
-            <div>
-                <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Reembolsos</h1>
-                <p class="text-sm text-gray-500 mt-1">Quinta Bugambilia - Gestión de Gastos y Abonos</p>
+        sumCosto += parseFloat(fila[3])||0;
+        sumAbonado += parseFloat(fila[4])||0;
+        sumPend += parseFloat(fila[5])||0;
+
+        contenedor.innerHTML += `
+          <div class="data-row border-${estatusClase}">
+            <div class="d-flex justify-content-between align-items-start mb-1">
+              <span class="fw-bold text-dark lh-sm pe-2">${fila[2]}</span>
+              <span class="badge bg-${estatusClase === 'pagado' ? 'success' : (estatusClase === 'parcial' ? 'warning text-dark' : 'danger')}">${fila[6]}</span>
+            </div>
+            <div class="text-muted" style="font-size: 0.75rem;">
+              <i class="fa-regular fa-calendar me-1"></i>${d} &nbsp;|&nbsp; <i class="fa-solid fa-hashtag me-1"></i>${fila[0]}
             </div>
             
-            <!-- Entrada para la URL del Web App de Google Apps Script -->
-            <div class="mt-4 md:mt-0 w-full md:w-96">
-                <label class="block text-xs font-medium text-gray-500 mb-1">URL de tu Web App (Apps Script):</label>
-                <div class="flex space-x-2">
-                    <input type="text" id="scriptUrl" class="flex-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm border p-2" placeholder="https://script.google.com/macros/s/.../exec">
-                    <button onclick="cargarDatos()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none">
-                        Cargar
-                    </button>
-                </div>
+            <div class="grid-finanzas">
+              <div>
+                <div class="text-muted fw-bold">Original</div>
+                <div class="text-dark">${fmt(fila[3])}</div>
+              </div>
+              <div>
+                <div class="text-muted fw-bold">Abonado</div>
+                <div class="text-success">${fmt(fila[4])}</div>
+              </div>
+              <div>
+                <div class="text-muted fw-bold">Resta</div>
+                <div class="text-danger fw-bold">${fmt(fila[5])}</div>
+              </div>
             </div>
-        </div>
+          </div>
+        `;
+      });
+    }
 
-        <!-- Indicador de Carga -->
-        <div id="loadingIndicator" class="hidden flex justify-center items-center py-4 mb-4 bg-blue-50 text-blue-700 rounded-md">
-            <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-6 w-6 mr-3"></div>
-            <span class="font-medium">Sincronizando con Google Sheets...</span>
-        </div>
+    document.getElementById('totalCosto').innerText = fmt(sumCosto);
+    document.getElementById('totalAbonado').innerText = fmt(sumAbonado);
+    document.getElementById('totalPendiente').innerText = fmt(sumPend);
+  }
 
-        <!-- Resumen (Tarjetas) -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <div class="bg-white rounded-lg shadow p-5 border-l-4 border-gray-500">
-                <dt class="text-sm font-medium text-gray-500 truncate">Total Gastado</dt>
-                <dd class="mt-1 text-3xl font-semibold text-gray-900" id="resTotalGastado">$0.00</dd>
-            </div>
-            <div class="bg-white rounded-lg shadow p-5 border-l-4 border-green-500">
-                <dt class="text-sm font-medium text-gray-500 truncate">Total Reembolsado</dt>
-                <dd class="mt-1 text-3xl font-semibold text-green-600" id="resTotalReembolsado">$0.00</dd>
-            </div>
-            <div class="bg-white rounded-lg shadow p-5 border-l-4 border-red-500">
-                <dt class="text-sm font-medium text-gray-500 truncate">Saldo Pendiente</dt>
-                <dd class="mt-1 text-3xl font-semibold text-red-600" id="resTotalPendiente">$0.00</dd>
-            </div>
-            <div class="bg-white rounded-lg shadow p-5 border-l-4 border-yellow-500">
-                <dt class="text-sm font-medium text-gray-500 truncate">Gastos sin Pagar</dt>
-                <dd class="mt-1 text-3xl font-semibold text-yellow-600" id="resNPendientes">0</dd>
-            </div>
-        </div>
+  // --- RENDERIZAR VISTA DE REEMBOLSOS (TARJETAS) ---
+  function renderReembolsos() {
+    const contenedor = document.getElementById('lista-reembolsos');
+    contenedor.innerHTML = '';
+    let total = 0;
 
-        <!-- Botones de Acción Principales -->
-        <div class="flex flex-wrap gap-4 mb-8">
-            <button onclick="abrirModalGasto()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow flex items-center transition">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                Registrar Gasto
-            </button>
-            <button onclick="abrirModalAbono()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded shadow flex items-center transition">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                Realizar Reembolso (Abono)
-            </button>
-        </div>
-
-        <!-- Contenedor de Tablas -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            
-            <!-- Tabla de Gastos -->
-            <div class="bg-white shadow rounded-lg overflow-hidden flex flex-col">
-                <div class="px-4 py-5 border-b border-gray-200 bg-gray-50 sm:px-6">
-                    <h3 class="text-lg leading-6 font-medium text-gray-900">Historial de Gastos</h3>
-                </div>
-                <div class="overflow-x-auto flex-1">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha / Concepto</th>
-                                <th scope="col" class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Montos</th>
-                                <th scope="col" class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                <th scope="col" class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tablaGastosBody" class="bg-white divide-y divide-gray-200">
-                            <!-- Los gastos se inyectarán aquí -->
-                            <tr><td colspan="4" class="px-4 py-4 text-center text-gray-500">Ingresa la URL del Web App y haz clic en Cargar.</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Tabla de Abonos -->
-            <div class="bg-white shadow rounded-lg overflow-hidden flex flex-col">
-                <div class="px-4 py-5 border-b border-gray-200 bg-gray-50 sm:px-6">
-                    <h3 class="text-lg leading-6 font-medium text-gray-900">Historial de Reembolsos (Abonos)</h3>
-                </div>
-                <div class="overflow-x-auto flex-1">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Clave / Fecha</th>
-                                <th scope="col" class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
-                                <th scope="col" class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tablaAbonosBody" class="bg-white divide-y divide-gray-200">
-                            <!-- Los abonos se inyectarán aquí -->
-                            <tr><td colspan="3" class="px-4 py-4 text-center text-gray-500">Sin datos de abonos aún.</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- ==============================================
-         MODALES
-    =============================================== -->
-
-    <!-- Modal Formulario de Gasto (Crear/Editar) -->
-    <div id="modalGasto" class="fixed inset-0 z-10 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <!-- Fondo oscuro -->
-            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" onclick="cerrarModalGasto()"></div>
-            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-            <!-- Contenido Modal -->
-            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                    <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4" id="modalGastoTitulo">Registrar Nuevo Gasto</h3>
-                    <input type="hidden" id="gastoFila" value="">
-                    
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700">Fecha del Gasto</label>
-                        <input type="date" id="gastoFecha" class="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                    </div>
-                    
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700">Concepto / Descripción</label>
-                        <input type="text" id="gastoConcepto" class="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Ej. Pintura blanca, Reparación bomba...">
-                    </div>
-                    
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700">Monto Original ($)</label>
-                        <input type="number" step="0.01" id="gastoMonto" class="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="0.00">
-                    </div>
-                </div>
-                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                    <button type="button" onclick="guardarGasto()" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">
-                        Guardar
-                    </button>
-                    <button type="button" onclick="cerrarModalGasto()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
-                        Cancelar
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Formulario de Abono -->
-    <div id="modalAbono" class="fixed inset-0 z-10 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <!-- Fondo oscuro -->
-            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" onclick="cerrarModalAbono()"></div>
-            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-            <!-- Contenido Modal -->
-            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                    <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Realizar Reembolso (Abono)</h3>
-                    <p class="text-sm text-gray-500 mb-4">El abono se aplicará automáticamente a los gastos más antiguos que sigan pendientes.</p>
-                    
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700">Fecha del Pago</label>
-                        <input type="date" id="abonoFecha" class="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm">
-                    </div>
-                    
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700">Monto a Abonar ($)</label>
-                        <input type="number" step="0.01" id="abonoMonto" class="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm" placeholder="0.00">
-                    </div>
-                </div>
-                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                    <button type="button" onclick="guardarAbono()" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">
-                        Aplicar Abono
-                    </button>
-                    <button type="button" onclick="cerrarModalAbono()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
-                        Cancelar
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- ==============================================
-         JAVASCRIPT
-    =============================================== -->
-    <script>
-        // Formateador de moneda
-        const formatter = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' });
-
-        // Estado local
-        let estadoGastos = [];
+    if (DB_Reembolsos.length === 0) {
+      contenedor.innerHTML = '<div class="text-center text-muted mt-5"><i class="fa-solid fa-receipt fs-1 mb-2"></i><br>No hay reembolsos registrados.</div>';
+    } else {
+      DB_Reembolsos.forEach(fila => {
+        // [0]ID, [1]Fecha, [2]Monto, [3]Notas
+        const d = new Date(fila[1]).toLocaleDateString('es-MX', {timeZone: 'UTC', day:'2-digit', month:'short', year:'numeric'});
+        total += parseFloat(fila[2])||0;
         
-        // Carga inicial (intenta recuperar la URL del localStorage)
-        document.addEventListener('DOMContentLoaded', () => {
-            const savedUrl = localStorage.getItem('qb_reembolsos_url');
-            if (savedUrl) {
-                document.getElementById('scriptUrl').value = savedUrl;
-                cargarDatos();
-            }
-            
-            // Setear fechas por defecto a hoy
-            const hoy = new Date().toISOString().split('T')[0];
-            document.getElementById('gastoFecha').value = hoy;
-            document.getElementById('abonoFecha').value = hoy;
-        });
+        contenedor.innerHTML += `
+          <div class="mobile-card border-start border-success border-4 ps-3 py-3">
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="fw-bold text-success fs-5">+${fmt(fila[2])}</span>
+              <span class="text-muted small"><i class="fa-regular fa-calendar me-1"></i>${d}</span>
+            </div>
+            ${fila[3] ? `<div class="text-dark small mt-2 fw-medium"><i class="fa-solid fa-message me-1 text-muted"></i>${fila[3]}</div>` : ''}
+            <div class="text-muted mt-2" style="font-size: 0.65rem;"><i class="fa-solid fa-hashtag me-1"></i>${fila[0]}</div>
+          </div>
+        `;
+      });
+    }
+    document.getElementById('granTotalReembolsos').innerText = fmt(total);
+  }
 
-        // ==================== PETICIONES A LA API ==================== //
+  // --- ACCIONES (Guardar) ---
+  function guardarGasto() {
+    const fecha = document.getElementById('fechaGasto').value;
+    const concepto = document.getElementById('conceptoGasto').value;
+    const monto = document.getElementById('montoGasto').value;
 
-        async function fetchAPI(method, payload = null) {
-            const url = document.getElementById('scriptUrl').value.trim();
-            if (!url) {
-                Swal.fire('Atención', 'Por favor, ingresa la URL de tu Google Apps Script.', 'warning');
-                return null;
-            }
-            // Guarda la url en localStorage
-            localStorage.setItem('qb_reembolsos_url', url);
+    if (!fecha || !concepto || !monto) return Swal.fire('Alto', 'Completa todos los campos', 'warning');
+    Swal.fire({ title: 'Guardando...', didOpen: () => Swal.showLoading() });
 
-            mostrarLoading(true);
-            try {
-                let response;
-                if (method === 'GET') {
-                    response = await fetch(url);
-                } else {
-                    response = await fetch(url, {
-                        method: 'POST',
-                        body: JSON.stringify(payload)
-                    });
-                }
-                const data = await response.json();
-                
-                if (!data.ok) {
-                    Swal.fire('Error del Servidor', data.error || 'Ocurrió un error desconocido.', 'error');
-                    return null;
-                }
-                return data;
-            } catch (err) {
-                Swal.fire('Error de Conexión', 'No se pudo contactar al servidor. Verifica la URL y que el Web App permita peticiones CORS.', 'error');
-                console.error(err);
-                return null;
-            } finally {
-                mostrarLoading(false);
-            }
+    fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "registrarGasto", fecha, concepto, monto }) })
+      .then(res => res.json()).then(res => {
+        if(res.status === 'success') {
+          document.getElementById('conceptoGasto').value = ''; document.getElementById('montoGasto').value = '';
+          Swal.fire({title: '¡Guardado!', icon: 'success', timer: 1500, showConfirmButton: false});
+          cargarDatos();
         }
+      });
+  }
 
-        async function cargarDatos() {
-            const data = await fetchAPI('GET');
-            if (data) renderUI(data);
+  function procesarReembolso() {
+    const fecha = document.getElementById('fechaReembolso').value;
+    const monto = document.getElementById('montoReembolso').value;
+    const notas = document.getElementById('notasReembolso').value;
+
+    if (!fecha || !monto) return Swal.fire('Alto', 'Indica fecha y monto', 'warning');
+    Swal.fire({ title: 'Procesando...', text: 'Abonando en cascada...', didOpen: () => Swal.showLoading() });
+
+    fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "registrarReembolso", fecha, monto, notas }) })
+      .then(res => res.json()).then(res => {
+        if(res.status === 'success') {
+          document.getElementById('montoReembolso').value = ''; document.getElementById('notasReembolso').value = '';
+          Swal.fire('¡Éxito!', res.saldoRestante > 0 ? `Quedó saldo a favor: ${fmt(res.saldoRestante)}` : 'Deudas liquidadas.', 'success');
+          cargarDatos();
         }
+      });
+  }
 
-        // ==================== RENDERIZADO (UI) ==================== //
-
-        function renderUI(data) {
-            estadoGastos = data.gastos; // Guardamos para edición
-            
-            // 1. Actualizar Resumen
-            document.getElementById('resTotalGastado').innerText = formatter.format(data.resumen.total_gastado);
-            document.getElementById('resTotalPendiente').innerText = formatter.format(data.resumen.total_pendiente);
-            document.getElementById('resTotalReembolsado').innerText = formatter.format(data.resumen.total_reembolsado);
-            document.getElementById('resNPendientes').innerText = data.resumen.n_pendientes;
-
-            // 2. Renderizar Tabla Gastos
-            const tbodyGastos = document.getElementById('tablaGastosBody');
-            tbodyGastos.innerHTML = '';
-            
-            if (!data.gastos || data.gastos.length === 0) {
-                tbodyGastos.innerHTML = '<tr><td colspan="4" class="px-4 py-4 text-center text-gray-500">No hay gastos registrados.</td></tr>';
-            } else {
-                data.gastos.forEach(g => {
-                    const statusClass = g.status === 'pagado' ? 'bg-green-100 text-green-800' : (g.status === 'abonado' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800');
-                    const statusText = g.status.charAt(0).toUpperCase() + g.status.slice(1);
-                    
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td class="px-4 py-3 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-900">${g.fecha}</div>
-                            <div class="text-sm text-gray-500 truncate max-w-xs" title="${g.concepto}">${g.concepto || '-'}</div>
-                        </td>
-                        <td class="px-4 py-3 whitespace-nowrap text-right">
-                            <div class="text-sm text-gray-900 font-bold">${formatter.format(g.monto_original)}</div>
-                            <div class="text-xs text-gray-500">Pend: <span class="${g.monto_pendiente > 0 ? 'text-red-500 font-semibold' : ''}">${formatter.format(g.monto_pendiente)}</span></div>
-                        </td>
-                        <td class="px-4 py-3 whitespace-nowrap text-center">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
-                                ${statusText}
-                            </span>
-                        </td>
-                        <td class="px-4 py-3 whitespace-nowrap text-center text-sm font-medium">
-                            <button onclick="editarGasto(${g.fila})" class="text-indigo-600 hover:text-indigo-900 mr-3">Editar</button>
-                            <button onclick="eliminarGasto(${g.fila})" class="text-red-600 hover:text-red-900">Eliminar</button>
-                        </td>
-                    `;
-                    tbodyGastos.appendChild(row);
-                });
-            }
-
-            // 3. Renderizar Tabla Abonos
-            const tbodyAbonos = document.getElementById('tablaAbonosBody');
-            tbodyAbonos.innerHTML = '';
-            
-            if (!data.abonos || data.abonos.length === 0) {
-                tbodyAbonos.innerHTML = '<tr><td colspan="3" class="px-4 py-4 text-center text-gray-500">No hay reembolsos registrados.</td></tr>';
-            } else {
-                data.abonos.forEach(a => {
-                    // Detalle de partidas para tooltip
-                    const tooltipParts = a.partidas.map(p => `- $${p.monto.toFixed(2)}: ${p.concepto}`).join('\n');
-                    
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td class="px-4 py-3 whitespace-nowrap">
-                            <div class="text-sm font-bold text-indigo-700" title="Partidas aplicadas:
-${tooltipParts}">${a.clave}</div>
-                            <div class="text-sm text-gray-500">${a.fecha}</div>
-                        </td>
-                        <td class="px-4 py-3 whitespace-nowrap text-right text-sm font-bold text-gray-900">
-                            ${formatter.format(a.total)}
-                        </td>
-                        <td class="px-4 py-3 whitespace-nowrap text-center text-sm font-medium">
-                            <button onclick="deshacerAbono('${a.clave}')" class="text-red-600 hover:text-red-900 flex items-center justify-center mx-auto" title="Deshacer Reembolso">
-                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                Deshacer
-                            </button>
-                        </td>
-                    `;
-                    tbodyAbonos.appendChild(row);
-                });
-            }
-        }
-
-        function mostrarLoading(show) {
-            document.getElementById('loadingIndicator').classList.toggle('hidden', !show);
-        }
-
-        // ==================== ACCIONES DE GASTOS ==================== //
-
-        function abrirModalGasto() {
-            document.getElementById('modalGastoTitulo').innerText = 'Registrar Nuevo Gasto';
-            document.getElementById('gastoFila').value = '';
-            document.getElementById('gastoConcepto').value = '';
-            document.getElementById('gastoMonto').value = '';
-            document.getElementById('modalGasto').classList.remove('hidden');
-        }
-
-        function cerrarModalGasto() {
-            document.getElementById('modalGasto').classList.add('hidden');
-        }
-
-        function editarGasto(fila) {
-            const gasto = estadoGastos.find(g => g.fila === fila);
-            if (!gasto) return;
-            
-            document.getElementById('modalGastoTitulo').innerText = 'Editar Gasto (Fila ' + fila + ')';
-            document.getElementById('gastoFila').value = fila;
-            document.getElementById('gastoFecha').value = gasto.fecha;
-            document.getElementById('gastoConcepto').value = gasto.concepto;
-            document.getElementById('gastoMonto').value = gasto.monto_original;
-            document.getElementById('modalGasto').classList.remove('hidden');
-        }
-
-        async function guardarGasto() {
-            const fila = document.getElementById('gastoFila').value;
-            const payload = {
-                fecha: document.getElementById('gastoFecha').value,
-                concepto: document.getElementById('gastoConcepto').value,
-                monto_original: parseFloat(document.getElementById('gastoMonto').value)
-            };
-
-            if (!payload.monto_original || payload.monto_original <= 0 || !payload.concepto) {
-                Swal.fire('Datos incompletos', 'Ingresa un concepto y un monto mayor a 0', 'warning');
-                return;
-            }
-
-            const body = { accion: fila ? 'actualizar' : 'crear', payload: payload };
-            if (fila) body.payload.fila = fila;
-
-            const res = await fetchAPI('POST', body);
-            if (res && res.ok) {
-                Swal.fire('Éxito', fila ? 'Gasto actualizado' : 'Gasto registrado correctamente', 'success');
-                cerrarModalGasto();
-                cargarDatos();
-            }
-        }
-
-        async function eliminarGasto(fila, forzar = false) {
-            if (!forzar) {
-                const result = await Swal.fire({
-                    title: '¿Estás seguro?',
-                    text: "Se eliminará permanentemente la fila " + fila,
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Sí, eliminar'
-                });
-                if (!result.isConfirmed) return;
-            }
-
-            const res = await fetchAPI('POST', { accion: 'eliminar', fila: fila, forzar: forzar });
-            if (res && res.ok) {
-                Swal.fire('Eliminado', 'El gasto ha sido eliminado.', 'success');
-                cargarDatos();
-            } else if (res && !res.ok && res.error && res.error.includes('ya tiene abonos')) {
-                // Si el servidor pide forzar por tener historial
-                const askForce = await Swal.fire({
-                    title: 'Gasto con abonos aplicados',
-                    text: res.error + '\n¿Deseas forzar la eliminación de todas formas?',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    confirmButtonText: 'Forzar Eliminación'
-                });
-                if (askForce.isConfirmed) {
-                    eliminarGasto(fila, true);
-                }
-            }
-        }
-
-        // ==================== ACCIONES DE ABONOS ==================== //
-
-        function abrirModalAbono() {
-            document.getElementById('abonoMonto').value = '';
-            document.getElementById('modalAbono').classList.remove('hidden');
-        }
-
-        function cerrarModalAbono() {
-            document.getElementById('modalAbono').classList.add('hidden');
-        }
-
-        async function guardarAbono() {
-            const fecha = document.getElementById('abonoFecha').value;
-            const monto = parseFloat(document.getElementById('abonoMonto').value);
-
-            if (!monto || monto <= 0) {
-                Swal.fire('Datos inválidos', 'Ingresa un monto mayor a 0', 'warning');
-                return;
-            }
-
-            const result = await Swal.fire({
-                title: 'Confirmar Reembolso',
-                text: `Se aplicarán ${formatter.format(monto)} a los gastos más antiguos. ¿Continuar?`,
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Sí, aplicar'
-            });
-
-            if (result.isConfirmed) {
-                const res = await fetchAPI('POST', { accion: 'abonar', fecha: fecha, monto: monto });
-                if (res && res.ok) {
-                    let msg = `Se generó el reembolso <b>${res.clave}</b> por ${formatter.format(res.aplicado)}.`;
-                    if (res.sobrante > 0) {
-                        msg += `<br><br><span class="text-yellow-600">Sobró ${formatter.format(res.sobrante)} porque se cubrieron todos los gastos pendientes.</span>`;
-                    }
-                    Swal.fire({ title: 'Abono Aplicado', html: msg, icon: 'success' });
-                    cerrarModalAbono();
-                    cargarDatos();
-                }
-            }
-        }
-
-        async function deshacerAbono(clave) {
-            const result = await Swal.fire({
-                title: '¿Deshacer Reembolso?',
-                text: `Vas a cancelar la clave ${clave}. El saldo pendiente de los gastos afectados volverá a su estado anterior.`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                confirmButtonText: 'Sí, deshacer'
-            });
-
-            if (result.isConfirmed) {
-                const res = await fetchAPI('POST', { accion: 'deshacer', clave: clave });
-                if (res && res.ok) {
-                    Swal.fire('Revertido', `Se revirtieron ${formatter.format(res.revertido)} en ${res.gastos} gastos.`, 'success');
-                    cargarDatos();
-                }
-            }
-        }
-    </script>
+  function fmt(v) { return new Intl.NumberFormat('es-MX', {style:'currency', currency:'MXN'}).format(v||0); }
+</script>
 </body>
 </html>
