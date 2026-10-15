@@ -1,540 +1,391 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Gestión de Rentas Premium</title>
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
-    <!-- Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'brand-green': '#2e7d5b',
-                        'brand-wood': '#8b5a2b',
-                        'brand-wood-light': '#a67345',
-                        'brand-blue': '#2563eb',
-                        'brand-blue-hover': '#1d4ed8',
-                        'brand-gray': '#374151',
-                        'brand-gray-light': '#6b7280',
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        serif: ['Playfair Display', 'serif'],
-                    },
-                    boxShadow: {
-                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
-                        'floating': '0 10px 40px -10px rgba(0,0,0,0.08)',
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        /* Custom Styles & Textures */
-        body {
-            background-color: #ffffff; /* Blanco limpio como fondo base */
-            color: #374151; /* Gris fuerte */
-        }
-        
-        /* Efecto Travertino / Mármol para tarjetas */
-        .bg-marble {
-            background: linear-gradient(135deg, #fdfbf7 0%, #f4efe6 100%);
-            border: 1px solid #e8e3d8;
-            position: relative;
-            z-index: 1;
-        }
-        .bg-marble::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            opacity: 0.4;
-            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
-            mix-blend-mode: multiply;
-            border-radius: inherit;
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        /* Scrollbar styling */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-
-        /* Animations */
-        .fade-in { animation: fadeIn 0.3s ease-out forwards; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* View transitions */
-        .view-section { display: none; }
-        .view-section.active { display: block; animation: fadeIn 0.4s ease-out; }
-
-        /* Calendar Grid */
-        .cal-grid {
-            display: grid;
-            grid-template-columns: repeat(7, minmax(0, 1fr));
-            gap: 0.5rem;
-        }
-        .cal-day {
-            aspect-ratio: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            border-radius: 1rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            background: white;
-            border: 1px solid #e5e7eb;
-        }
-        .cal-day:hover {
-            border-color: #2563eb; /* Blue hover */
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
-        }
-        .cal-day.active-day {
-            background-color: #2563eb;
-            color: white;
-            border-color: #2563eb;
-        }
-        .cal-day.has-event::after {
-            content: '';
-            width: 6px;
-            height: 6px;
-            background-color: #2e7d5b; /* Green accent */
-            border-radius: 50%;
-            margin-top: 4px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2d5a46">
+<title>Rentas | Quinta Bugambilia</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{--bg:#efe8da;--card:#fbfbf8;--mar:linear-gradient(135deg,#fff 0%,#f3f3ef 55%,#fcfcfa 100%);--ink:#2d5a46;--text:#3a4043;--muted:#7b8080;--line:#e2dac9;--wood:#9a6b45;--wood2:#f1e3d3;--blue:#2f6690;--blue2:#dde9f3;--ok:#2d5a46;--ok2:#dcebe2;--bad:#a8432f;--bad2:#f6dfd8;--sh:0 2px 10px rgba(58,64,67,.08)}
+:root[data-theme=dark]{--bg:#121815;--card:#1b2420;--mar:linear-gradient(135deg,#202b26,#1b2420);--ink:#7fc4a0;--text:#dde5e0;--muted:#92a09a;--line:#2c3833;--wood:#d3a073;--wood2:#3a2d21;--blue:#7fb2dc;--blue2:#1d2c3a;--ok:#7fc4a0;--ok2:#1c3228;--bad:#f0907c;--bad2:#3a211b;--sh:none}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{background:var(--bg)}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max-width:520px;margin:0 auto;min-height:100vh;padding:env(safe-area-inset-top) 14px calc(env(safe-area-inset-bottom) + 96px);font-size:15px}
+button{font-family:inherit;cursor:pointer;border:0;color:inherit}
+input,select{font-family:inherit;font-size:16px;color:var(--text)}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+h1,h2,h3,.serif{font-family:'Fraunces',serif}
+.top{display:flex;justify-content:space-between;align-items:center;padding:12px 0}
+.brand{font-size:21px;font-weight:700;color:var(--ink);line-height:1.1}
+.brand small{display:block;font-family:'DM Sans';font-size:12px;font-weight:500;color:var(--muted);text-transform:capitalize}
+.ibtn{width:42px;height:42px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--ink);margin-left:6px}
+.view{display:none}.view.on{display:block;animation:in .25s}
+@keyframes in{from{opacity:0;transform:translateY(6px)}}
+.hero{border-radius:24px;padding:18px;color:#fff;background:radial-gradient(circle at 85% 10%,rgba(255,255,255,.16),transparent 40%),linear-gradient(150deg,#2d5a46,#1f4333);border-bottom:5px solid var(--wood);margin-bottom:14px}
+.hero .row{display:flex;justify-content:space-between;align-items:flex-start}
+.hero .l{font-size:12px;opacity:.8}.hero .big{font-family:Fraunces,serif;font-size:34px;font-weight:700;line-height:1.1}
+.hero select{background:rgba(255,255,255,.15);color:#fff;border-radius:12px;padding:7px 10px;font-size:14px;border:0}.hero select option{color:#000}
+.bar{height:8px;border-radius:8px;background:rgba(255,255,255,.2);margin:14px 0 10px;overflow:hidden}.bar i{display:block;height:100%;background:#e8d3b4;border-radius:8px;transition:width .6s}
+.hs{display:flex;justify-content:space-between;font-size:13px}.hs b{display:block;font-size:16px}
+.kg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.kc{background:var(--mar);border:1px solid var(--line);border-radius:18px;padding:13px;box-shadow:var(--sh)}
+.kc span{font-size:12px;color:var(--muted);display:block}.kc b{font-family:Fraunces,serif;font-size:22px;color:var(--ink)}
+.kc .ring{height:6px;border-radius:6px;background:var(--line);margin-top:8px;overflow:hidden}.kc .ring i{display:block;height:100%;background:var(--blue)}
+.sec{display:flex;justify-content:space-between;align-items:baseline;margin:18px 2px 8px}.sec h3{font-size:18px;color:var(--ink)}.sec a{font-size:13px;color:var(--blue);font-weight:700}
+.hs-row{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px;scrollbar-width:none}.hs-row::-webkit-scrollbar{display:none}
+.mini{flex:0 0 78%;scroll-snap-align:start;background:var(--mar);border:1px solid var(--line);border-radius:18px;padding:12px;display:flex;gap:12px;align-items:center;box-shadow:var(--sh)}
+.dt{width:52px;height:56px;border-radius:14px;background:var(--wood2);color:var(--wood);text-align:center;font-weight:700;display:flex;flex-direction:column;justify-content:center;flex:none}.dt b{font-size:20px;line-height:1}.dt small{font-size:11px;text-transform:uppercase}
+.mini .n{font-weight:700;color:var(--text)}.mini .s{font-size:12px;color:var(--muted)}
+.deb{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin-bottom:8px;width:100%;text-align:left}
+.deb b{margin-left:auto;color:var(--bad)}
+.av{width:40px;height:40px;border-radius:50%;background:var(--blue2);color:var(--blue);font-weight:700;display:flex;align-items:center;justify-content:center;flex:none;font-size:14px}
+.stick{position:sticky;top:0;z-index:20;background:var(--bg);padding:8px 0 6px}
+.search{position:relative;margin-bottom:8px}.search i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted)}
+.search input{width:100%;padding:13px 14px 13px 40px;border-radius:16px;border:1px solid var(--line);background:var(--card)}
+.chips{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;margin-bottom:8px}.chips::-webkit-scrollbar{display:none}
+.chip{padding:9px 15px;border-radius:20px;border:1px solid var(--line);background:var(--card);color:var(--muted);font-size:14px;font-weight:500;white-space:nowrap}
+.chip.on{background:var(--ink);color:var(--card);border-color:var(--ink)}
+.sel2{display:grid;grid-template-columns:1fr 1fr;gap:8px}.sel2 select,.f select,.f input{width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--card)}
+.cnt{font-size:12px;color:var(--muted);margin:8px 2px}
+.list{display:flex;flex-direction:column;gap:12px}
+.rc{background:var(--mar);border-radius:20px;padding:14px;box-shadow:var(--sh);border:1px solid var(--line)}
+.rc.debe{border-left:5px solid var(--bad)}.rc:not(.debe){border-left:5px solid var(--ok)}
+.rh{display:flex;gap:10px;align-items:center}.rn{font-weight:700;font-size:16px;color:var(--text)}.rm{font-size:12px;color:var(--muted)}
+.badge{margin-left:auto;font-size:12px;font-weight:700;padding:5px 10px;border-radius:20px;white-space:nowrap}.badge.ok{background:var(--ok2);color:var(--ok)}.badge.bad{background:var(--bad2);color:var(--bad)}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin:11px 0}.tag{font-size:12px;padding:5px 9px;border-radius:9px;background:var(--bg);color:var(--text)}.tag i{color:var(--wood);margin-right:4px}.tag.bl{background:var(--blue2);color:var(--blue)}.tag.bl i{color:var(--blue)}
+.money{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px}.money span{display:block;font-size:11px;color:var(--muted)}.money b{font-size:15px}
+.pbar{height:6px;border-radius:6px;background:var(--line);overflow:hidden;margin-bottom:12px}.pbar i{display:block;height:100%;background:var(--ok)}
+.acts{display:flex;gap:7px}.acts button{flex:1;min-height:44px;border-radius:12px;font-size:13px;font-weight:700}
+.a1{background:var(--ok2);color:var(--ok)}.a2{background:var(--blue2);color:var(--blue)}.a3{background:var(--wood2);color:var(--wood)}
+.empty{text-align:center;padding:40px 16px;color:var(--muted)}.empty i{font-size:36px;display:block;margin-bottom:10px;color:var(--wood)}
+.sk{height:160px;border-radius:20px;background:linear-gradient(90deg,var(--line),var(--card),var(--line));background-size:200% 100%;animation:sk 1.2s infinite}@keyframes sk{to{background-position:-200% 0}}
+.cal-h{display:flex;justify-content:space-between;align-items:center;margin:8px 0 12px}.cal-h h3{font-size:21px;color:var(--ink)}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}.dh{text-align:center;font-size:12px;color:var(--muted);font-weight:700}
+.cd{background:var(--card);border:1px solid var(--line);border-radius:10px;min-height:58px;padding:3px;display:flex;flex-direction:column;gap:2px;overflow:hidden;text-align:left}
+.cd.void{background:none;border-color:transparent}.cd.hoy{border:2px solid var(--ink)}.cd.pas{opacity:.5}
+.cn{font-size:12px;font-weight:700;color:var(--text);text-align:right;padding-right:2px}
+.hv{flex:1;border-radius:4px;background:var(--ok2)}.hv.o{background:var(--wood)}.cd small{font-size:9px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.leg{display:flex;gap:14px;justify-content:center;font-size:12px;color:var(--muted);margin:12px 0;flex-wrap:wrap}.leg i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.bx{background:var(--mar);border:1px solid var(--line);border-radius:20px;padding:14px;margin-bottom:12px}.bx h4{font-family:Fraunces,serif;color:var(--ink);font-size:17px;margin-bottom:12px}
+.chart{display:flex;align-items:flex-end;gap:5px;height:150px}.chart div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;font-size:10px;color:var(--muted)}.chart i{display:block;width:100%;border-radius:6px 6px 2px 2px;background:var(--blue);min-height:2px}.chart div.cur i{background:var(--wood)}.chart em{font-style:normal;font-size:9px;margin-bottom:2px}
+.btn-w{width:100%;padding:14px;border-radius:14px;background:var(--ink);color:var(--card);font-size:15px;font-weight:700}
+.nav{position:fixed;left:50%;transform:translateX(-50%);width:100%;max-width:520px;bottom:0;background:var(--card);border-top:1px solid var(--line);display:flex;align-items:center;padding:8px 6px calc(env(safe-area-inset-bottom) + 8px);z-index:50}
+.nav button{flex:1;background:none;color:var(--muted);font-size:11px;font-weight:700;display:flex;flex-direction:column;gap:3px;align-items:center;padding:4px;min-height:46px}.nav button i{font-size:19px}.nav button.on{color:var(--ink)}
+.nav .plus{flex:none;width:58px;height:58px;border-radius:20px;background:var(--wood);color:#fff;font-size:22px;margin:-30px 6px 0;box-shadow:0 8px 18px rgba(154,107,69,.45);justify-content:center}
+.modal{position:fixed;inset:0;background:rgba(20,28,24,.55);display:none;align-items:flex-end;justify-content:center;z-index:100}.modal.on{display:flex}
+.sheet{background:var(--card);width:100%;max-width:520px;max-height:92vh;overflow-y:auto;border-radius:26px 26px 0 0;padding:10px 18px calc(env(safe-area-inset-bottom) + 18px);animation:up .25s}@keyframes up{from{transform:translateY(100%)}}
+.grab{width:42px;height:5px;border-radius:5px;background:var(--line);margin:0 auto 10px}
+.sh{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.sh h3{font-size:21px;color:var(--ink)}
+.fs{font-size:12px;font-weight:700;color:var(--wood);margin:14px 0 6px;text-transform:uppercase;letter-spacing:.5px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.f{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}.f label{font-size:12px;color:var(--muted)}.f input[readonly]{background:var(--bg);font-weight:700}
+.warn{display:none;background:var(--bad2);color:var(--bad);padding:10px 12px;border-radius:12px;font-size:13px;margin-bottom:10px}
+.foot{display:flex;gap:10px;margin-top:8px}.btn{flex:1;min-height:50px;border-radius:14px;font-size:15px;font-weight:700}.b1{background:var(--ink);color:var(--card)}.b2{background:var(--bg);color:var(--text)}.b3{flex:0 0 52px;background:var(--bad2);color:var(--bad)}
+#cv{width:100%;height:auto;border-radius:14px;border:1px solid var(--line);margin:4px 0 12px;display:block}
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 100px);transform:translateX(-50%) translateY(20px);background:var(--text);color:var(--card);padding:12px 18px;border-radius:14px;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:200;max-width:90%;text-align:center}.toast.on{opacity:1;transform:translateX(-50%)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
 </head>
-<body class="antialiased flex h-screen overflow-hidden">
+<body>
+<div class="top">
+  <div class="brand">Quinta Bugambilia<small id="hoy"></small></div>
+  <div><button class="ibtn" onclick="abrirDisp()" aria-label="Disponibilidad para clientes"><i class="fas fa-share-nodes"></i></button><button class="ibtn" onclick="csv()" aria-label="Exportar CSV"><i class="fas fa-file-arrow-down"></i></button><button class="ibtn" onclick="tema()" aria-label="Tema"><i class="fas fa-circle-half-stroke"></i></button><button class="ibtn" onclick="cargar(true)" aria-label="Actualizar"><i class="fas fa-rotate" id="sync"></i></button></div>
+</div>
 
-    <!-- Sidebar / Navigation -->
-    <aside class="w-20 lg:w-64 flex flex-col bg-marble shadow-soft z-20 border-r border-[#e8e3d8] transition-all duration-300">
-        <div class="h-20 flex items-center justify-center lg:justify-start lg:px-6 border-b border-[#e8e3d8]">
-            <div class="w-10 h-10 rounded-xl bg-brand-green flex items-center justify-center text-white shadow-lg">
-                <i class="fa-solid fa-leaf text-xl"></i>
-            </div>
-            <span class="hidden lg:block ml-3 font-serif font-bold text-xl text-brand-gray tracking-tight">Quinta<br><span class="text-brand-green text-sm">Resorts</span></span>
-        </div>
-        
-        <nav class="flex-1 py-6 flex flex-col gap-2 px-3">
-            <button onclick="navigate('dashboard')" id="nav-dashboard" class="nav-btn w-full flex items-center p-3 rounded-xl transition-all duration-200 text-brand-blue bg-blue-50">
-                <i class="fa-solid fa-chart-pie w-6 text-center text-lg"></i>
-                <span class="hidden lg:block ml-3 font-medium text-sm">Dashboard</span>
-            </button>
-            <button onclick="navigate('reservations')" id="nav-reservations" class="nav-btn w-full flex items-center p-3 rounded-xl transition-all duration-200 text-brand-gray hover:bg-gray-50">
-                <i class="fa-solid fa-list w-6 text-center text-lg"></i>
-                <span class="hidden lg:block ml-3 font-medium text-sm">Reservaciones</span>
-            </button>
-            <button onclick="navigate('calendar')" id="nav-calendar" class="nav-btn w-full flex items-center p-3 rounded-xl transition-all duration-200 text-brand-gray hover:bg-gray-50">
-                <i class="fa-regular fa-calendar-days w-6 text-center text-lg"></i>
-                <span class="hidden lg:block ml-3 font-medium text-sm">Calendario</span>
-            </button>
-        </nav>
+<div id="v-ini" class="view on">
+  <div class="hero">
+    <div class="row"><div><div class="l">Ventas del año</div><div class="big" id="k-t">$0</div></div><select id="anio" onchange="anio=+this.value;todo()" aria-label="Año"></select></div>
+    <div class="bar"><i id="k-b" style="width:0"></i></div>
+    <div class="hs"><div>Cobrado<b id="k-c">$0</b></div><div style="text-align:right">Por cobrar<b id="k-s">$0</b></div></div>
+  </div>
+  <div class="kg"><div class="kc"><span>Ocupación del mes</span><b id="k-o">0%</b><div class="ring"><i id="k-ob" style="width:0"></i></div></div><div class="kc"><span>Reservas del año</span><b id="k-r">0</b><span id="k-r2" style="margin-top:4px"></span></div></div>
+  <div class="sec"><h3>Próximas llegadas</h3><a href="#" onclick="ir('lista','proximas');return false">Ver todas</a></div>
+  <div class="hs-row" id="prox"></div>
+  <div class="sec"><h3>Cobranza pendiente</h3><a href="#" onclick="ir('lista','saldo');return false">Ver todas</a></div>
+  <div id="cobr"></div>
+</div>
 
-        <div class="p-4 border-t border-[#e8e3d8]">
-            <button class="w-full flex items-center justify-center lg:justify-start p-2 rounded-xl text-brand-wood hover:bg-[#8b5a2b] hover:text-white transition-colors border border-transparent hover:border-[#8b5a2b]">
-                <i class="fa-solid fa-gear w-6 text-center"></i>
-                <span class="hidden lg:block ml-2 text-sm font-medium">Ajustes</span>
-            </button>
-        </div>
-    </aside>
+<div id="v-lista" class="view">
+  <div class="stick">
+    <div class="search"><i class="fas fa-search"></i><input id="q" placeholder="Buscar cliente, folio o teléfono" oninput="render()" aria-label="Buscar"></div>
+    <div class="chips" id="chips"><button class="chip on" data-f="todos">Todos</button><button class="chip" data-f="proximas">Próximas</button><button class="chip" data-f="saldo">Con saldo</button><button class="chip" data-f="liq">Liquidados</button><button class="chip" data-f="evento">Eventos</button><button class="chip" data-f="hosp">Hospedaje</button><button class="chip" data-f="pasadas">Pasadas</button></div>
+    <div class="sel2"><select id="fmes" onchange="render()" aria-label="Mes"></select><select id="orden" onchange="render()" aria-label="Orden"><option value="fa">Fecha ↑</option><option value="fd">Fecha ↓</option><option value="sd">Mayor saldo</option><option value="td">Mayor venta</option><option value="nd">Folio ↓</option></select></div>
+  </div>
+  <div class="cnt" id="cnt"></div>
+  <div class="list" id="list"><div class="sk"></div><div class="sk"></div></div>
+</div>
 
-    <!-- Main Content -->
-    <main class="flex-1 flex flex-col h-full bg-[#faf9f6] relative overflow-hidden">
-        
-        <!-- Header -->
-        <header class="h-20 px-8 flex items-center justify-between bg-white/80 backdrop-blur-md border-b border-gray-100 z-10 sticky top-0">
-            <div>
-                <h2 id="page-title" class="text-2xl font-serif font-bold text-brand-gray">Resumen General</h2>
-                <p class="text-sm text-brand-gray-light mt-0.5" id="current-date"></p>
-            </div>
-            <div class="flex items-center gap-4">
-                <button class="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center text-brand-gray hover:text-brand-blue shadow-sm transition-colors">
-                    <i class="fa-regular fa-bell"></i>
-                </button>
-                <button onclick="openModal()" class="px-5 py-2.5 bg-brand-blue hover:bg-brand-blue-hover text-white rounded-xl font-medium shadow-md shadow-blue-500/20 transition-all flex items-center gap-2">
-                    <i class="fa-solid fa-plus"></i> Nueva Renta
-                </button>
-            </div>
-        </header>
+<div id="v-cal" class="view">
+  <div class="cal-h"><button class="ibtn" onclick="mesCal(-1)" aria-label="Mes anterior"><i class="fas fa-chevron-left"></i></button><h3 id="cal-t"></h3><button class="ibtn" onclick="mesCal(1)" aria-label="Mes siguiente"><i class="fas fa-chevron-right"></i></button></div>
+  <div class="cal" id="cal"></div>
+  <div class="leg"><span><i style="background:var(--ok2)"></i>Libre</span><span><i style="background:var(--wood)"></i>Ocupado</span><span>Arriba mañana · abajo tarde</span></div>
+  <button class="btn-w" onclick="abrirDisp()"><i class="fas fa-image"></i> Imagen de disponibilidad</button>
+</div>
 
-        <!-- Scrollable Area -->
-        <div class="flex-1 overflow-y-auto p-8">
-            
-            <!-- VIEW: DASHBOARD -->
-            <div id="view-dashboard" class="view-section active space-y-8 max-w-6xl mx-auto">
-                <!-- KPIs -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-marble rounded-2xl p-6 shadow-soft">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-sm font-medium text-brand-wood uppercase tracking-wider">Total Ventas (Mes)</p>
-                                <h3 class="text-3xl font-bold text-brand-gray mt-2">$124,500</h3>
-                            </div>
-                            <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center text-brand-wood shadow-sm">
-                                <i class="fa-solid fa-vault text-xl"></i>
-                            </div>
-                        </div>
-                        <div class="mt-4 flex items-center text-sm">
-                            <span class="text-brand-green font-medium flex items-center"><i class="fa-solid fa-arrow-trend-up mr-1"></i> +12%</span>
-                            <span class="text-brand-gray-light ml-2">vs mes anterior</span>
-                        </div>
-                    </div>
+<div id="v-res" class="view">
+  <div class="bx"><h4>Ventas por mes</h4><div class="chart" id="chart"></div></div>
+  <div class="bx"><h4>Resumen del año</h4><div id="res"></div></div>
+</div>
 
-                    <div class="bg-marble rounded-2xl p-6 shadow-soft">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-sm font-medium text-brand-green uppercase tracking-wider">Cobrado</p>
-                                <h3 class="text-3xl font-bold text-brand-gray mt-2">$89,200</h3>
-                            </div>
-                            <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center text-brand-green shadow-sm">
-                                <i class="fa-solid fa-hand-holding-dollar text-xl"></i>
-                            </div>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-1.5 mt-5">
-                            <div class="bg-brand-green h-1.5 rounded-full" style="width: 71%"></div>
-                        </div>
-                    </div>
+<nav class="nav" id="nav">
+  <button class="on" data-v="ini"><i class="fas fa-house"></i>Inicio</button>
+  <button data-v="lista"><i class="fas fa-list-ul"></i>Reservas</button>
+  <button class="plus" onclick="abrirNuevo()" aria-label="Nueva reservación"><i class="fas fa-plus"></i></button>
+  <button data-v="cal"><i class="fas fa-calendar-days"></i>Calendario</button>
+  <button data-v="res"><i class="fas fa-chart-simple"></i>Resumen</button>
+</nav>
 
-                    <div class="bg-marble rounded-2xl p-6 shadow-soft border-l-4 border-l-orange-400">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-sm font-medium text-brand-gray-light uppercase tracking-wider">Por Cobrar (Saldo)</p>
-                                <h3 class="text-3xl font-bold text-brand-gray mt-2">$35,300</h3>
-                            </div>
-                            <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center text-orange-500 shadow-sm">
-                                <i class="fa-regular fa-clock text-xl"></i>
-                            </div>
-                        </div>
-                        <p class="text-sm text-brand-gray-light mt-4">De 8 reservaciones activas</p>
-                    </div>
-                </div>
+<div class="modal" id="m-form"><div class="sheet"><div class="grab"></div>
+  <div class="sh"><h3 id="m-t">Nueva reservación</h3><button class="ibtn" onclick="cerrar('m-form')" aria-label="Cerrar"><i class="fas fa-xmark"></i></button></div>
+  <form id="form" onsubmit="guardar(event)">
+    <input type="hidden" id="f-folio">
+    <div class="f"><label>Cliente</label><input id="f-nombre" required placeholder="Nombre completo"></div>
+    <div class="g2"><div class="f"><label>Teléfono</label><input id="f-tel" type="tel" inputmode="tel"></div><div class="f"><label>Teléfono 2</label><input id="f-tel2" type="tel" inputmode="tel"></div></div>
+    <div class="fs">Estancia</div>
+    <div class="g2"><div class="f"><label>Entrada</label><input type="date" id="f-ent" onchange="autoMes();revisar()"></div><div class="f"><label>Salida</label><input type="date" id="f-sal" onchange="revisar()"></div></div>
+    <div class="g2"><div class="f"><label>Hospedaje</label><input id="f-hosp" placeholder="Ej. 12 personas"></div><div class="f"><label>Evento</label><input id="f-evt" placeholder="Ej. 50 personas"></div></div>
+    <div class="f"><label>Mes de renta</label><select id="f-mes"></select></div>
+    <div class="warn" id="f-warn"></div>
+    <div class="fs">Pagos</div>
+    <div class="g2"><div class="f"><label>Total venta ($)</label><input type="number" inputmode="decimal" step="0.01" id="f-total" oninput="saldo()" required></div><div class="f"><label>Saldo ($)</label><input id="f-saldo" readonly></div></div>
+    <div class="g2"><div class="f"><label>Anticipo 1 ($)</label><input type="number" inputmode="decimal" step="0.01" id="f-a1" oninput="saldo()"></div><div class="f"><label>Fecha anticipo 1</label><input type="date" id="f-fa1"></div></div>
+    <div class="g2"><div class="f"><label>Anticipo 2 ($)</label><input type="number" inputmode="decimal" step="0.01" id="f-a2" oninput="saldo()"></div><div class="f"><label>Fecha anticipo 2</label><input type="date" id="f-fa2"></div></div>
+    <div class="fs">Comisión</div>
+    <div class="g2"><div class="f"><label>Comisión ($)</label><input type="number" inputmode="decimal" step="0.01" id="f-com"></div><div class="f"><label>Fecha cobrado</label><input type="date" id="f-fc"></div></div>
+    <div class="f"><label>Comisión No.</label><input id="f-comno"></div>
+    <div class="foot"><button type="button" class="btn b3" id="btn-d" onclick="eliminar()" aria-label="Eliminar"><i class="fas fa-trash"></i></button><button type="button" class="btn b2" onclick="cerrar('m-form')">Cancelar</button><button class="btn b1" id="btn-g">Guardar</button></div>
+  </form>
+</div></div>
 
-                <!-- Próximos Eventos Mini -->
-                <div>
-                    <h3 class="text-lg font-serif font-bold text-brand-gray mb-4">Próximos Eventos (7 días)</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="dashboard-events">
-                        <!-- Populated by JS -->
-                    </div>
-                </div>
-            </div>
+<div class="modal" id="m-dia"><div class="sheet"><div class="grab"></div><div class="sh"><h3 id="dia-t"></h3><button class="ibtn" onclick="cerrar('m-dia')" aria-label="Cerrar"><i class="fas fa-xmark"></i></button></div><div id="dia-b"></div></div></div>
 
-            <!-- VIEW: RESERVATIONS LIST -->
-            <div id="view-reservations" class="view-section space-y-6 max-w-6xl mx-auto">
-                <!-- Filters -->
-                <div class="bg-white p-4 rounded-2xl shadow-soft border border-gray-100 flex flex-col md:flex-row gap-4 items-center justify-between">
-                    <div class="relative w-full md:w-96">
-                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                        <input type="text" placeholder="Buscar cliente, folio o área..." class="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-blue/50 focus:border-brand-blue text-sm transition-all">
-                    </div>
-                    <div class="flex gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 hide-scrollbar">
-                        <button class="px-4 py-2 rounded-lg bg-brand-gray text-white text-sm font-medium whitespace-nowrap">Todos</button>
-                        <button class="px-4 py-2 rounded-lg bg-white border border-gray-200 text-brand-gray hover:bg-gray-50 text-sm font-medium whitespace-nowrap">Con Saldo</button>
-                        <button class="px-4 py-2 rounded-lg bg-white border border-gray-200 text-brand-gray hover:bg-gray-50 text-sm font-medium whitespace-nowrap">Liquidados</button>
-                    </div>
-                </div>
+<div class="modal" id="m-ab"><div class="sheet"><div class="grab"></div><div class="sh"><h3>Registrar abono</h3><button class="ibtn" onclick="cerrar('m-ab')" aria-label="Cerrar"><i class="fas fa-xmark"></i></button></div>
+  <p id="ab-i" style="margin-bottom:12px;color:var(--muted)"></p><input type="hidden" id="ab-f">
+  <div class="f"><label>Monto ($)</label><input type="number" inputmode="decimal" id="ab-m" placeholder="0.00"></div>
+  <div class="chips"><button class="chip" onclick="abTodo()">Liquidar todo</button><button class="chip" onclick="abMitad()">50% del saldo</button></div>
+  <div class="foot"><button class="btn b1" onclick="abonar()">Registrar abono</button></div>
+</div></div>
 
-                <!-- List Grid -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6" id="reservations-grid">
-                    <!-- Populated by JS -->
-                </div>
-            </div>
+<div class="modal" id="m-disp"><div class="sheet"><div class="grab"></div><div class="sh"><h3>Disponibilidad</h3><button class="ibtn" onclick="cerrar('m-disp')" aria-label="Cerrar"><i class="fas fa-xmark"></i></button></div>
+  <div class="g2"><div class="f"><label>Mes</label><select id="d-mes" onchange="dibujar()"></select></div><div class="f"><label>Contacto en la imagen</label><input id="d-ct" placeholder="Tel. o WhatsApp" oninput="dibujar()"></div></div>
+  <canvas id="cv" width="1080" height="1350"></canvas>
+  <div class="foot"><button class="btn b2" onclick="bajar()"><i class="fas fa-download"></i> Descargar</button><button class="btn b1" onclick="compartir()"><i class="fas fa-share-nodes"></i> Compartir</button></div>
+</div></div>
+<div class="toast" id="toast"></div>
 
-            <!-- VIEW: CALENDAR -->
-            <div id="view-calendar" class="view-section max-w-5xl mx-auto">
-                <div class="bg-marble rounded-3xl p-6 md:p-8 shadow-soft">
-                    <div class="flex items-center justify-between mb-8">
-                        <h3 class="text-2xl font-serif font-bold text-brand-gray" id="cal-month-year">Octubre 2026</h3>
-                        <div class="flex gap-2">
-                            <button class="w-10 h-10 rounded-xl bg-white border border-gray-200 text-brand-gray hover:border-brand-blue hover:text-brand-blue transition-colors flex items-center justify-center">
-                                <i class="fa-solid fa-chevron-left"></i>
-                            </button>
-                            <button class="w-10 h-10 rounded-xl bg-white border border-gray-200 text-brand-gray hover:border-brand-blue hover:text-brand-blue transition-colors flex items-center justify-center">
-                                <i class="fa-solid fa-chevron-right"></i>
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="cal-grid text-center mb-4">
-                        <div class="text-xs font-bold text-brand-gray-light uppercase tracking-wider">Dom</div>
-                        <div class="text-xs font-bold text-brand-gray-light uppercase tracking-wider">Lun</div>
-                        <div class="text-xs font-bold text-brand-gray-light uppercase tracking-wider">Mar</div>
-                        <div class="text-xs font-bold text-brand-gray-light uppercase tracking-wider">Mié</div>
-                        <div class="text-xs font-bold text-brand-gray-light uppercase tracking-wider">Jue</div>
-                        <div class="text-xs font-bold text-brand-gray-light uppercase tracking-wider">Vie</div>
-                        <div class="text-xs font-bold text-brand-gray-light uppercase tracking-wider">Sáb</div>
-                    </div>
-                    
-                    <div class="cal-grid" id="calendar-days">
-                        <!-- Populated by JS -->
-                    </div>
-                </div>
-            </div>
+<script>
+const URL_API="https://script.google.com/macros/s/AKfycbyUuSbd7XOIskwITU6wPbw7jDajpHvTHcOYaVSwWW83y9tOHzECOmk8yzMASq8eNJNT/exec";
+const MESES=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+const MC=MESES.map(m=>m.slice(0,3)),cap=s=>s[0].toUpperCase()+s.slice(1);
+const $=id=>document.getElementById(id);
+let datos=[],filtro="todos",anio=new Date().getFullYear(),calF=new Date();calF.setDate(1);
 
-        </div>
-    </main>
+/* ---- Utilidades ---- */
+const num=v=>{if(typeof v==="number")return isNaN(v)?0:v;const n=parseFloat(String(v||"").replace(/[^0-9.-]/g,""));return isNaN(n)?0:n};
+const $$=v=>"$"+num(v).toLocaleString("es-MX",{maximumFractionDigits:0});
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const iso=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+function aFecha(s,mdy){
+  if(!s||s==="-")return null;s=String(s).trim();
+  let m=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})(T.*)?$/);
+  if(m){if(m[4]){const d=new Date(s);return isNaN(d)?null:new Date(d.getFullYear(),d.getMonth(),d.getDate())}return new Date(+m[1],m[2]-1,+m[3])}
+  m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if(m){let a=+m[1],b=+m[2],dia=mdy?b:a,mes=mdy?a:b;if(mes>12)[dia,mes]=[mes,dia];return new Date(+m[3],mes-1,dia)}
+  const d=new Date(s);return isNaN(d)?null:new Date(d.getFullYear(),d.getMonth(),d.getDate());
+}
+const aISO=(s,mdy)=>{const d=aFecha(s,mdy);return d?iso(d):""};
+const fmtF=d=>d?d.getDate()+" "+MC[d.getMonth()]+(d.getFullYear()!==new Date().getFullYear()?" "+d.getFullYear():""):"—";
+const hoy0=()=>{const d=new Date();d.setHours(0,0,0,0);return d};
+const saldoDe=r=>Math.max(0,num(r.total_venta)-num(r.anticipo1)-num(r.anticipo2));
+const ent=r=>aFecha(r.fecha_entrada),sal=r=>aFecha(r.fecha_salida)||ent(r);
+const ini=n=>(n||"?").trim().split(/\s+/).slice(0,2).map(w=>w[0]).join("").toUpperCase();
+const vib=()=>navigator.vibrate&&navigator.vibrate(10);
+function toast(t){const e=$("toast");e.textContent=t;e.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove("on"),2600)}
+function cerrar(id){$(id).classList.remove("on")}
+function tema(){const r=document.documentElement,d=r.dataset.theme==="dark"?"":"dark";d?r.dataset.theme="dark":r.removeAttribute("data-theme");try{localStorage.setItem("qb-tema",d)}catch(e){}}
+try{if(localStorage.getItem("qb-tema")==="dark")document.documentElement.dataset.theme="dark"}catch(e){}
 
-    <!-- Modal Form (Hidden by default) -->
-    <div id="modal-form" class="fixed inset-0 bg-brand-gray/40 backdrop-blur-sm z-50 hidden items-center justify-center opacity-0 transition-opacity duration-300">
-        <div class="bg-white rounded-3xl shadow-floating w-full max-w-2xl overflow-hidden transform scale-95 transition-transform duration-300" id="modal-content">
-            <div class="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-marble">
-                <h3 class="font-serif font-bold text-xl text-brand-gray">Nueva Reservación</h3>
-                <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-white text-gray-400 hover:text-gray-800 flex items-center justify-center shadow-sm">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-            <div class="p-6 max-h-[70vh] overflow-y-auto">
-                <div class="space-y-5">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Cliente</label>
-                            <input type="text" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-blue/50 outline-none text-sm" placeholder="Nombre completo">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Teléfono</label>
-                            <input type="tel" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-blue/50 outline-none text-sm" placeholder="10 dígitos">
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Fecha</label>
-                            <input type="date" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-blue/50 outline-none text-sm">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Áreas</label>
-                            <select class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-blue/50 outline-none text-sm">
-                                <option>Local Completo</option>
-                                <option>Solo Alberca + Asador</option>
-                                <option>Salón Principal</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-3 gap-4 border-t border-gray-100 pt-4">
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Total ($)</label>
-                            <input type="number" class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm font-bold text-brand-gray" value="0">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Anticipo ($)</label>
-                            <input type="number" class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm text-brand-green" value="0">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Saldo ($)</label>
-                            <input type="number" readonly class="w-full p-3 bg-gray-100 border border-transparent rounded-xl text-sm text-orange-600 font-bold" value="0">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="px-6 py-4 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
-                <button onclick="closeModal()" class="px-5 py-2.5 rounded-xl border border-[#8b5a2b] text-[#8b5a2b] hover:bg-[#8b5a2b] hover:text-white text-sm font-medium transition-colors">Cancelar</button>
-                <button onclick="saveMock()" class="px-6 py-2.5 rounded-xl bg-brand-blue hover:bg-brand-blue-hover text-white text-sm font-medium shadow-md transition-colors">Guardar</button>
-            </div>
-        </div>
-    </div>
+/* ---- Datos ---- */
+async function cargar(manual){
+  $("sync").classList.add("fa-spin");
+  try{const res=await fetch(URL_API,{redirect:"follow"});datos=await res.json();try{localStorage.setItem("qb-cache",JSON.stringify(datos))}catch(e){}if(manual)toast("Datos actualizados")}
+  catch(err){try{const c=localStorage.getItem("qb-cache");if(c&&!datos.length){datos=JSON.parse(c);toast("Sin conexión: últimos datos guardados")}else toast("No se pudo conectar. Revisa tu internet.")}catch(e){toast("No se pudo conectar.")}}
+  $("sync").classList.remove("fa-spin");anios();todo();
+}
+const delAnio=()=>datos.filter(r=>{const e=ent(r);return e&&e.getFullYear()===anio});
+function anios(){const s=new Set(datos.map(r=>{const e=ent(r);return e&&e.getFullYear()}).filter(Boolean));s.add(new Date().getFullYear());const a=[...s].sort((x,y)=>y-x);if(!a.includes(anio))anio=a[0];$("anio").innerHTML=a.map(y=>`<option ${y===anio?"selected":""}>${y}</option>`).join("")}
+function todo(){inicio();render();pintarCal();resumen()}
+async function api(accion,extra){await fetch(URL_API,{method:"POST",body:JSON.stringify({accion,...extra})})}
+const pl=r=>({folio:r.folio,nombre:r.nombre,mes_renta:r.mes_renta,telefono:r.telefono,hospedaje:r.hospedaje,evento:r.evento,fecha_entrada:aISO(r.fecha_entrada),fecha_salida:aISO(r.fecha_salida),total_venta:r.total_venta,anticipo1:r.anticipo1,fecha_anticipo1:aISO(r.fecha_anticipo1,true),anticipo2:r.anticipo2,fecha_anticipo2:aISO(r.fecha_anticipo2,true),saldo:saldoDe(r),comision:r.comision,fecha_cobrado:aISO(r.fecha_cobrado),comision_no:r.comision_no,telefono_2:r.telefono_2});
+const buscar=f=>datos.find(r=>String(r.folio)===String(f));
 
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-brand-gray text-white px-6 py-3 rounded-full shadow-floating flex items-center gap-3 transition-all duration-300 translate-y-20 opacity-0 z-50">
-        <i class="fa-solid fa-circle-check text-brand-green"></i>
-        <span class="text-sm font-medium" id="toast-msg">Acción exitosa</span>
-    </div>
+/* ---- Inicio ---- */
+function inicio(){
+  let t=0,c=0,s=0;const rs=delAnio();rs.forEach(r=>{t+=num(r.total_venta);c+=num(r.anticipo1)+num(r.anticipo2);s+=saldoDe(r)});
+  $("k-t").textContent=$$(t);$("k-c").textContent=$$(c);$("k-s").textContent=$$(s);$("k-b").style.width=(t?Math.min(100,c/t*100):0)+"%";
+  $("k-r").textContent=rs.length;$("k-r2").textContent=rs.filter(r=>saldoDe(r)===0).length+" liquidadas";
+  const h=hoy0(),a=h.getFullYear(),m=h.getMonth(),n=new Date(a,m+1,0).getDate();let oc=0;
+  for(let d=1;d<=n;d++){const j=jornadas(new Date(a,m,d));if(j.m||j.t)oc++}
+  const p=Math.round(oc/n*100);$("k-o").textContent=p+"%";$("k-ob").style.width=p+"%";
+  const pr=datos.filter(r=>{const e=ent(r);return e&&e>=h}).sort((x,y)=>ent(x)-ent(y)).slice(0,6);
+  $("prox").innerHTML=pr.length?pr.map(r=>{const e=ent(r),d=Math.round((e-h)/864e5);return `<div class="mini" onclick="abrirEditar('${r.folio}')"><div class="dt"><b>${e.getDate()}</b><small>${MC[e.getMonth()]}</small></div><div><div class="n">${esc(r.nombre)}</div><div class="s">${d===0?"Hoy":d===1?"Mañana":"En "+d+" días"} · ${saldoDe(r)>0?"debe "+$$(saldoDe(r)):"liquidado"}</div></div></div>`}).join(""):`<div class="empty" style="width:100%;padding:16px">Sin llegadas próximas</div>`;
+  const dd=rs.filter(r=>saldoDe(r)>0).sort((x,y)=>saldoDe(y)-saldoDe(x)).slice(0,4);
+  $("cobr").innerHTML=dd.length?dd.map(r=>`<button class="deb" onclick="abrirAbono('${r.folio}')"><span class="av">${esc(ini(r.nombre))}</span><span>${esc(r.nombre)}<br><small style="color:var(--muted)">${fmtF(ent(r))}</small></span><b>${$$(saldoDe(r))}</b></button>`).join(""):`<div class="empty" style="padding:16px"><i class="fas fa-circle-check"></i>Todo cobrado</div>`;
+}
 
-    <script>
-        // Mock Data
-        const reservations = [
-            { id: 'FOL-001', name: 'Familia González', date: '2026-10-18', areas: ['Alberca', 'Asador'], total: 8500, paid: 4000, balance: 4500, status: 'saldo' },
-            { id: 'FOL-002', name: 'Empresa XYZ', date: '2026-10-20', areas: ['Local Completo'], total: 15000, paid: 15000, balance: 0, status: 'liquidado' },
-            { id: 'FOL-003', name: 'Boda Civil Martínez', date: '2026-10-24', areas: ['Salón', 'Jardín'], total: 22000, paid: 10000, balance: 12000, status: 'saldo' },
-            { id: 'FOL-004', name: 'Cumpleaños Infantil', date: '2026-10-15', areas: ['Alberca', 'Cuarto de Juegos'], total: 6000, paid: 6000, balance: 0, status: 'liquidado' }
-        ];
+/* ---- Lista ---- */
+$("fmes").innerHTML='<option value="">Todos los meses</option>'+MESES.map((m,i)=>`<option value="${i}">${cap(m)}</option>`).join("");
+$("chips").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;vib();setF(b.dataset.f)});
+function setF(f){filtro=f;document.querySelectorAll("#chips .chip").forEach(c=>c.classList.toggle("on",c.dataset.f===f));render()}
+function ir(v,f){go(v);if(f)setF(f)}
+function render(){
+  const q=$("q").value.toLowerCase().trim(),h=hoy0(),mf=$("fmes").value;
+  let r=delAnio().filter(x=>!q||String(x.folio).includes(q)||(x.nombre||"").toLowerCase().includes(q)||String(x.telefono||"").replace(/\D/g,"").includes(q.replace(/\D/g,"")||"§"));
+  if(mf!=="")r=r.filter(x=>{const e=ent(x);return e&&e.getMonth()===+mf});
+  const F={saldo:x=>saldoDe(x)>0,liq:x=>saldoDe(x)===0,proximas:x=>ent(x)&&ent(x)>=h,pasadas:x=>sal(x)&&sal(x)<h,evento:x=>!!x.evento,hosp:x=>!!x.hospedaje};
+  if(F[filtro])r=r.filter(F[filtro]);
+  const o=$("orden").value;
+  r.sort((a,b)=>o==="fa"?ent(a)-ent(b):o==="fd"?ent(b)-ent(a):o==="sd"?saldoDe(b)-saldoDe(a):o==="td"?num(b.total_venta)-num(a.total_venta):num(b.folio)-num(a.folio));
+  $("cnt").textContent=r.length+" reserva"+(r.length===1?"":"s")+" · "+$$(r.reduce((s,x)=>s+num(x.total_venta),0))+" en ventas · "+$$(r.reduce((s,x)=>s+saldoDe(x),0))+" por cobrar";
+  $("list").innerHTML=r.length?r.map(tarjeta).join(""):`<div class="empty"><i class="fas fa-calendar-xmark"></i>Sin reservaciones con estos filtros.<br>Toca + para agregar una.</div>`;
+}
+function tarjeta(x){
+  const t=num(x.total_venta),p=num(x.anticipo1)+num(x.anticipo2),s=saldoDe(x),e=ent(x),sa=sal(x),h=hoy0();
+  const noches=e&&sa?Math.round((sa-e)/864e5):0,tel=String(x.telefono||x.telefono_2||"").replace(/\D/g,"");
+  const d=e?Math.round((e-h)/864e5):null,cu=d===null?"":sa<h?"Pasada":d<=0?"En curso":d===1?"Mañana":"En "+d+" días";
+  return `<div class="rc ${s>0?"debe":""}">
+  <div class="rh"><span class="av">${esc(ini(x.nombre))}</span><div><div class="rn">${esc(x.nombre||"Sin nombre")}</div><div class="rm">Folio ${esc(x.folio)}</div></div><span class="badge ${s>0?"bad":"ok"}">${s>0?"Debe "+$$(s):"Liquidado"}</span></div>
+  <div class="tags"><span class="tag"><i class="fas fa-calendar"></i>${e?(noches>0?fmtF(e)+" → "+fmtF(sa):fmtF(e)):"Sin fecha"}</span>${cu?`<span class="tag bl">${cu}</span>`:""}${noches>0?`<span class="tag">${noches} noche${noches>1?"s":""}</span>`:""}${x.hospedaje?`<span class="tag"><i class="fas fa-bed"></i>${esc(x.hospedaje)}</span>`:""}${x.evento?`<span class="tag"><i class="fas fa-champagne-glasses"></i>${esc(x.evento)}</span>`:""}</div>
+  <div class="money"><div><span>Total</span><b>${$$(t)}</b></div><div><span>Pagado</span><b style="color:var(--ok)">${$$(p)}</b></div><div><span>Saldo</span><b style="color:${s>0?"var(--bad)":"var(--ok)"}">${$$(s)}</b></div></div>
+  <div class="pbar"><i style="width:${t?Math.min(100,p/t*100):0}%"></i></div>
+  <div class="acts">${tel?`<button class="a1" onclick="whats('${x.folio}')" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i> Chat</button><a href="tel:${tel}" class="a2" style="display:flex;align-items:center;justify-content:center;border-radius:12px;text-decoration:none;flex:0 0 48px" aria-label="Llamar"><i class="fas fa-phone"></i></a>`:""}${s>0?`<button class="a3" onclick="abrirAbono('${x.folio}')"><i class="fas fa-coins"></i> Abono</button>`:""}<button class="a2" onclick="abrirEditar('${x.folio}')"><i class="fas fa-pen"></i> Editar</button></div></div>`;
+}
+function whats(f){
+  const x=buscar(f);if(!x)return;let n=String(x.telefono||x.telefono_2).replace(/\D/g,"");if(n.length===10)n="52"+n;const s=saldoDe(x);
+  const msg=`Hola ${(x.nombre||"").split(" ")[0]}, te escribimos de Quinta Bugambilia sobre tu reservación del ${fmtF(ent(x))}.`+(s>0?` Tu saldo pendiente es de ${$$(s)}.`:` Tu reservación está liquidada, ¡te esperamos!`);
+  window.open("https://wa.me/"+n+"?text="+encodeURIComponent(msg),"_blank");
+}
 
-        // Format Utilities
-        const formatMoney = (amount) => new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(amount);
-        const formatDate = (dateStr) => {
-            const options = { weekday: 'long', day: 'numeric', month: 'short' };
-            const d = new Date(dateStr + 'T12:00:00'); // Prevent timezone shift
-            let str = d.toLocaleDateString('es-MX', options);
-            return str.charAt(0).toUpperCase() + str.slice(1);
-        };
+/* ---- Abonos rápidos ---- */
+function abrirAbono(f){const r=buscar(f);if(!r)return;$("ab-f").value=f;$("ab-m").value="";$("ab-i").textContent=r.nombre+" · saldo "+$$(saldoDe(r));$("m-ab").classList.add("on")}
+const abTodo=()=>$("ab-m").value=saldoDe(buscar($("ab-f").value));
+const abMitad=()=>$("ab-m").value=Math.round(saldoDe(buscar($("ab-f").value))/2);
+async function abonar(){
+  const r=buscar($("ab-f").value),m=num($("ab-m").value);if(!r||m<=0){toast("Escribe un monto válido");return}
+  const p=pl(r),h=iso(new Date());
+  if(!num(r.anticipo1)){p.anticipo1=m;p.fecha_anticipo1=h}else{p.anticipo2=num(r.anticipo2)+m;p.fecha_anticipo2=h}
+  p.saldo=Math.max(0,num(r.total_venta)-num(p.anticipo1)-num(p.anticipo2));
+  try{await api("actualizar",{payload:p});cerrar("m-ab");toast("Abono registrado");cargar()}catch(e){toast("No se pudo guardar: "+e)}
+}
 
-        // Navigation
-        function navigate(view) {
-            // Update buttons
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('text-brand-blue', 'bg-blue-50');
-                btn.classList.add('text-brand-gray', 'hover:bg-gray-50');
-            });
-            const activeBtn = document.getElementById(`nav-${view}`);
-            activeBtn.classList.remove('text-brand-gray', 'hover:bg-gray-50');
-            activeBtn.classList.add('text-brand-blue', 'bg-blue-50');
+/* ---- Calendario ---- */
+function mesCal(d){calF.setMonth(calF.getMonth()+d);pintarCal()}
+function reservasDia(d){const o=[],t=d.getTime();datos.forEach(r=>{const e=ent(r),s=sal(r);if(!e)return;if(t===e.getTime())o.push({r,k:"in"});else if(t===s.getTime())o.push({r,k:"out"});else if(t>e.getTime()&&t<s.getTime())o.push({r,k:"mid"})});return o}
+function jornadas(f){const rs=reservasDia(f);return{m:rs.some(x=>x.k==="out"||x.k==="mid"),t:rs.some(x=>x.k==="in"||x.k==="mid")}}
+function pintarCal(){
+  const a=calF.getFullYear(),m=calF.getMonth(),h=hoy0().getTime();$("cal-t").textContent=cap(MESES[m])+" "+a;
+  let html=["D","L","M","M","J","V","S"].map(x=>`<div class="dh">${x}</div>`).join("");
+  for(let i=0;i<new Date(a,m,1).getDay();i++)html+=`<div class="cd void"></div>`;
+  for(let d=1;d<=new Date(a,m+1,0).getDate();d++){
+    const f=new Date(a,m,d),rs=reservasDia(f),j=jornadas(f);
+    html+=`<button class="cd ${f.getTime()===h?"hoy":f.getTime()<h?"pas":""}" onclick="verDia(${a},${m},${d})"><div class="cn">${d}</div><div class="hv ${j.m?"o":""}"></div><div class="hv ${j.t?"o":""}"></div>${rs[0]?`<small>${esc((rs[0].r.nombre||"").split(" ")[0])}</small>`:""}</button>`;
+  }
+  $("cal").innerHTML=html;
+}
+function verDia(a,m,d){
+  const f=new Date(a,m,d),rs=reservasDia(f),L={in:"Llega",mid:"Ocupado",out:"Sale"};$("dia-t").textContent=d+" de "+MESES[m];
+  $("dia-b").innerHTML=rs.length?rs.map(x=>{const s=saldoDe(x.r);return `<div class="rc ${s>0?"debe":""}" style="margin-bottom:10px"><div class="rh"><span class="av">${esc(ini(x.r.nombre))}</span><div><div class="rn">${esc(x.r.nombre)}</div><div class="rm">${L[x.k]} · Folio ${esc(x.r.folio)}</div></div><span class="badge ${s>0?"bad":"ok"}">${s>0?"Debe "+$$(s):"Liquidado"}</span></div><div class="acts" style="margin-top:10px"><button class="a2" onclick="cerrar('m-dia');abrirEditar('${x.r.folio}')"><i class="fas fa-pen"></i> Ver / editar</button></div></div>`}).join("")
+  :`<div class="empty"><i class="fas fa-circle-check"></i>Día libre<br><button class="btn b1" style="margin-top:14px;padding:0 24px" onclick="cerrar('m-dia');abrirNuevo('${iso(f)}')">Reservar este día</button></div>`;
+  $("m-dia").classList.add("on");
+}
 
-            // Update views
-            document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
-            document.getElementById(`view-${view}`).classList.add('active');
+/* ---- Resumen ---- */
+function resumen(){
+  const v=Array(12).fill(0),r=delAnio();r.forEach(x=>{const e=ent(x);if(e)v[e.getMonth()]+=num(x.total_venta)});
+  const mx=Math.max(...v,1),cm=new Date().getMonth();
+  $("chart").innerHTML=v.map((n,i)=>`<div class="${i===cm&&anio===new Date().getFullYear()?"cur":""}"><em>${n?Math.round(n/1000)+"k":""}</em><i style="height:${n/mx*100}%"></i>${MC[i][0].toUpperCase()}</div>`).join("");
+  const com=r.reduce((s,x)=>s+num(x.comision),0),ev=r.filter(x=>x.evento).length,ho=r.filter(x=>x.hospedaje).length,tot=r.reduce((s,x)=>s+num(x.total_venta),0),pr=r.length?tot/r.length:0;
+  const best=v.indexOf(mx);
+  $("res").innerHTML=`<div class="money"><div><span>Reservas</span><b>${r.length}</b></div><div><span>Con evento</span><b>${ev}</b></div><div><span>Hospedaje</span><b>${ho}</b></div></div><div class="money"><div><span>Ticket promedio</span><b>${$$(pr)}</b></div><div><span>Comisiones</span><b>${$$(com)}</b></div><div><span>Mejor mes</span><b>${tot?cap(MC[best]):"—"}</b></div></div>`;
+}
 
-            // Update Header
-            const titles = {
-                'dashboard': 'Resumen General',
-                'reservations': 'Lista de Reservaciones',
-                'calendar': 'Calendario de Ocupación'
-            };
-            document.getElementById('page-title').textContent = titles[view];
-        }
+/* ---- Formulario ---- */
+$("f-mes").innerHTML=MESES.map(m=>`<option value="${m}">${cap(m)}</option>`).join("");
+function saldo(){$("f-saldo").value=Math.max(0,num($("f-total").value)-num($("f-a1").value)-num($("f-a2").value)).toFixed(2)}
+function autoMes(){const d=aFecha($("f-ent").value);if(d)$("f-mes").value=MESES[d.getMonth()]}
+function revisar(){
+  const e=aFecha($("f-ent").value),s=aFecha($("f-sal").value)||e,w=$("f-warn"),fol=$("f-folio").value;w.style.display="none";if(!e)return;
+  if(s<e){w.innerHTML="<i class='fas fa-triangle-exclamation'></i> La salida es anterior a la entrada.";w.style.display="block";return}
+  const c=datos.find(r=>{if(String(r.folio)===String(fol))return false;const re=ent(r),rs=sal(r);if(!re)return false;return(e<rs&&re<s)||e.getTime()===re.getTime()});
+  if(c){w.innerHTML=`<i class="fas fa-triangle-exclamation"></i> Se empalma con ${esc(c.nombre)} (folio ${esc(c.folio)}).`;w.style.display="block"}
+}
+function abrirNuevo(fecha){
+  $("m-t").textContent="Nueva reservación";$("form").reset();$("f-folio").value="";$("btn-d").style.display="none";
+  if(fecha){$("f-ent").value=fecha;$("f-sal").value=fecha;autoMes()}else $("f-mes").value=MESES[new Date().getMonth()];
+  $("f-warn").style.display="none";saldo();$("m-form").classList.add("on");
+}
+function abrirEditar(f){
+  const r=buscar(f);if(!r)return;$("m-t").textContent="Folio "+f;$("f-folio").value=r.folio;$("btn-d").style.display="";
+  const set=(id,v)=>$(id).value=v==null?"":v;
+  set("f-nombre",r.nombre);set("f-tel",r.telefono);set("f-tel2",r.telefono_2);set("f-hosp",r.hospedaje);set("f-evt",r.evento);
+  $("f-mes").value=(r.mes_renta||"").toLowerCase()||MESES[new Date().getMonth()];
+  set("f-ent",aISO(r.fecha_entrada));set("f-sal",aISO(r.fecha_salida));set("f-total",r.total_venta);set("f-a1",r.anticipo1);set("f-a2",r.anticipo2);
+  set("f-fa1",aISO(r.fecha_anticipo1,true));set("f-fa2",aISO(r.fecha_anticipo2,true));set("f-com",r.comision);set("f-fc",aISO(r.fecha_cobrado));set("f-comno",r.comision_no);
+  saldo();revisar();$("m-form").classList.add("on");
+}
+async function guardar(ev){
+  ev.preventDefault();const b=$("btn-g");b.disabled=true;b.textContent="Guardando…";const folio=$("f-folio").value,v=id=>$(id).value;
+  const payload={folio,nombre:v("f-nombre").trim(),mes_renta:v("f-mes"),telefono:v("f-tel"),hospedaje:v("f-hosp"),evento:v("f-evt"),fecha_entrada:v("f-ent"),fecha_salida:v("f-sal"),total_venta:v("f-total"),anticipo1:v("f-a1"),fecha_anticipo1:v("f-fa1"),anticipo2:v("f-a2"),fecha_anticipo2:v("f-fa2"),saldo:v("f-saldo"),comision:v("f-com"),fecha_cobrado:v("f-fc"),comision_no:v("f-comno"),telefono_2:v("f-tel2")};
+  try{await api(folio?"actualizar":"crear",{payload});cerrar("m-form");toast(folio?"Reservación actualizada":"Reservación guardada");await cargar()}catch(e){toast("No se pudo guardar: "+e)}
+  b.disabled=false;b.textContent="Guardar";
+}
+async function eliminar(){
+  const f=$("f-folio").value;if(!f||!confirm("¿Eliminar la reservación #"+f+"? No se puede deshacer."))return;
+  try{await api("eliminar",{folio:f});cerrar("m-form");toast("Reservación eliminada");cargar()}catch(e){toast("No se pudo eliminar: "+e)}
+}
+function csv(){
+  const c=["folio","nombre","mes_renta","telefono","hospedaje","evento","fecha_entrada","fecha_salida","total_venta","anticipo1","anticipo2","saldo","comision"];
+  const l=[c.join(",")].concat(delAnio().map(r=>c.map(k=>'"'+String(k==="saldo"?saldoDe(r):(r[k]??"")).replace(/"/g,'""')+'"').join(",")));
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\ufeff"+l.join("\n")],{type:"text/csv"}));a.download="rentas-"+anio+".csv";a.click();
+}
 
-        // Render Data
-        function renderDashboard() {
-            const container = document.getElementById('dashboard-events');
-            const upcoming = reservations.filter(r => r.balance > 0).slice(0, 2); // Just mock logic
-            
-            container.innerHTML = upcoming.map(r => `
-                <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm flex items-center justify-between hover:shadow-md transition-shadow">
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-xl bg-blue-50 flex flex-col items-center justify-center text-brand-blue">
-                            <span class="text-xs font-bold uppercase">${new Date(r.date).toLocaleDateString('es', {month: 'short'})}</span>
-                            <span class="text-lg font-black leading-none">${new Date(r.date).getDate()}</span>
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-brand-gray text-sm">${r.name}</h4>
-                            <p class="text-xs text-brand-gray-light mt-0.5"><i class="fa-solid fa-layer-group mr-1"></i> ${r.areas.join(' • ')}</p>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <span class="inline-block px-3 py-1 rounded-full text-xs font-bold ${r.status === 'liquidado' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}">
-                            ${r.status === 'liquidado' ? 'Liquidado' : 'Debe ' + formatMoney(r.balance)}
-                        </span>
-                    </div>
-                </div>
-            `).join('');
-        }
+/* ---- Imagen de disponibilidad ---- */
+function abrirDisp(){
+  const s=$("d-mes");if(!s.options.length){const h=new Date();let o="";for(let i=0;i<12;i++){const d=new Date(h.getFullYear(),h.getMonth()+i,1);o+=`<option value="${d.getFullYear()}-${d.getMonth()}">${cap(MESES[d.getMonth()])} ${d.getFullYear()}</option>`}s.innerHTML=o}
+  try{$("d-ct").value=localStorage.getItem("qb-contacto")||""}catch(e){}$("m-disp").classList.add("on");dibujar();
+}
+async function dibujar(){
+  const [a,m]=$("d-mes").value.split("-").map(Number);try{localStorage.setItem("qb-contacto",$("d-ct").value)}catch(e){}
+  try{await Promise.all([document.fonts.load('700 70px Fraunces'),document.fonts.load('500 30px "DM Sans"'),document.fonts.load('700 30px "DM Sans"')])}catch(e){}
+  const cv=$("cv"),c=cv.getContext("2d"),W=1080,H=1350,h0=hoy0().getTime(),RR=(x,y,w,h)=>{c.beginPath();(c.roundRect||c.rect).call(c,x,y,w,h,16)};
+  const rr=(x,y,w,h,col)=>{c.fillStyle=col;RR(x,y,w,h);c.fill()},tx=(t,x,y,f,col,al)=>{c.font=f;c.fillStyle=col;c.textAlign=al||"center";c.fillText(t,x,y)};
+  c.fillStyle="#efe8da";c.fillRect(0,0,W,H);c.fillStyle="#2d5a46";c.fillRect(0,0,W,250);c.fillStyle="#9a6b45";c.fillRect(0,250,W,12);
+  tx("Quinta Bugambilia",W/2,128,'700 76px Fraunces,serif',"#fff");tx("Fechas disponibles para tu evento o hospedaje",W/2,190,'500 30px "DM Sans",sans-serif',"#dcebe2");
+  const dias=new Date(a,m+1,0).getDate(),est=[];let full=0,medio=0;
+  for(let d=1;d<=dias;d++){const pas=new Date(a,m,d).getTime()<h0,j=jornadas(new Date(a,m,d));est.push({pas,m:j.m,t:j.t});if(!pas){if(!j.m&&!j.t)full++;else if(!j.m||!j.t)medio++}}
+  tx(cap(MESES[m])+" "+a,W/2,360,'700 68px Fraunces,serif',"#2d5a46");
+  tx(full+" día"+(full===1?"":"s")+" libre"+(full===1?"":"s")+(medio?" · "+medio+" con una jornada libre":""),W/2,410,'500 30px "DM Sans",sans-serif',"#7b8080");
+  const mx=60,cw=(W-mx*2)/7,rh=112,y0=510,off=new Date(a,m,1).getDay();
+  ["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"].forEach((n,i)=>tx(n,mx+cw*i+cw/2,490,'700 26px "DM Sans",sans-serif',"#7b8080"));
+  est.forEach((e,i)=>{const p=i+off,x=mx+cw*(p%7)+4,y=y0+rh*Math.floor(p/7),w=cw-8,hh=rh-8;
+    rr(x,y,w,hh,e.pas?"#e6dfd0":"#fbfbf8");c.strokeStyle="#e2dac9";c.lineWidth=2;RR(x,y,w,hh);c.stroke();
+    tx(String(i+1),x+12,y+30,'700 28px "DM Sans",sans-serif',e.pas?"#b9b5a8":"#2d5a46","left");if(e.pas)return;
+    [["Mañana",e.m],["Tarde",e.t]].forEach((q,k)=>{const py=y+38+k*30;rr(x+6,py,w-12,26,q[1]?"#9a6b45":"#dcebe2");tx(q[0],x+w/2,py+19,'700 18px "DM Sans",sans-serif',q[1]?"#fff":"#2d5a46")});});
+  [["#dcebe2","Disponible"],["#9a6b45","Ocupado"]].forEach((it,k)=>{const x=290+k*300;rr(x,1213,30,30,it[0]);tx(it[1],x+44,1237,'500 28px "DM Sans",sans-serif',"#3a4043","left")});
+  const ct=$("d-ct").value.trim();tx(ct?"Reserva con nosotros: "+ct:"Escríbenos para reservar tu fecha",W/2,1300,'700 32px "DM Sans",sans-serif',"#2f6690");
+}
+const nImg=()=>"disponibilidad-"+$("d-mes").selectedOptions[0].textContent.toLowerCase().replace(/\s/g,"-")+".png";
+function bajar(){const a=document.createElement("a");a.href=$("cv").toDataURL("image/png");a.download=nImg();a.click();toast("Imagen descargada")}
+function compartir(){$("cv").toBlob(async b=>{const f=new File([b],nImg(),{type:"image/png"});if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f],title:"Disponibilidad Quinta Bugambilia"})}catch(e){}}else{bajar()}},"image/png")}
 
-        function renderReservations() {
-            const grid = document.getElementById('reservations-grid');
-            grid.innerHTML = reservations.map(r => `
-                <div class="bg-marble rounded-2xl p-6 shadow-soft hover:shadow-floating transition-shadow duration-300 flex flex-col h-full">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <span class="text-xs font-bold text-gray-400 mb-1 block">${r.id}</span>
-                            <h3 class="font-bold text-lg text-brand-gray leading-tight">${r.name}</h3>
-                        </div>
-                        <button class="w-8 h-8 rounded-full hover:bg-white flex items-center justify-center text-gray-400 hover:text-brand-blue transition-colors">
-                            <i class="fa-solid fa-ellipsis-vertical"></i>
-                        </button>
-                    </div>
-                    
-                    <div class="mb-5 space-y-2">
-                        <div class="flex items-center text-sm text-brand-gray">
-                            <i class="fa-regular fa-calendar w-5 text-brand-blue"></i>
-                            <span class="font-medium">${formatDate(r.date)}</span>
-                        </div>
-                        <div class="flex items-center text-sm text-brand-gray-light">
-                            <i class="fa-solid fa-map-location-dot w-5 text-brand-wood"></i>
-                            <span>${r.areas.join(' • ')}</span>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-auto pt-4 border-t border-gray-200/60">
-                        <div class="flex justify-between items-end mb-2">
-                            <span class="text-xs font-semibold text-gray-500 uppercase">Total: ${formatMoney(r.total)}</span>
-                            <span class="text-xs font-bold ${r.balance === 0 ? 'text-brand-green' : 'text-orange-600'}">
-                                ${r.balance === 0 ? 'Liquidado' : 'Saldo: ' + formatMoney(r.balance)}
-                            </span>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-1.5">
-                            <div class="h-1.5 rounded-full ${r.balance === 0 ? 'bg-brand-green' : 'bg-brand-blue'}" style="width: ${(r.paid/r.total)*100}%"></div>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function renderCalendar() {
-            const grid = document.getElementById('calendar-days');
-            let html = '';
-            // Offset for visual mock
-            for(let i = 0; i < 4; i++) {
-                html += `<div class="cal-day bg-transparent border-transparent cursor-default"></div>`;
-            }
-            for(let i = 1; i <= 31; i++) {
-                // Mock some events
-                const hasEvent = [15, 18, 20, 24].includes(i);
-                const isToday = i === 15;
-                let classes = isToday ? 'active-day shadow-md' : '';
-                classes += hasEvent ? ' has-event' : '';
-                
-                html += `
-                    <div class="cal-day ${classes}">
-                        <span class="text-sm font-medium">${i}</span>
-                    </div>
-                `;
-            }
-            grid.innerHTML = html;
-        }
-
-        // Modal Functions
-        function openModal() {
-            const modal = document.getElementById('modal-form');
-            const content = document.getElementById('modal-content');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            // small delay to allow display:flex to apply before transition
-            setTimeout(() => {
-                modal.classList.remove('opacity-0');
-                content.classList.remove('scale-95');
-            }, 10);
-        }
-
-        function closeModal() {
-            const modal = document.getElementById('modal-form');
-            const content = document.getElementById('modal-content');
-            modal.classList.add('opacity-0');
-            content.classList.add('scale-95');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-            }, 300);
-        }
-
-        function saveMock() {
-            closeModal();
-            showToast("Reservación creada con éxito");
-        }
-
-        // Utilities
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toast-msg').textContent = msg;
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            setTimeout(() => {
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3000);
-        }
-
-        function updateDate() {
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            let str = new Date().toLocaleDateString('es-MX', options);
-            document.getElementById('current-date').textContent = str.charAt(0).toUpperCase() + str.slice(1);
-        }
-
-        // Init
-        document.addEventListener('DOMContentLoaded', () => {
-            updateDate();
-            renderDashboard();
-            renderReservations();
-            renderCalendar();
-            // Start at dashboard
-            navigate('dashboard');
-        });
-
-    </script>
+/* ---- Navegación ---- */
+function go(v){document.querySelectorAll("#nav button[data-v]").forEach(x=>x.classList.toggle("on",x.dataset.v===v));document.querySelectorAll(".view").forEach(x=>x.classList.toggle("on",x.id==="v-"+v));scrollTo(0,0)}
+$("nav").addEventListener("click",e=>{const b=e.target.closest("button[data-v]");if(b){vib();go(b.dataset.v)}});
+document.querySelectorAll(".modal").forEach(m=>m.addEventListener("click",e=>{if(e.target===m)m.classList.remove("on")}));
+$("hoy").textContent=new Date().toLocaleDateString("es-MX",{weekday:"long",day:"numeric",month:"long"});
+try{const c=localStorage.getItem("qb-cache");if(c){datos=JSON.parse(c);anios();todo()}}catch(e){}
+cargar();
+</script>
 </body>
 </html>
