@@ -70,6 +70,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            width: 100%;
         }
 
         .btn-rentas {
@@ -94,6 +95,67 @@
             color: var(--azul-agua);
             transform: translateY(-2px);
         }
+
+        /* --- NUEVOS ESTILOS PARA CONTRATOS --- */
+        .btn-contratos {
+            background-color: var(--azul-agua);
+            color: var(--blanco);
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.2);
+        }
+
+        .btn-contratos:hover {
+            background-color: var(--gris-fuerte);
+            transform: translateY(-2px);
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .dropdown-content {
+            display: none;
+            flex-direction: column;
+            background-color: var(--blanco);
+            margin-top: 0.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--travertino);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.05);
+            overflow: hidden;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .dropdown-content a {
+            color: var(--gris-fuerte);
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+            font-weight: 500;
+            border-bottom: 1px solid var(--marmol-bg);
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .dropdown-content a:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-content a:hover {
+            background-color: var(--marmol-bg);
+            color: var(--verde-natural);
+            padding-left: 20px; /* Pequeño efecto visual al pasar el mouse */
+        }
+
+        .show {
+            display: flex;
+        }
+
+        /* Animación para el menú */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
@@ -101,12 +163,46 @@
     <div class="dashboard-card">
         <h1>Panel de Administración</h1>
         <div class="btn-container">
-            <!-- Apunta a tu sistema actual de rentas -->
+            
+            <!-- Botón original de Rentas -->
             <a href="rentas.html" class="btn btn-rentas">Gestión de Rentas</a>
-            <!-- Apunta al archivo en tu repositorio -->
+            
+            <!-- NUEVO: Contenedor Dropdown para Contratos -->
+            <div class="dropdown">
+                <button onclick="toggleContratos()" class="btn btn-contratos">
+                    Contratos ▾
+                </button>
+                <div id="menuContratos" class="dropdown-content">
+                    <a href="#hospedaje">Hospedaje</a>
+                    <a href="#evento">Evento</a>
+                    <a href="eventohospedaje.html">Evento con Hospedaje</a>
+                </div>
+            </div>
+
+            <!-- Botón original de Reembolsos -->
             <a href="reembolsos.html" class="btn btn-reembolsos">Procesar Reembolsos</a>
+            
         </div>
     </div>
 
+    <!-- Script para el funcionamiento del menú desplegable -->
+    <script>
+        function toggleContratos() {
+            document.getElementById("menuContratos").classList.toggle("show");
+        }
+
+        // Cierra el menú si el usuario hace clic fuera de él
+        window.onclick = function(event) {
+            if (!event.target.matches('.btn-contratos')) {
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+    </script>
 </body>
 </html>
