@@ -385,6 +385,9 @@ $("nav").addEventListener("click",e=>{const b=e.target.closest("button[data-v]")
 document.querySelectorAll(".modal").forEach(m=>m.addEventListener("click",e=>{if(e.target===m)m.classList.remove("on")}));
 $("hoy").textContent=new Date().toLocaleDateString("es-MX",{weekday:"long",day:"numeric",month:"long"});
 try{const c=localStorage.getItem("qb-cache");if(c){datos=JSON.parse(c);anios();todo()}}catch(e){}
+const MAPA={calendario:"cal",reservas:"lista",resumen:"res",inicio:"ini"};
+function porHash(){const v=MAPA[location.hash.slice(1)];if(v)go(v)}
+window.addEventListener("hashchange",porHash);porHash();
 cargar();
 </script>
 </body>
