@@ -84,6 +84,7 @@ h1,h2,h3,.serif{font-family:'Fraunces',serif}
 .foot{display:flex;gap:10px;margin-top:8px}.btn{flex:1;min-height:50px;border-radius:14px;font-size:15px;font-weight:700}.b1{background:var(--ink);color:var(--card)}.b2{background:var(--bg);color:var(--text)}.b3{flex:0 0 52px;background:var(--bad2);color:var(--bad)}
 #cv{width:100%;height:auto;border-radius:14px;border:1px solid var(--line);margin:4px 0 12px;display:block}
 .toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 100px);transform:translateX(-50%) translateY(20px);background:var(--text);color:var(--card);padding:12px 18px;border-radius:14px;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:200;max-width:90%;text-align:center}.toast.on{opacity:1;transform:translateX(-50%)}
+textarea{width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--card);font-size:15px;font-family:inherit;color:var(--text);line-height:1.45;resize:vertical}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -171,6 +172,12 @@ h1,h2,h3,.serif{font-family:'Fraunces',serif}
   <div class="g2"><div class="f"><label>Mes</label><select id="d-mes" onchange="dibujar()"></select></div><div class="f"><label>Contacto en la imagen</label><input id="d-ct" placeholder="Tel. o WhatsApp" oninput="dibujar()"></div></div>
   <canvas id="cv" width="1080" height="1350"></canvas>
   <div class="foot"><button class="btn b2" onclick="bajar()"><i class="fas fa-download"></i> Descargar</button><button class="btn b1" onclick="compartir()"><i class="fas fa-share-nodes"></i> Compartir</button></div>
+</div></div>
+<div class="modal" id="m-wa"><div class="sheet"><div class="grab"></div><div class="sh"><h3>Enviar por WhatsApp</h3><button class="ibtn" onclick="cerrar('m-wa')" aria-label="Cerrar"><i class="fas fa-xmark"></i></button></div>
+  <p id="wa-i" style="margin-bottom:10px;color:var(--muted)"></p>
+  <div class="chips" id="wa-ops"><button class="chip on" data-k="saldo"><i class="fas fa-coins"></i> Saldo</button><button class="chip" data-k="ubic"><i class="fas fa-location-dot"></i> Ubicación</button><button class="chip" data-k="banco"><i class="fas fa-building-columns"></i> Datos bancarios</button></div>
+  <div class="f"><label for="wa-t">Mensaje (puedes editarlo antes de enviar)</label><textarea id="wa-t" rows="12"></textarea></div>
+  <div class="foot"><button class="btn b1" onclick="waEnviar()"><i class="fab fa-whatsapp"></i> Enviar por WhatsApp</button></div>
 </div></div>
 <div class="toast" id="toast"></div>
 
@@ -261,11 +268,27 @@ function tarjeta(x){
   <div class="pbar"><i style="width:${t?Math.min(100,p/t*100):0}%"></i></div>
   <div class="acts">${tel?`<button class="a1" onclick="whats('${x.folio}')" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i> Chat</button><a href="tel:${tel}" class="a2" style="display:flex;align-items:center;justify-content:center;border-radius:12px;text-decoration:none;flex:0 0 48px" aria-label="Llamar"><i class="fas fa-phone"></i></a>`:""}${s>0?`<button class="a3" onclick="abrirAbono('${x.folio}')"><i class="fas fa-coins"></i> Abono</button>`:""}<button class="a2" onclick="abrirEditar('${x.folio}')"><i class="fas fa-pen"></i> Editar</button></div></div>`;
 }
-function whats(f){
-  const x=buscar(f);if(!x)return;let n=String(x.telefono||x.telefono_2).replace(/\D/g,"");if(n.length===10)n="52"+n;const s=saldoDe(x);
-  const msg=`Hola ${(x.nombre||"").split(" ")[0]}, te escribimos de Quinta Bugambilia sobre tu reservación del ${fmtF(ent(x))}.`+(s>0?` Tu saldo pendiente es de ${$$(s)}.`:` Tu reservación está liquidada, ¡te esperamos!`);
-  window.open("https://wa.me/"+n+"?text="+encodeURIComponent(msg),"_blank");
+/* ---- WhatsApp: elige qué mandar ---- */
+const DEPOSITO=1000;
+const BANCO={banco:"Santander",titular:"Javier Antonio Morales Mizquez",tarjeta:"5579089007287264",clabe:"014760655114097664",cuenta:"65511409766"};
+const MAPS="https://maps.google.com/?q=28.958324,-111.029503";
+let waF=null,waK="saldo";
+function mensajes(x){
+  const nom=(x.nombre||"").trim().split(/\s+/)[0]||"",hola=nom?"Hola "+nom+" 😊":"Hola 😊",s=saldoDe(x),t=num(x.total_venta),p=num(x.anticipo1)+num(x.anticipo2),e=ent(x);
+  const ms=[hola,"","Te compartimos el estado de tu reservación en *Quinta Bugambilia*"+(e?" del *"+fmtF(e)+"*":"")+":","",
+    "💰 Total de la renta: "+$$(t),"✅ Pagado: "+$$(p),
+    s>0?"📌 *Saldo para liquidar tu renta: "+$$(s)+"*":"🎉 *Tu renta ya está liquidada*",
+    "🔐 Depósito en garantía: "+$$(DEPOSITO)+" (se cubre por separado)","",
+    "*Total a cubrir: "+$$(s+DEPOSITO)+"*","",
+    "Cuando realices tu pago, envíanos tu comprobante por este medio 🙌","¡Gracias por tu preferencia!"].join("\n");
+  const mu=[hola,"","Te compartimos cómo llegar a *Quinta Bugambilia*:","","📍 *Ubicación*","Nos encontramos en el Fraccionamiento *Real del 14*, Hermosillo, Sonora.","","🏡 *Acceso:* Real del 14, Manzana 13, Lote 36","🗺️ *Mapa:* "+MAPS,"","Si tienes cualquier duda para llegar, con gusto te guiamos 😊"].join("\n");
+  const mb=["🏦 *DATOS BANCARIOS PARA RESERVA* 🏦","","🏡 *Quinta Bugambilia*","📍 *Ubicación:* Real del 14, Hermosillo, Sonora.","","🔹 *Banco:* "+BANCO.banco,"🔹 *Titular:* "+BANCO.titular,"🔹 *Número de tarjeta:* `"+BANCO.tarjeta+"`","🔹 *CLABE:* `"+BANCO.clabe+"`","🔹 *Número de cuenta:* `"+BANCO.cuenta+"`","","📲 _Por favor envíanos tu comprobante por este medio para confirmar y registrar tu fecha en nuestro calendario._"].join("\n");
+  return{saldo:ms,ubic:mu,banco:mb};
 }
+function whats(f){const x=buscar(f);if(!x)return;waF=f;waK="saldo";$("wa-i").textContent=(x.nombre||"")+" · "+(x.telefono||x.telefono_2);waSet()}
+function waSet(){const x=buscar(waF);if(!x)return;document.querySelectorAll("#wa-ops .chip").forEach(c=>c.classList.toggle("on",c.dataset.k===waK));$("wa-t").value=mensajes(x)[waK];$("m-wa").classList.add("on")}
+$("wa-ops").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;vib();waK=b.dataset.k;waSet()});
+function waEnviar(){const x=buscar(waF);if(!x)return;let n=String(x.telefono||x.telefono_2).replace(/\D/g,"");if(n.length===10)n="52"+n;window.open("https://wa.me/"+n+"?text="+encodeURIComponent($("wa-t").value),"_blank");cerrar("m-wa")}
 
 /* ---- Abonos rápidos ---- */
 function abrirAbono(f){const r=buscar(f);if(!r)return;$("ab-f").value=f;$("ab-m").value="";$("ab-i").textContent=r.nombre+" · saldo "+$$(saldoDe(r));$("m-ab").classList.add("on")}
