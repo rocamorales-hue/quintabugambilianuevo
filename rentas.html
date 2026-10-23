@@ -61,13 +61,14 @@ h1,h2,h3,.serif{font-family:'Fraunces',serif}
 .a1{background:var(--ok2);color:var(--ok)}.a2{background:var(--blue2);color:var(--blue)}.a3{background:var(--wood2);color:var(--wood)}
 .empty{text-align:center;padding:40px 16px;color:var(--muted)}.empty i{font-size:36px;display:block;margin-bottom:10px;color:var(--wood)}
 .sk{height:160px;border-radius:20px;background:linear-gradient(90deg,var(--line),var(--card),var(--line));background-size:200% 100%;animation:sk 1.2s infinite}@keyframes sk{to{background-position:-200% 0}}
-.cal-h{display:flex;justify-content:space-between;align-items:center;margin:8px 0 12px}.cal-h h3{font-size:21px;color:var(--ink)}
-.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}.dh{text-align:center;font-size:12px;color:var(--muted);font-weight:700}
-.cd{background:var(--card);border:1px solid var(--line);border-radius:10px;min-height:58px;padding:3px;display:flex;flex-direction:column;gap:2px;overflow:hidden;text-align:left}
-.cd.void{background:none;border-color:transparent}.cd.hoy{border:2px solid var(--ink)}.cd.pas{opacity:.5}
-.cn{font-size:12px;font-weight:700;color:var(--text);text-align:right;padding-right:2px}
-.hv{flex:1;border-radius:4px;background:var(--ok2)}.hv.o{background:var(--wood)}.cd small{font-size:9px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.leg{display:flex;gap:14px;justify-content:center;font-size:12px;color:var(--muted);margin:12px 0;flex-wrap:wrap}.leg i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.cal-h{display:flex;align-items:center;gap:6px;margin:8px 0 12px}.cal-h h3{flex:1;text-align:center;font-size:22px;color:var(--ink)}
+.cal-s{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}.cal-s div{background:var(--mar);border:1px solid var(--line);border-radius:14px;padding:9px 6px;text-align:center;box-shadow:var(--sh);min-width:0}.cal-s b{display:block;font-family:Fraunces,serif;font-size:17px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cal-s span{font-size:11px;color:var(--muted)}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}.cal.fade{animation:in .25s}.dh{text-align:center;font-size:11px;color:var(--muted);font-weight:700;padding-bottom:2px}
+.cd{font:inherit;background:var(--card);border:1px solid var(--line);border-radius:12px;min-height:88px;padding:4px;display:flex;flex-direction:column;gap:3px;overflow:hidden;text-align:left;min-width:0}
+.cd.void{background:none;border-color:transparent}.cd.hoy{border:2px solid var(--ink);background:var(--ok2)}.cd.pas{opacity:.55}
+.cn{font-size:13px;font-weight:700;color:var(--text);padding-left:2px;line-height:1.2}.cd.hoy .cn{color:var(--ink)}
+.hv{flex:1;min-height:25px;border-radius:7px;background:var(--ok2);display:flex;align-items:center;padding:0 4px;font-size:10px;font-weight:700;color:var(--card);overflow:hidden}.hv span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.hv.o{background:var(--wood)}.hv.p{background:var(--ink)}.cd.hoy .hv:not(.o):not(.p){background:var(--card)}
+.leg{display:flex;gap:14px;justify-content:center;font-size:12px;color:var(--muted);margin:14px 0;flex-wrap:wrap}.leg i{display:inline-block;width:12px;height:12px;border-radius:4px;margin-right:5px;vertical-align:-2px}
 .bx{background:var(--mar);border:1px solid var(--line);border-radius:20px;padding:14px;margin-bottom:12px}.bx h4{font-family:Fraunces,serif;color:var(--ink);font-size:17px;margin-bottom:12px}
 .chart{display:flex;align-items:flex-end;gap:5px;height:150px}.chart div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;font-size:10px;color:var(--muted)}.chart i{display:block;width:100%;border-radius:6px 6px 2px 2px;background:var(--blue);min-height:2px}.chart div.cur i{background:var(--wood)}.chart em{font-style:normal;font-size:9px;margin-bottom:2px}
 .btn-w{width:100%;padding:14px;border-radius:14px;background:var(--ink);color:var(--card);font-size:15px;font-weight:700}
@@ -118,9 +119,12 @@ textarea{width:100%;padding:12px;border-radius:12px;border:1px solid var(--line)
 </div>
 
 <div id="v-cal" class="view">
-  <div class="cal-h"><button class="ibtn" onclick="mesCal(-1)" aria-label="Mes anterior"><i class="fas fa-chevron-left"></i></button><h3 id="cal-t"></h3><button class="ibtn" onclick="mesCal(1)" aria-label="Mes siguiente"><i class="fas fa-chevron-right"></i></button></div>
+  <div class="cal-h"><button class="ibtn" onclick="mesCal(-1)" aria-label="Mes anterior"><i class="fas fa-chevron-left"></i></button><h3 id="cal-t"></h3><button class="ibtn" onclick="hoyCal()" aria-label="Ir a hoy"><i class="fas fa-crosshairs"></i></button><button class="ibtn" onclick="mesCal(1)" aria-label="Mes siguiente"><i class="fas fa-chevron-right"></i></button></div>
+  <div class="cal-s" id="cal-s"></div>
   <div class="cal" id="cal"></div>
-  <div class="leg"><span><i style="background:var(--ok2)"></i>Libre</span><span><i style="background:var(--wood)"></i>Ocupado</span><span>Arriba mañana · abajo tarde</span></div>
+  <div class="leg"><span><i style="background:var(--ok2);border:1px solid var(--line)"></i>Libre</span><span><i style="background:var(--wood)"></i>Con saldo</span><span><i style="background:var(--ink)"></i>Liquidado</span><span>Arriba: mañana · Abajo: tarde</span></div>
+  <div class="sec" style="margin-top:4px"><h3>Próximos sábados libres</h3></div>
+  <div class="chips" id="sabs"></div>
   <button class="btn-w" onclick="abrirDisp()"><i class="fas fa-image"></i> Imagen de disponibilidad</button>
 </div>
 
@@ -304,24 +308,41 @@ async function abonar(){
 
 /* ---- Calendario ---- */
 function mesCal(d){calF.setMonth(calF.getMonth()+d);pintarCal()}
+function hoyCal(){calF=new Date();calF.setDate(1);pintarCal()}
 function reservasDia(d){const o=[],t=d.getTime();datos.forEach(r=>{const e=ent(r),s=sal(r);if(!e)return;if(t===e.getTime())o.push({r,k:"in"});else if(t===s.getTime())o.push({r,k:"out"});else if(t>e.getTime()&&t<s.getTime())o.push({r,k:"mid"})});return o}
 function jornadas(f){const rs=reservasDia(f);return{m:rs.some(x=>x.k==="out"||x.k==="mid"),t:rs.some(x=>x.k==="in"||x.k==="mid")}}
+const DIAS=["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
+function ocup(f){const rs=reservasDia(f),m=rs.find(x=>x.k==="out"||x.k==="mid"),t=rs.find(x=>x.k==="in"||x.k==="mid");return{m:m&&m.r,t:t&&t.r}}
+const banda=r=>r?`<div class="hv ${saldoDe(r)>0?"o":"p"}"><span>${esc((r.nombre||"").trim().split(/\s+/)[0])}</span></div>`:`<div class="hv"></div>`;
 function pintarCal(){
-  const a=calF.getFullYear(),m=calF.getMonth(),h=hoy0().getTime();$("cal-t").textContent=cap(MESES[m])+" "+a;
-  let html=["D","L","M","M","J","V","S"].map(x=>`<div class="dh">${x}</div>`).join("");
+  const a=calF.getFullYear(),m=calF.getMonth(),h=hoy0().getTime(),n=new Date(a,m+1,0).getDate();$("cal-t").textContent=cap(MESES[m])+" "+a;
+  let html=["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"].map(x=>`<div class="dh">${x}</div>`).join(""),oc=0,por=0,lleg=0;
   for(let i=0;i<new Date(a,m,1).getDay();i++)html+=`<div class="cd void"></div>`;
-  for(let d=1;d<=new Date(a,m+1,0).getDate();d++){
-    const f=new Date(a,m,d),rs=reservasDia(f),j=jornadas(f);
-    html+=`<button class="cd ${f.getTime()===h?"hoy":f.getTime()<h?"pas":""}" onclick="verDia(${a},${m},${d})"><div class="cn">${d}</div><div class="hv ${j.m?"o":""}"></div><div class="hv ${j.t?"o":""}"></div>${rs[0]?`<small>${esc((rs[0].r.nombre||"").split(" ")[0])}</small>`:""}</button>`;
+  for(let d=1;d<=n;d++){
+    const f=new Date(a,m,d),o=ocup(f);if(o.m||o.t)oc++;
+    html+=`<button class="cd ${f.getTime()===h?"hoy":f.getTime()<h?"pas":""}" onclick="verDia(${a},${m},${d})" aria-label="${d} de ${MESES[m]}"><div class="cn">${d}</div>${banda(o.m)}${banda(o.t)}</button>`;
   }
-  $("cal").innerHTML=html;
+  datos.forEach(r=>{const e=ent(r);if(e&&e.getFullYear()===a&&e.getMonth()===m){lleg++;por+=saldoDe(r)}});
+  const c=$("cal");c.innerHTML=html;c.classList.remove("fade");void c.offsetWidth;c.classList.add("fade");
+  $("cal-s").innerHTML=[["Ocupados",oc],["Libres",n-oc],["Llegadas",lleg],["Por cobrar",$$(por)]].map(x=>`<div><b>${x[1]}</b><span>${x[0]}</span></div>`).join("");
+  sabados();
+}
+function sabados(){
+  const t=hoy0(),o=[];
+  if(datos.length)for(let i=0;i<150&&o.length<4;i++){const f=new Date(t.getFullYear(),t.getMonth(),t.getDate()+i);if(f.getDay()!==6)continue;const j=jornadas(f);if(!j.m&&!j.t)o.push(f)}
+  $("sabs").innerHTML=o.length?o.map(f=>`<button class="chip" onclick="verDia(${f.getFullYear()},${f.getMonth()},${f.getDate()})">${f.getDate()} ${MC[f.getMonth()]}</button>`).join(""):`<span class="rm">${datos.length?"Sin sábados libres en los próximos meses":"Cargando…"}</span>`;
 }
 function verDia(a,m,d){
-  const f=new Date(a,m,d),rs=reservasDia(f),L={in:"Llega",mid:"Ocupado",out:"Sale"};$("dia-t").textContent=d+" de "+MESES[m];
-  $("dia-b").innerHTML=rs.length?rs.map(x=>{const s=saldoDe(x.r);return `<div class="rc ${s>0?"debe":""}" style="margin-bottom:10px"><div class="rh"><span class="av">${esc(ini(x.r.nombre))}</span><div><div class="rn">${esc(x.r.nombre)}</div><div class="rm">${L[x.k]} · Folio ${esc(x.r.folio)}</div></div><span class="badge ${s>0?"bad":"ok"}">${s>0?"Debe "+$$(s):"Liquidado"}</span></div><div class="acts" style="margin-top:10px"><button class="a2" onclick="cerrar('m-dia');abrirEditar('${x.r.folio}')"><i class="fas fa-pen"></i> Ver / editar</button></div></div>`}).join("")
+  const f=new Date(a,m,d),rs=reservasDia(f),L={in:"Llega",mid:"Ocupado",out:"Sale"};
+  $("dia-t").textContent=cap(DIAS[f.getDay()])+" "+d+" de "+MESES[m];
+  $("dia-b").innerHTML=rs.length?rs.map(x=>`<div class="tag bl" style="display:inline-block;margin-bottom:6px"><i class="fas fa-door-open"></i>${L[x.k]}</div>`+tarjeta(x.r)).join('<div style="height:12px"></div>')
   :`<div class="empty"><i class="fas fa-circle-check"></i>Día libre<br><button class="btn b1" style="margin-top:14px;padding:0 24px" onclick="cerrar('m-dia');abrirNuevo('${iso(f)}')">Reservar este día</button></div>`;
   $("m-dia").classList.add("on");
 }
+$("dia-b").addEventListener("click",e=>{if(e.target.closest("button,a"))cerrar("m-dia")});
+let tx0=0,ty0=0;
+$("cal").addEventListener("touchstart",e=>{tx0=e.touches[0].clientX;ty0=e.touches[0].clientY},{passive:true});
+$("cal").addEventListener("touchend",e=>{const dx=e.changedTouches[0].clientX-tx0,dy=e.changedTouches[0].clientY-ty0;if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.5)mesCal(dx<0?1:-1)},{passive:true});
 
 /* ---- Resumen ---- */
 function resumen(){
