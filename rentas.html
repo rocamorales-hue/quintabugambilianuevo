@@ -85,6 +85,8 @@ h1,h2,h3,.serif{font-family:'Fraunces',serif}
 .foot{display:flex;gap:10px;margin-top:8px}.btn{flex:1;min-height:50px;border-radius:14px;font-size:15px;font-weight:700}.b1{background:var(--ink);color:var(--card)}.b2{background:var(--bg);color:var(--text)}.b3{flex:0 0 52px;background:var(--bad2);color:var(--bad)}
 #cv{width:100%;height:auto;border-radius:14px;border:1px solid var(--line);margin:4px 0 12px;display:block}
 .toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 100px);transform:translateX(-50%) translateY(20px);background:var(--text);color:var(--card);padding:12px 18px;border-radius:14px;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:200;max-width:90%;text-align:center}.toast.on{opacity:1;transform:translateX(-50%)}
+
+.note{font-size:13px;color:var(--text);background:var(--wood2);border-radius:10px;padding:8px 10px;margin:0 0 10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-line}
 textarea{width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--card);font-size:15px;font-family:inherit;color:var(--text);line-height:1.45;resize:vertical}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -152,6 +154,8 @@ textarea{width:100%;padding:12px;border-radius:12px;border:1px solid var(--line)
     <div class="g2"><div class="f"><label>Hospedaje</label><input id="f-hosp" placeholder="Ej. 12 personas"></div><div class="f"><label>Evento</label><input id="f-evt" placeholder="Ej. 50 personas"></div></div>
     <div class="f"><label>Mes de renta</label><select id="f-mes"></select></div>
     <div class="warn" id="f-warn"></div>
+    <div class="fs">Anotaciones</div>
+    <div class="f"><textarea id="f-notas" rows="3" placeholder="Escribe aquí lo que necesites recordar de esta reserva"></textarea></div>
     <div class="fs">Pagos</div>
     <div class="g2"><div class="f"><label>Total venta ($)</label><input type="number" inputmode="decimal" step="0.01" id="f-total" oninput="saldo()" required></div><div class="f"><label>Saldo ($)</label><input id="f-saldo" readonly></div></div>
     <div class="g2"><div class="f"><label>Anticipo 1 ($)</label><input type="number" inputmode="decimal" step="0.01" id="f-a1" oninput="saldo()"></div><div class="f"><label>Fecha anticipo 1</label><input type="date" id="f-fa1"></div></div>
@@ -179,7 +183,7 @@ textarea{width:100%;padding:12px;border-radius:12px;border:1px solid var(--line)
 </div></div>
 <div class="modal" id="m-wa"><div class="sheet"><div class="grab"></div><div class="sh"><h3>Enviar por WhatsApp</h3><button class="ibtn" onclick="cerrar('m-wa')" aria-label="Cerrar"><i class="fas fa-xmark"></i></button></div>
   <p id="wa-i" style="margin-bottom:10px;color:var(--muted)"></p>
-  <div class="chips" id="wa-ops"><button class="chip on" data-k="saldo"><i class="fas fa-coins"></i> Saldo</button><button class="chip" data-k="ubic"><i class="fas fa-location-dot"></i> Ubicación</button><button class="chip" data-k="banco"><i class="fas fa-building-columns"></i> Datos bancarios</button></div>
+  <div class="chips" id="wa-ops"><button class="chip on" data-k="saldo"><i class="fas fa-coins"></i> Saldo</button><button class="chip" data-k="ubic"><i class="fas fa-location-dot"></i> Ubicación</button><button class="chip" data-k="banco"><i class="fas fa-building-columns"></i> Datos bancarios</button><button class="chip" data-k="info"><i class="fas fa-circle-info"></i> Info Renta</button></div>
   <div class="f"><label for="wa-t">Mensaje (puedes editarlo antes de enviar)</label><textarea id="wa-t" rows="12"></textarea></div>
   <div class="foot"><button class="btn b1" onclick="waEnviar()"><i class="fab fa-whatsapp"></i> Enviar por WhatsApp</button></div>
 </div></div>
@@ -228,7 +232,7 @@ const delAnio=()=>datos.filter(r=>{const e=ent(r);return e&&e.getFullYear()===an
 function anios(){const s=new Set(datos.map(r=>{const e=ent(r);return e&&e.getFullYear()}).filter(Boolean));s.add(new Date().getFullYear());const a=[...s].sort((x,y)=>y-x);if(!a.includes(anio))anio=a[0];$("anio").innerHTML=a.map(y=>`<option ${y===anio?"selected":""}>${y}</option>`).join("")}
 function todo(){inicio();render();pintarCal();resumen()}
 async function api(accion,extra){await fetch(URL_API,{method:"POST",body:JSON.stringify({accion,...extra})})}
-const pl=r=>({folio:r.folio,nombre:r.nombre,mes_renta:r.mes_renta,telefono:r.telefono,hospedaje:r.hospedaje,evento:r.evento,fecha_entrada:aISO(r.fecha_entrada),fecha_salida:aISO(r.fecha_salida),total_venta:r.total_venta,anticipo1:r.anticipo1,fecha_anticipo1:aISO(r.fecha_anticipo1,true),anticipo2:r.anticipo2,fecha_anticipo2:aISO(r.fecha_anticipo2,true),saldo:saldoDe(r),comision:r.comision,fecha_cobrado:aISO(r.fecha_cobrado),comision_no:r.comision_no,telefono_2:r.telefono_2});
+const pl=r=>({folio:r.folio,nombre:r.nombre,mes_renta:r.mes_renta,telefono:r.telefono,hospedaje:r.hospedaje,evento:r.evento,fecha_entrada:aISO(r.fecha_entrada),fecha_salida:aISO(r.fecha_salida),total_venta:r.total_venta,anticipo1:r.anticipo1,fecha_anticipo1:aISO(r.fecha_anticipo1,true),anticipo2:r.anticipo2,fecha_anticipo2:aISO(r.fecha_anticipo2,true),saldo:saldoDe(r),comision:r.comision,fecha_cobrado:aISO(r.fecha_cobrado),comision_no:r.comision_no,telefono_2:r.telefono_2,anotaciones:r.anotaciones});
 const buscar=f=>datos.find(r=>String(r.folio)===String(f));
 
 /* ---- Inicio ---- */
@@ -268,6 +272,7 @@ function tarjeta(x){
   return `<div class="rc ${s>0?"debe":""}">
   <div class="rh"><span class="av">${esc(ini(x.nombre))}</span><div><div class="rn">${esc(x.nombre||"Sin nombre")}</div><div class="rm">Folio ${esc(x.folio)}</div></div><span class="badge ${s>0?"bad":"ok"}">${s>0?"Debe "+$$(s):"Liquidado"}</span></div>
   <div class="tags"><span class="tag"><i class="fas fa-calendar"></i>${e?(noches>0?fmtF(e)+" → "+fmtF(sa):fmtF(e)):"Sin fecha"}</span>${cu?`<span class="tag bl">${cu}</span>`:""}${noches>0?`<span class="tag">${noches} noche${noches>1?"s":""}</span>`:""}${x.hospedaje?`<span class="tag"><i class="fas fa-bed"></i>${esc(x.hospedaje)}</span>`:""}${x.evento?`<span class="tag"><i class="fas fa-champagne-glasses"></i>${esc(x.evento)}</span>`:""}</div>
+  ${String(x.anotaciones||"").trim()?`<div class="note"><i class="fas fa-note-sticky" style="color:var(--wood)"></i> ${esc(x.anotaciones)}</div>`:""}
   <div class="money"><div><span>Total</span><b>${$$(t)}</b></div><div><span>Pagado</span><b style="color:var(--ok)">${$$(p)}</b></div><div><span>Saldo</span><b style="color:${s>0?"var(--bad)":"var(--ok)"}">${$$(s)}</b></div></div>
   <div class="pbar"><i style="width:${t?Math.min(100,p/t*100):0}%"></i></div>
   <div class="acts">${tel?`<button class="a1" onclick="whats('${x.folio}')" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i> Chat</button><a href="tel:${tel}" class="a2" style="display:flex;align-items:center;justify-content:center;border-radius:12px;text-decoration:none;flex:0 0 48px" aria-label="Llamar"><i class="fas fa-phone"></i></a>`:""}${s>0?`<button class="a3" onclick="abrirAbono('${x.folio}')"><i class="fas fa-coins"></i> Abono</button>`:""}<button class="a2" onclick="abrirEditar('${x.folio}')"><i class="fas fa-pen"></i> Editar</button></div></div>`;
@@ -275,6 +280,9 @@ function tarjeta(x){
 /* ---- WhatsApp: elige qué mandar ---- */
 const DEPOSITO=1000;
 const BANCO={banco:"Santander",titular:"Javier Antonio Morales Mizquez",tarjeta:"5579089007287264",clabe:"014760655114097664",cuenta:"65511409766"};
+const HORA_ENTRADA="3:00 pm",HORA_SALIDA="12:00 pm";
+const fDia=d=>d?DIAS[d.getDay()].slice(0,3)+" "+fmtF(d):"—";
+const fTel=t=>{const d=String(t||"").replace(/\D/g,"");return d.length===10?d.replace(/(\d{3})(\d{3})(\d{4})/,"$1 $2 $3"):String(t||"").trim()};
 const MAPS="https://maps.google.com/?q=28.958324,-111.029503";
 let waF=null,waK="saldo";
 function mensajes(x){
@@ -287,7 +295,10 @@ function mensajes(x){
     "Cuando realices tu pago, envíanos tu comprobante por este medio 🙌","¡Gracias por tu preferencia!"].join("\n");
   const mu=[hola,"","Te compartimos cómo llegar a *Quinta Bugambilia*:","","📍 *Ubicación*","Nos encontramos en el Fraccionamiento *Real del 14*, Hermosillo, Sonora.","","🏡 *Acceso:* Real del 14, Manzana 13, Lote 36","🗺️ *Mapa:* "+MAPS,"","Si tienes cualquier duda para llegar, con gusto te guiamos 😊"].join("\n");
   const mb=["🏦 *DATOS BANCARIOS PARA RESERVA* 🏦","","🏡 *Quinta Bugambilia*","📍 *Ubicación:* Real del 14, Hermosillo, Sonora.","","🔹 *Banco:* "+BANCO.banco,"🔹 *Titular:* "+BANCO.titular,"🔹 *Número de tarjeta:* `"+BANCO.tarjeta+"`","🔹 *CLABE:* `"+BANCO.clabe+"`","🔹 *Número de cuenta:* `"+BANCO.cuenta+"`","","📲 _Por favor envíanos tu comprobante por este medio para confirmar y registrar tu fecha en nuestro calendario._"].join("\n");
-  return{saldo:ms,ubic:mu,banco:mb};
+  const hosp=!!String(x.hospedaje||"").trim(),evt=!!String(x.evento||"").trim(),tipo=hosp&&evt?"Evento con hospedaje":evt?"Evento":hosp?"Hospedaje":"—";
+  const tels=[x.telefono,x.telefono_2].filter(t=>String(t||"").trim()).map(fTel).join(" / ")||"—",nota=String(x.anotaciones||"").trim();
+  const mi=["📋 *INFO DE RENTA*","","👤 *Nombre:* "+(x.nombre||"—"),"📞 *Teléfono:* "+tels,"📅 *Entrada:* "+fDia(e)+" · "+HORA_ENTRADA,"📅 *Salida:* "+fDia(sal(x))+" · "+HORA_SALIDA,"🏡 *Tipo:* "+tipo].concat(nota?["","📝 *Anotaciones:*",nota]:[]).join("\n");
+  return{saldo:ms,ubic:mu,banco:mb,info:mi};
 }
 function whats(f){const x=buscar(f);if(!x)return;waF=f;waK="saldo";$("wa-i").textContent=(x.nombre||"")+" · "+(x.telefono||x.telefono_2);waSet()}
 function waSet(){const x=buscar(waF);if(!x)return;document.querySelectorAll("#wa-ops .chip").forEach(c=>c.classList.toggle("on",c.dataset.k===waK));$("wa-t").value=mensajes(x)[waK];$("m-wa").classList.add("on")}
@@ -375,12 +386,12 @@ function abrirEditar(f){
   set("f-nombre",r.nombre);set("f-tel",r.telefono);set("f-tel2",r.telefono_2);set("f-hosp",r.hospedaje);set("f-evt",r.evento);
   $("f-mes").value=(r.mes_renta||"").toLowerCase()||MESES[new Date().getMonth()];
   set("f-ent",aISO(r.fecha_entrada));set("f-sal",aISO(r.fecha_salida));set("f-total",r.total_venta);set("f-a1",r.anticipo1);set("f-a2",r.anticipo2);
-  set("f-fa1",aISO(r.fecha_anticipo1,true));set("f-fa2",aISO(r.fecha_anticipo2,true));set("f-com",r.comision);set("f-fc",aISO(r.fecha_cobrado));set("f-comno",r.comision_no);
+  set("f-fa1",aISO(r.fecha_anticipo1,true));set("f-fa2",aISO(r.fecha_anticipo2,true));set("f-com",r.comision);set("f-fc",aISO(r.fecha_cobrado));set("f-comno",r.comision_no);set("f-notas",r.anotaciones);
   saldo();revisar();$("m-form").classList.add("on");
 }
 async function guardar(ev){
   ev.preventDefault();const b=$("btn-g");b.disabled=true;b.textContent="Guardando…";const folio=$("f-folio").value,v=id=>$(id).value;
-  const payload={folio,nombre:v("f-nombre").trim(),mes_renta:v("f-mes"),telefono:v("f-tel"),hospedaje:v("f-hosp"),evento:v("f-evt"),fecha_entrada:v("f-ent"),fecha_salida:v("f-sal"),total_venta:v("f-total"),anticipo1:v("f-a1"),fecha_anticipo1:v("f-fa1"),anticipo2:v("f-a2"),fecha_anticipo2:v("f-fa2"),saldo:v("f-saldo"),comision:v("f-com"),fecha_cobrado:v("f-fc"),comision_no:v("f-comno"),telefono_2:v("f-tel2")};
+  const payload={folio,nombre:v("f-nombre").trim(),mes_renta:v("f-mes"),telefono:v("f-tel"),hospedaje:v("f-hosp"),evento:v("f-evt"),fecha_entrada:v("f-ent"),fecha_salida:v("f-sal"),total_venta:v("f-total"),anticipo1:v("f-a1"),fecha_anticipo1:v("f-fa1"),anticipo2:v("f-a2"),fecha_anticipo2:v("f-fa2"),saldo:v("f-saldo"),comision:v("f-com"),fecha_cobrado:v("f-fc"),comision_no:v("f-comno"),telefono_2:v("f-tel2"),anotaciones:v("f-notas").trim()};
   try{await api(folio?"actualizar":"crear",{payload});cerrar("m-form");toast(folio?"Reservación actualizada":"Reservación guardada");await cargar()}catch(e){toast("No se pudo guardar: "+e)}
   b.disabled=false;b.textContent="Guardar";
 }
@@ -389,7 +400,7 @@ async function eliminar(){
   try{await api("eliminar",{folio:f});cerrar("m-form");toast("Reservación eliminada");cargar()}catch(e){toast("No se pudo eliminar: "+e)}
 }
 function csv(){
-  const c=["folio","nombre","mes_renta","telefono","hospedaje","evento","fecha_entrada","fecha_salida","total_venta","anticipo1","anticipo2","saldo","comision"];
+  const c=["folio","nombre","mes_renta","telefono","hospedaje","evento","fecha_entrada","fecha_salida","total_venta","anticipo1","anticipo2","saldo","comision","anotaciones"];
   const l=[c.join(",")].concat(delAnio().map(r=>c.map(k=>'"'+String(k==="saldo"?saldoDe(r):(r[k]??"")).replace(/"/g,'""')+'"').join(",")));
   const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\ufeff"+l.join("\n")],{type:"text/csv"}));a.download="rentas-"+anio+".csv";a.click();
 }
