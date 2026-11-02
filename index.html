@@ -11,64 +11,84 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-:root{--bg:#efe8da;--card:#fbfbf8;--mar:linear-gradient(135deg,#fff 0%,#f3f3ef 55%,#fcfcfa 100%);--ink:#2d5a46;--text:#3a4043;--muted:#7b8080;--line:#e2dac9;--wood:#9a6b45;--wood2:#f1e3d3;--blue:#2f6690;--blue2:#dde9f3;--ok2:#dcebe2;--bad:#a8432f;--sh:0 2px 10px rgba(58,64,67,.08)}
-:root[data-theme=dark]{--bg:#121815;--card:#1b2420;--mar:linear-gradient(135deg,#202b26,#1b2420);--ink:#7fc4a0;--text:#dde5e0;--muted:#92a09a;--line:#2c3833;--wood:#d3a073;--wood2:#3a2d21;--blue:#7fb2dc;--blue2:#1d2c3a;--ok2:#1c3228;--bad:#f0907c;--sh:none}
+:root{--bg:#efe8da;--card:#fbfbf8;--mar:linear-gradient(135deg,#fff 0%,#f3f3ef 55%,#fcfcfa 100%);--ink:#2d5a46;--text:#3a4043;--muted:#7b8080;--line:#e2dac9;--wood:#9a6b45;--wood2:#f1e3d3;--blue:#2f6690;--blue2:#dde9f3;--ok2:#dcebe2;--bad:#a8432f;--bad2:#f6dfd8;--sh:0 2px 10px rgba(58,64,67,.08)}
+:root[data-theme=dark]{--bg:#121815;--card:#1b2420;--mar:linear-gradient(135deg,#202b26,#1b2420);--ink:#7fc4a0;--text:#dde5e0;--muted:#92a09a;--line:#2c3833;--wood:#d3a073;--wood2:#3a2d21;--blue:#7fb2dc;--blue2:#1d2c3a;--ok2:#1c3228;--bad:#f0907c;--bad2:#3a211b;--sh:none}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html{background:var(--bg)}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max-width:520px;margin:0 auto;min-height:100vh;padding:env(safe-area-inset-top) 14px calc(env(safe-area-inset-bottom) + 28px);font-size:15px}
-a{color:inherit;text-decoration:none}button{font-family:inherit;cursor:pointer;border:0;color:inherit}
+a{color:inherit;text-decoration:none}button{font-family:inherit;cursor:pointer;border:0;color:inherit;text-align:left}
 :focus-visible{outline:2px solid var(--blue);outline-offset:2px}
-.top{display:flex;justify-content:flex-end;gap:6px;padding:10px 0 0}
-.ibtn{width:42px;height:42px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
-.hero{border-radius:26px;padding:22px 18px;color:#fff;background:radial-gradient(circle at 85% 10%,rgba(255,255,255,.16),transparent 40%),linear-gradient(150deg,#2d5a46,#1f4333);border-bottom:5px solid var(--wood);margin:10px 0 14px;display:flex;gap:14px;align-items:center}
-.hero img{width:68px;height:68px;border-radius:18px;flex:none;box-shadow:0 4px 14px rgba(0,0,0,.3)}
-.hero h1{font-family:Fraunces,serif;font-size:25px;line-height:1.1}.hero p{font-size:13px;opacity:.85;margin-top:4px;text-transform:capitalize}
-.kg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px}
-.kc{background:var(--mar);border:1px solid var(--line);border-radius:18px;padding:13px;box-shadow:var(--sh);min-width:0}
-.kc span{font-size:12px;color:var(--muted);display:block}.kc b{font-family:Fraunces,serif;font-size:20px;color:var(--ink);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.kc small{font-size:12px;color:var(--muted)}
-.sec{font-family:Fraunces,serif;font-size:18px;color:var(--ink);margin:20px 2px 10px}
+.top{display:flex;align-items:center;gap:10px;padding:12px 0}
+.top img{width:42px;height:42px;border-radius:12px}.top .t{flex:1;line-height:1.15}.top b{font-family:Fraunces,serif;font-size:19px;color:var(--ink);display:block}.top small{font-size:12px;color:var(--muted);text-transform:capitalize}
+.ibtn{width:42px;height:42px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--ink);text-align:center}
+.now{display:none;align-items:center;gap:10px;background:var(--ok2);color:var(--ink);border-radius:14px;padding:10px 12px;font-size:13px;margin-bottom:10px;width:100%}
+.now i{font-size:16px}.now b{font-weight:700}
+.next{display:block;width:100%;border-radius:26px;padding:20px 18px;color:#fff;background:radial-gradient(circle at 88% 8%,rgba(255,255,255,.18),transparent 42%),linear-gradient(150deg,#2d5a46,#1f4333);border-bottom:5px solid var(--wood);margin-bottom:12px}
+.next .l{font-size:12px;opacity:.8;letter-spacing:.4px;text-transform:uppercase}
+.next .big{font-family:Fraunces,serif;font-size:38px;font-weight:700;line-height:1.05;margin:4px 0 6px}
+.next .who{font-size:18px;font-weight:700}.next .meta{font-size:13px;opacity:.85;margin-top:2px}
+.pills{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}.pill{font-size:12px;font-weight:700;padding:6px 11px;border-radius:20px;background:rgba(255,255,255,.18)}.pill.d{background:#e8d3b4;color:#5b3d22}.pill.ok{background:rgba(220,235,226,.9);color:#1f4333}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:6px}
+.st{background:var(--mar);border:1px solid var(--line);border-radius:16px;padding:11px 8px;text-align:center;box-shadow:var(--sh);min-width:0}
+.st b{display:block;font-family:Fraunces,serif;font-size:21px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.st span{font-size:11px;color:var(--muted)}
+.sec{display:flex;justify-content:space-between;align-items:baseline;margin:20px 2px 8px}.sec h3{font-family:Fraunces,serif;font-size:18px;color:var(--ink)}.sec a{font-size:13px;color:var(--blue);font-weight:700}
+.grp{font-size:11px;font-weight:700;color:var(--wood);text-transform:uppercase;letter-spacing:.5px;margin:12px 2px 6px}
+.it{display:flex;align-items:center;gap:12px;width:100%;background:var(--mar);border:1px solid var(--line);border-radius:18px;padding:11px 12px;margin-bottom:8px;box-shadow:var(--sh)}
+.dt{width:50px;height:54px;border-radius:14px;background:var(--wood2);color:var(--wood);text-align:center;display:flex;flex-direction:column;justify-content:center;flex:none;font-weight:700}.dt b{font-size:20px;line-height:1}.dt small{font-size:10px;text-transform:uppercase}
+.it .n{font-weight:700;line-height:1.2}.it .s{font-size:12px;color:var(--muted);margin-top:2px}.it .m{min-width:0;flex:1}.it .n,.it .s{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bd{font-size:12px;font-weight:700;padding:5px 9px;border-radius:20px;white-space:nowrap;background:var(--bad2);color:var(--bad)}.bd.ok{background:var(--ok2);color:var(--ink)}
+.empty{text-align:center;padding:28px 16px;color:var(--muted)}.empty i{font-size:30px;display:block;margin-bottom:8px;color:var(--wood)}
+.sk{height:68px;border-radius:18px;margin-bottom:8px;background:linear-gradient(90deg,var(--line),var(--card),var(--line));background-size:200% 100%;animation:sk 1.2s infinite}@keyframes sk{to{background-position:-200% 0}}
 .tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.tile{background:var(--mar);border:1px solid var(--line);border-radius:22px;padding:18px 14px;box-shadow:var(--sh);display:flex;flex-direction:column;gap:12px;min-height:128px;transition:transform .15s}
-.tile:active,.row:active{transform:scale(.97)}
-.tile.wide{grid-column:1/-1;min-height:0;flex-direction:row;align-items:center}
-.ic{width:48px;height:48px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:21px;flex:none}
-.g{background:var(--ok2);color:var(--ink)}.b{background:var(--blue2);color:var(--blue)}.w{background:var(--wood2);color:var(--wood)}
+.tile{background:var(--mar);border:1px solid var(--line);border-radius:22px;padding:16px 14px;box-shadow:var(--sh);display:flex;flex-direction:column;gap:10px;min-height:116px;width:100%;transition:transform .15s}.tile:active,.row:active,.it:active,.next:active{transform:scale(.98)}
+.ic{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:20px;flex:none}.g{background:var(--ok2);color:var(--ink)}.b{background:var(--blue2);color:var(--blue)}.w{background:var(--wood2);color:var(--wood)}
 .tile b,.row b{font-size:16px;display:block}.tile small,.row small{color:var(--muted);font-size:12px;line-height:1.3;display:block;margin-top:2px}
-.list{display:flex;flex-direction:column;gap:8px}
-.row{background:var(--mar);border:1px solid var(--line);border-radius:18px;padding:12px 14px;display:flex;align-items:center;gap:12px;box-shadow:var(--sh);transition:transform .15s}
-.row .ic{width:42px;height:42px;font-size:18px;border-radius:13px}.row>i.fa-chevron-right{margin-left:auto;color:var(--muted);font-size:13px}
-#ins{display:none;width:100%;margin-top:18px;min-height:48px;border-radius:14px;background:var(--wood);color:#fff;font-weight:700;font-size:15px}
-.foot{text-align:center;font-size:12px;color:var(--muted);margin-top:22px}
-@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+.modal{position:fixed;inset:0;background:rgba(20,28,24,.55);display:none;align-items:flex-end;justify-content:center;z-index:100}.modal.on{display:flex}
+.sheet{background:var(--card);width:100%;max-width:520px;max-height:90vh;overflow-y:auto;border-radius:26px 26px 0 0;padding:10px 18px calc(env(safe-area-inset-bottom) + 18px);animation:up .25s}@keyframes up{from{transform:translateY(100%)}}
+.grab{width:42px;height:5px;border-radius:5px;background:var(--line);margin:0 auto 10px}
+.sh{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.sh h3{font-family:Fraunces,serif;font-size:21px;color:var(--ink)}
+.row{background:var(--mar);border:1px solid var(--line);border-radius:18px;padding:12px 14px;display:flex;align-items:center;gap:12px;margin-bottom:8px;transition:transform .15s}.row .ic{width:42px;height:42px;font-size:18px}.row>i.fa-chevron-right{margin-left:auto;color:var(--muted);font-size:13px}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}.kv div{background:var(--bg);border-radius:12px;padding:9px 11px}.kv span{display:block;font-size:11px;color:var(--muted)}.kv b{font-size:15px}
+.nota{background:var(--wood2);border-radius:12px;padding:10px 12px;font-size:14px;white-space:pre-line;margin-bottom:10px}
+.acts{display:flex;gap:8px;margin-top:6px}.acts a{flex:1;min-height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;gap:7px;font-weight:700;font-size:14px}.a1{background:var(--ok2);color:var(--ink)}.a2{background:var(--blue2);color:var(--blue)}.a3{background:var(--ink);color:var(--card)}
+#ins{display:none;width:100%;margin-top:18px;min-height:48px;border-radius:14px;background:var(--wood);color:#fff;font-weight:700;font-size:15px;text-align:center}
+.foot{text-align:center;font-size:12px;color:var(--muted);margin-top:20px}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
-<div class="top"><button class="ibtn" onclick="tema()" aria-label="Cambiar tema"><i class="fas fa-circle-half-stroke"></i></button></div>
+<div class="top"><img src="icon.png" alt=""><div class="t"><b id="hi">Quinta Bugambilia</b><small id="hoy"></small></div><button class="ibtn" onclick="cargar(true)" aria-label="Actualizar"><i class="fas fa-rotate" id="sync"></i></button><button class="ibtn" onclick="tema()" aria-label="Tema"><i class="fas fa-circle-half-stroke"></i></button></div>
 
-<div class="hero"><img src="icon.png" alt="Quinta Bugambilia"><div><h1 id="hi">Quinta Bugambilia</h1><p id="hoy"></p></div></div>
+<button class="now" id="now" onclick="detNow()"><i class="fas fa-house-chimney"></i><span id="now-t"></span></button>
 
-<div class="kg">
-  <div class="kc"><span>Próxima llegada</span><b id="k1">—</b><small id="k1s">&nbsp;</small></div>
-  <div class="kc"><span>Por cobrar (rentas)</span><b id="k2">—</b><small id="k2s">este año</small></div>
-  <div class="kc" style="grid-column:1/-1"><span>Reembolsos pendientes (me deben)</span><b id="k3">—</b></div>
-</div>
+<button class="next" id="next" onclick="det(0)">
+  <div class="l">Próxima llegada</div><div class="big" id="n-d">…</div>
+  <div class="who" id="n-w">Cargando</div><div class="meta" id="n-m"></div><div class="pills" id="n-p"></div>
+</button>
 
-<div class="sec">Sistemas</div>
+<div class="stats"><div class="st"><b id="s1">–</b><span>Próx. 7 días</span></div><div class="st"><b id="s2">–</b><span>Este mes</span></div><div class="st"><b id="s3">–</b><span>Por cobrar</span></div></div>
+
+<div class="sec"><h3>Próximas entradas</h3><a href="rentas.html#reservas">Ver todas</a></div>
+<div id="lista"><div class="sk"></div><div class="sk"></div><div class="sk"></div></div>
+
+<div class="sec"><h3>Ir a</h3></div>
 <div class="tiles">
-  <a class="tile" href="rentas.html"><span class="ic g"><i class="fas fa-key"></i></span><div><b>Rentas</b><small>Reservas, cobranza y disponibilidad</small></div></a>
-  <a class="tile" href="rentas.html#calendario"><span class="ic b"><i class="fas fa-calendar-days"></i></span><div><b>Calendario</b><small>Fechas ocupadas y libres (dentro de Rentas)</small></div></a>
-  <a class="tile wide" href="reembolsos.html"><span class="ic w"><i class="fas fa-hand-holding-dollar"></i></span><div><b>Reembolsos</b><small>Gastos de la Quinta y abonos recibidos</small></div></a>
-</div>
-
-<div class="sec">Contratos</div>
-<div class="list">
-  <a class="row" href="hospedaje.html"><span class="ic g"><i class="fas fa-bed"></i></span><div><b>Hospedaje</b><small>Solo estancias por noche</small></div><i class="fas fa-chevron-right"></i></a>
-  <a class="row" href="eventos.html"><span class="ic w"><i class="fas fa-champagne-glasses"></i></span><div><b>Evento</b><small>Solo eventos, con equipos y accesos</small></div><i class="fas fa-chevron-right"></i></a>
-  <a class="row" href="eventohospedaje.html"><span class="ic b"><i class="fas fa-file-contract"></i></span><div><b>Evento + Hospedaje</b><small>Evento con noches incluidas</small></div><i class="fas fa-chevron-right"></i></a>
+  <a class="tile" href="rentas.html"><span class="ic g"><i class="fas fa-key"></i></span><div><b>Rentas</b><small>Reservas y cobranza</small></div></a>
+  <a class="tile" href="rentas.html#calendario"><span class="ic b"><i class="fas fa-calendar-days"></i></span><div><b>Calendario</b><small>Días libres y ocupados</small></div></a>
+  <a class="tile" href="reembolsos.html"><span class="ic w"><i class="fas fa-hand-holding-dollar"></i></span><div><b>Reembolsos</b><small id="t-re">Gastos y abonos</small></div></a>
+  <button class="tile" onclick="abrir('m-con')"><span class="ic g"><i class="fas fa-file-contract"></i></span><div><b>Contratos</b><small>Hospedaje, evento o ambos</small></div></button>
 </div>
 
 <button id="ins"><i class="fas fa-mobile-screen"></i> Instalar app en mi celular</button>
-<div class="foot">Quinta Bugambilia · Real del Catorce, Hermosillo</div>
+<div class="foot">Quinta Bugambilia · Real del 14, Hermosillo</div>
+
+<div class="modal" id="m-con"><div class="sheet"><div class="grab"></div><div class="sh"><h3>Contratos</h3><button class="ibtn" onclick="cerrar('m-con')" aria-label="Cerrar"><i class="fas fa-xmark"></i></button></div>
+  <a class="row" href="hospedaje.html"><span class="ic g"><i class="fas fa-bed"></i></span><div><b>Hospedaje</b><small>Solo estancias por noche</small></div><i class="fas fa-chevron-right"></i></a>
+  <a class="row" href="eventos.html"><span class="ic w"><i class="fas fa-champagne-glasses"></i></span><div><b>Evento</b><small>Solo eventos, con equipos y accesos</small></div><i class="fas fa-chevron-right"></i></a>
+  <a class="row" href="eventohospedaje.html"><span class="ic b"><i class="fas fa-file-contract"></i></span><div><b>Evento + Hospedaje</b><small>Evento con noches incluidas</small></div><i class="fas fa-chevron-right"></i></a>
+</div></div>
+
+<div class="modal" id="m-det"><div class="sheet"><div class="grab"></div><div class="sh"><h3 id="d-n"></h3><button class="ibtn" onclick="cerrar('m-det')" aria-label="Cerrar"><i class="fas fa-xmark"></i></button></div><div id="d-b"></div></div></div>
 
 <script>
 const RENTAS="https://script.google.com/macros/s/AKfycbyUuSbd7XOIskwITU6wPbw7jDajpHvTHcOYaVSwWW83y9tOHzECOmk8yzMASq8eNJNT/exec";
@@ -76,30 +96,73 @@ const REEMB="https://script.google.com/macros/s/AKfycbz-IgvNztN2FAmFc13XDjqtu-fR
 const $=id=>document.getElementById(id);
 const num=v=>{const n=parseFloat(String(v||"").replace(/[^0-9.-]/g,""));return isNaN(n)?0:n};
 const $$=v=>"$"+Math.round(v).toLocaleString("es-MX");
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const MC=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+const cerrar=id=>$(id).classList.remove("on"),abrir=id=>$(id).classList.add("on");
 function tema(){const r=document.documentElement,d=r.dataset.theme==="dark"?"":"dark";d?r.dataset.theme="dark":r.removeAttribute("data-theme");try{localStorage.setItem("qb-tema",d)}catch(e){}}
 try{if(localStorage.getItem("qb-tema")==="dark")document.documentElement.dataset.theme="dark"}catch(e){}
-const h=new Date().getHours();
-$("hi").textContent=(h<12?"Buenos días":h<19?"Buenas tardes":"Buenas noches");
+document.querySelectorAll(".modal").forEach(m=>m.addEventListener("click",e=>{if(e.target===m)m.classList.remove("on")}));
+const h=new Date().getHours();$("hi").textContent=h<12?"Buenos días":h<19?"Buenas tardes":"Buenas noches";
 $("hoy").textContent=new Date().toLocaleDateString("es-MX",{weekday:"long",day:"numeric",month:"long"});
 
 function fecha(s){if(!s)return null;s=String(s).trim();let m=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})(T.*)?$/);
   if(m){if(m[4]){const d=new Date(s);return isNaN(d)?null:new Date(d.getFullYear(),d.getMonth(),d.getDate())}return new Date(+m[1],m[2]-1,+m[3])}
-  m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);if(m)return new Date(+m[3],m[2]-1,+m[1]);const d=new Date(s);return isNaN(d)?null:d}
-function rentas(d){
-  const t=new Date();t.setHours(0,0,0,0);const y=t.getFullYear();let por=0;
-  const pr=d.map(r=>({r,e:fecha(r.fecha_entrada)})).filter(x=>x.e&&x.e>=t).sort((a,b)=>a.e-b.e)[0];
-  d.forEach(r=>{const e=fecha(r.fecha_entrada);if(e&&e.getFullYear()===y)por+=Math.max(0,num(r.total_venta)-num(r.anticipo1)-num(r.anticipo2))});
-  if(pr){const n=Math.round((pr.e-t)/864e5);$("k1").textContent=String(pr.r.nombre||"Reserva");$("k1s").textContent=(n===0?"Hoy":n===1?"Mañana":"En "+n+" días")+" · "+pr.e.toLocaleDateString("es-MX",{day:"numeric",month:"short"})}
-  else{$("k1").textContent="Sin llegadas";$("k1s").textContent="próximas"}
-  $("k2").textContent=$$(por);
+  m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);if(m)return new Date(+m[3],m[2]-1,+m[1]);const d=new Date(s);return isNaN(d)?null:new Date(d.getFullYear(),d.getMonth(),d.getDate())}
+const hoy0=()=>{const d=new Date();d.setHours(0,0,0,0);return d};
+const saldo=r=>Math.max(0,num(r.total_venta)-num(r.anticipo1)-num(r.anticipo2));
+const fD=d=>d.toLocaleDateString("es-MX",{weekday:"short",day:"numeric",month:"short"}).replace(",","");
+const cuando=d=>d===0?"Hoy":d===1?"Mañana":"En "+d+" días";
+function tipo(r){const hs=String(r.hospedaje||"").trim(),ev=String(r.evento||"").trim();return hs&&ev?"Evento con hospedaje":ev?"Evento":hs?"Hospedaje":"Reserva"}
+const norm=r=>{const e=fecha(r.fecha_entrada);return{r,e,s:fecha(r.fecha_salida)||e}};
+let UP=[],NOW=[];
+
+function pintar(d){
+  const t=hoy0(),L=(Array.isArray(d)?d:[]).map(norm).filter(x=>x.e);
+  UP=L.filter(x=>x.e>=t).sort((a,b)=>a.e-b.e);NOW=L.filter(x=>x.e<t&&x.s>=t);
+  const dif=x=>Math.round((x.e-t)/864e5);
+  /* en curso */
+  if(NOW.length){const x=NOW[0];$("now").style.display="flex";$("now-t").innerHTML="<b>En la Quinta ahora:</b> "+esc(x.r.nombre)+" · sale "+fD(x.s)+(NOW.length>1?" (+"+(NOW.length-1)+")":"")}else $("now").style.display="none";
+  /* próxima llegada */
+  if(UP.length){const x=UP[0],s=saldo(x.r);
+    $("n-d").textContent=cuando(dif(x));$("n-w").textContent=x.r.nombre||"Sin nombre";$("n-m").textContent=fD(x.e)+" · "+tipo(x.r);
+    $("n-p").innerHTML=(s>0?`<span class="pill d">Debe ${$$(s)}</span>`:`<span class="pill ok">Liquidado</span>`)+`<span class="pill">Ver detalle</span>`}
+  else{$("n-d").textContent="Sin llegadas";$("n-w").textContent="No hay reservas próximas";$("n-m").textContent="Agrega una desde Rentas";$("n-p").innerHTML=""}
+  /* estadísticas */
+  $("s1").textContent=UP.filter(x=>dif(x)<=7).length;
+  $("s2").textContent=UP.filter(x=>x.e.getMonth()===t.getMonth()&&x.e.getFullYear()===t.getFullYear()).length;
+  $("s3").textContent=$$(UP.reduce((a,x)=>a+saldo(x.r),0));
+  /* lista agrupada */
+  const G=[["Próximos 7 días",x=>dif(x)<=7],["Próximos 30 días",x=>dif(x)>7&&dif(x)<=30],["Más adelante",x=>dif(x)>30]];let html="";
+  G.forEach(([n,f])=>{const it=UP.map((x,i)=>({x,i})).filter(o=>f(o.x)).slice(0,12);if(!it.length)return;
+    html+=`<div class="grp">${n}</div>`+it.map(({x,i})=>{const s=saldo(x.r);return `<button class="it" onclick="det(${i})"><div class="dt"><b>${x.e.getDate()}</b><small>${MC[x.e.getMonth()]}</small></div><div class="m"><div class="n">${esc(x.r.nombre||"Sin nombre")}</div><div class="s">${cuando(dif(x))} · ${tipo(x.r)}</div></div><span class="bd ${s>0?"":"ok"}">${s>0?$$(s):"✓"}</span></button>`}).join("")});
+  $("lista").innerHTML=html||`<div class="empty"><i class="fas fa-calendar-check"></i>Sin entradas próximas</div>`;
 }
-function reemb(d){$("k3").textContent=$$((d.gastos||[]).reduce((s,f)=>s+num(f[5]),0))}
+
+function det(i){const x=UP[i];if(x)abrirDet(x)}
+function detNow(){if(NOW[0])abrirDet(NOW[0])}
+function abrirDet(x){
+  const r=x.r,t=num(r.total_venta),p=num(r.anticipo1)+num(r.anticipo2),s=saldo(r),noches=Math.round((x.s-x.e)/864e5);
+  const tels=[r.telefono,r.telefono_2].map(v=>String(v||"").replace(/\D/g,"")).filter(Boolean),tel=tels[0];
+  $("d-n").textContent=r.nombre||"Reserva";
+  $("d-b").innerHTML=`<div class="pills" style="margin:0 0 4px"><span class="pill" style="background:var(--blue2);color:var(--blue)">${tipo(r)}</span>${noches>0?`<span class="pill" style="background:var(--bg);color:var(--text)">${noches} noche${noches>1?"s":""}</span>`:""}</div>
+  <div class="kv"><div><span>Entrada</span><b>${fD(x.e)}</b></div><div><span>Salida</span><b>${fD(x.s)}</b></div><div><span>Total</span><b>${$$(t)}</b></div><div><span>Saldo</span><b style="color:${s>0?"var(--bad)":"var(--ink)"}">${$$(s)}</b></div></div>
+  ${String(r.anotaciones||"").trim()?`<div class="nota"><i class="fas fa-note-sticky" style="color:var(--wood)"></i> ${esc(r.anotaciones)}</div>`:""}
+  <div class="acts">${tel?`<a class="a1" href="https://wa.me/${tel.length===10?"52"+tel:tel}" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> WhatsApp</a><a class="a2" href="tel:${tel}" style="flex:0 0 52px" aria-label="Llamar"><i class="fas fa-phone"></i></a>`:""}<a class="a3" href="rentas.html#reservas"><i class="fas fa-pen"></i> Abrir en Rentas</a></div>`;
+  abrir("m-det");
+}
+
 async function dato(url,k,fn){
-  try{const d=await (await fetch(url)).json();fn(d);try{localStorage.setItem(k,JSON.stringify(d))}catch(e){}}
-  catch(e){try{const c=localStorage.getItem(k);if(c)fn(JSON.parse(c))}catch(x){}}
+  try{const d=await (await fetch(url)).json();fn(d);try{localStorage.setItem(k,JSON.stringify(d))}catch(e){}return true}
+  catch(e){return false}
 }
-try{const a=localStorage.getItem("qb-cache");if(a)rentas(JSON.parse(a));const b=localStorage.getItem("qr-cache");if(b)reemb(JSON.parse(b))}catch(e){}
-dato(RENTAS,"qb-cache",rentas);dato(REEMB,"qr-cache",reemb);
+async function cargar(manual){
+  $("sync").classList.add("fa-spin");
+  const [a]=await Promise.all([dato(RENTAS,"qb-cache",pintar),dato(REEMB,"qr-cache",d=>{const n=(d.gastos||[]).reduce((s,f)=>s+num(f[5]),0);$("t-re").textContent=n>0?"Te deben "+$$(n):"Todo al corriente"})]);
+  $("sync").classList.remove("fa-spin");
+  if(!a&&manual){const t=$("n-m");t.textContent="Sin conexión: mostrando los últimos datos guardados"}
+}
+try{const c=localStorage.getItem("qb-cache");if(c)pintar(JSON.parse(c));const b=localStorage.getItem("qr-cache");if(b){const n=(JSON.parse(b).gastos||[]).reduce((s,f)=>s+num(f[5]),0);$("t-re").textContent=n>0?"Te deben "+$$(n):"Todo al corriente"}}catch(e){}
+cargar();
 
 let ev;window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();ev=e;$("ins").style.display="block"});
 $("ins").onclick=async()=>{if(ev){ev.prompt();await ev.userChoice;ev=null;$("ins").style.display="none"}};
