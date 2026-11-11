@@ -88,6 +88,14 @@ h1,h2,h3,.serif{font-family:'Fraunces',serif}
 
 .note{font-size:13px;color:var(--text);background:var(--wood2);border-radius:10px;padding:8px 10px;margin:0 0 10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-line}
 textarea{width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--card);font-size:15px;font-family:inherit;color:var(--text);line-height:1.45;resize:vertical}
+.badge.par{background:var(--wood2);color:var(--wood)}
+.cmr{display:flex;align-items:center;gap:8px;margin:0 0 10px;padding:8px 10px;border-radius:12px;background:var(--wood2);font-size:13px;color:var(--text)}
+.cmr i{color:var(--wood)}.cmr b{margin-left:auto}
+.st{font-size:11px;font-weight:700;padding:3px 8px;border-radius:12px}.st.p{background:var(--bad2);color:var(--bad)}.st.a{background:var(--wood);color:#fff}.st.ok{background:var(--ok2);color:var(--ok)}
+.prev{display:none;background:var(--bg);border-radius:12px;padding:10px 12px;margin:0 0 12px;font-size:13px}.prev div{display:flex;justify-content:space-between;gap:10px;padding:3px 0}.prev .tot{border-top:1px solid var(--line);margin-top:4px;padding-top:6px;font-weight:700}.prev .fav{color:var(--blue);font-weight:700}
+.chk{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--muted);margin:0 0 12px}.chk input{width:18px;height:18px}
+.favb{display:none;margin-top:12px;padding:8px 12px;border-radius:12px;background:rgba(255,255,255,.16);font-size:13px}
+.hp{background:var(--mar);border:1px solid var(--line);border-radius:16px;padding:12px;margin-bottom:10px}.hp.an{opacity:.55}.hp .t{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.hp .t b{font-size:16px;color:var(--ok)}.hp .d{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.5}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -104,10 +112,14 @@ textarea{width:100%;padding:12px;border-radius:12px;border:1px solid var(--line)
     <div class="hs"><div>Cobrado<b id="k-c">$0</b></div><div style="text-align:right">Por cobrar<b id="k-s">$0</b></div></div>
   </div>
   <div class="kg"><div class="kc"><span>Ocupación del mes</span><b id="k-o">0%</b><div class="ring"><i id="k-ob" style="width:0"></i></div></div><div class="kc"><span>Reservas del año</span><b id="k-r">0</b><span id="k-r2" style="margin-top:4px"></span></div></div>
+  <button class="kc" id="k-com" onclick="go('com')" style="width:100%;text-align:left;margin-bottom:14px;display:block"><span>Comisión por cobrar (20%)</span><b id="k-cp">$0</b><span id="k-cp2" style="margin-top:4px"></span></button>
   <div class="sec"><h3>Próximas llegadas</h3><a href="#" onclick="ir('lista','proximas');return false">Ver todas</a></div>
   <div class="hs-row" id="prox"></div>
   <div class="sec"><h3>Cobranza pendiente</h3><a href="#" onclick="ir('lista','saldo');return false">Ver todas</a></div>
   <div id="cobr"></div>
+  <div class="sec"><h3>Resumen del año</h3></div>
+  <div class="bx"><h4>Ventas por mes</h4><div class="chart" id="chart"></div></div>
+  <div class="bx"><div id="res"></div></div>
 </div>
 
 <div id="v-lista" class="view">
@@ -130,9 +142,19 @@ textarea{width:100%;padding:12px;border-radius:12px;border:1px solid var(--line)
   <button class="btn-w" onclick="abrirDisp()"><i class="fas fa-image"></i> Imagen de disponibilidad</button>
 </div>
 
-<div id="v-res" class="view">
-  <div class="bx"><h4>Ventas por mes</h4><div class="chart" id="chart"></div></div>
-  <div class="bx"><h4>Resumen del año</h4><div id="res"></div></div>
+<div id="v-com" class="view">
+  <div class="hero">
+    <div class="l">Comisión por cobrar (reservas ya realizadas)</div><div class="big" id="c-p">$0</div>
+    <div class="bar"><i id="c-b" style="width:0"></i></div>
+    <div class="hs"><div>Cobrado<b id="c-c">$0</b></div><div style="text-align:right">Reservas futuras<b id="c-f">$0</b></div></div>
+    <div class="favb" id="c-fav"></div>
+    <button class="btn-w" style="margin-top:14px;background:var(--wood);color:#fff" onclick="abrirPago()"><i class="fas fa-hand-holding-dollar"></i> Registrar pago recibido</button>
+  </div>
+  <div class="chips" id="c-chips"><button class="chip on" data-c="pen">Pendientes</button><button class="chip" data-c="pag">Pagadas</button><button class="chip" data-c="todas">Todas</button></div>
+  <div class="cnt" id="c-cnt"></div>
+  <div class="list" id="c-list"></div>
+  <div class="sec"><h3>Historial de pagos</h3><a href="#" id="c-anular" onclick="anularPago();return false" style="display:none;color:var(--bad)">Anular el último</a></div>
+  <div id="c-hist"></div>
 </div>
 
 <nav class="nav" id="nav">
@@ -140,7 +162,7 @@ textarea{width:100%;padding:12px;border-radius:12px;border:1px solid var(--line)
   <button data-v="lista"><i class="fas fa-list-ul"></i>Reservas</button>
   <button class="plus" onclick="abrirNuevo()" aria-label="Nueva reservación"><i class="fas fa-plus"></i></button>
   <button data-v="cal"><i class="fas fa-calendar-days"></i>Calendario</button>
-  <button data-v="res"><i class="fas fa-chart-simple"></i>Resumen</button>
+  <button data-v="com"><i class="fas fa-hand-holding-dollar"></i>Comisión</button>
 </nav>
 
 <div class="modal" id="m-form"><div class="sheet"><div class="grab"></div>
@@ -160,13 +182,21 @@ textarea{width:100%;padding:12px;border-radius:12px;border:1px solid var(--line)
     <div class="g2"><div class="f"><label>Total venta ($)</label><input type="number" inputmode="decimal" step="0.01" id="f-total" oninput="saldo()" required></div><div class="f"><label>Saldo ($)</label><input id="f-saldo" readonly></div></div>
     <div class="g2"><div class="f"><label>Anticipo 1 ($)</label><input type="number" inputmode="decimal" step="0.01" id="f-a1" oninput="saldo()"></div><div class="f"><label>Fecha anticipo 1</label><input type="date" id="f-fa1"></div></div>
     <div class="g2"><div class="f"><label>Anticipo 2 ($)</label><input type="number" inputmode="decimal" step="0.01" id="f-a2" oninput="saldo()"></div><div class="f"><label>Fecha anticipo 2</label><input type="date" id="f-fa2"></div></div>
-    <div class="fs">Comisión</div>
-    <div class="g2"><div class="f"><label>Comisión ($)</label><input type="number" inputmode="decimal" step="0.01" id="f-com"></div><div class="f"><label>Fecha cobrado</label><input type="date" id="f-fc"></div></div>
-    <div class="f"><label>Comisión No.</label><input id="f-comno"></div>
+    <div class="fs">Comisión (automática)</div>
+    <div class="g2"><div class="f"><label>Comisión 20% ($)</label><input id="f-com" readonly></div><div class="f"><label>Cobrada ($)</label><input id="f-comp" readonly></div></div>
+    <div class="f"><label>Estado</label><input id="f-comst" readonly></div>
     <div class="foot"><button type="button" class="btn b3" id="btn-d" onclick="eliminar()" aria-label="Eliminar"><i class="fas fa-trash"></i></button><button type="button" class="btn b2" onclick="cerrar('m-form')">Cancelar</button><button class="btn b1" id="btn-g">Guardar</button></div>
   </form>
 </div></div>
 
+<div class="modal" id="m-pago"><div class="sheet"><div class="grab"></div><div class="sh"><h3>Pago de comisión</h3><button class="ibtn" onclick="cerrar('m-pago')" aria-label="Cerrar"><i class="fas fa-xmark"></i></button></div>
+  <p id="pg-i" style="margin-bottom:12px;color:var(--muted);font-size:13px"></p>
+  <div class="g2"><div class="f"><label>Monto recibido ($)</label><input type="number" inputmode="decimal" step="0.01" id="pg-m" oninput="prevPago()" placeholder="0.00"></div><div class="f"><label>Fecha</label><input type="date" id="pg-f"></div></div>
+  <div class="f"><label>Nota (opcional)</label><input id="pg-n" placeholder="Ej. transferencia"></div>
+  <label class="chk"><input type="checkbox" id="pg-fut" onchange="prevPago()"> Incluir reservas futuras (aún no se realizan)</label>
+  <div class="prev" id="pg-prev"></div>
+  <div class="foot"><button class="btn b1" id="pg-b" onclick="guardarPago()">Aplicar pago</button></div>
+</div></div>
 <div class="modal" id="m-dia"><div class="sheet"><div class="grab"></div><div class="sh"><h3 id="dia-t"></h3><button class="ibtn" onclick="cerrar('m-dia')" aria-label="Cerrar"><i class="fas fa-xmark"></i></button></div><div id="dia-b"></div></div></div>
 
 <div class="modal" id="m-ab"><div class="sheet"><div class="grab"></div><div class="sh"><h3>Registrar abono</h3><button class="ibtn" onclick="cerrar('m-ab')" aria-label="Cerrar"><i class="fas fa-xmark"></i></button></div>
@@ -194,7 +224,7 @@ const URL_API="https://script.google.com/macros/s/AKfycbyUuSbd7XOIskwITU6wPbw7jD
 const MESES=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
 const MC=MESES.map(m=>m.slice(0,3)),cap=s=>s[0].toUpperCase()+s.slice(1);
 const $=id=>document.getElementById(id);
-let datos=[],filtro="todos",anio=new Date().getFullYear(),calF=new Date();calF.setDate(1);
+let pagosCom=[],credito=0,cfil="pen",busy=false,datos=[],filtro="todos",anio=new Date().getFullYear(),calF=new Date();calF.setDate(1);
 
 /* ---- Utilidades ---- */
 const num=v=>{if(typeof v==="number")return isNaN(v)?0:v;const n=parseFloat(String(v||"").replace(/[^0-9.-]/g,""));return isNaN(n)?0:n};
@@ -214,6 +244,13 @@ const fmtF=d=>d?d.getDate()+" "+MC[d.getMonth()]+(d.getFullYear()!==new Date().g
 const hoy0=()=>{const d=new Date();d.setHours(0,0,0,0);return d};
 const saldoDe=r=>Math.max(0,num(r.total_venta)-num(r.anticipo1)-num(r.anticipo2));
 const ent=r=>aFecha(r.fecha_entrada),sal=r=>aFecha(r.fecha_salida)||ent(r);
+/* ---- Comisión: 20% del total de la venta ---- */
+const COM_PCT=0.20,r2=n=>Math.round((n+Number.EPSILON)*100)/100;
+const $c=v=>{const n=num(v);return "$"+n.toLocaleString("es-MX",{minimumFractionDigits:Number.isInteger(n)?0:2,maximumFractionDigits:2})};
+const comDe=r=>r2(num(r.total_venta)*COM_PCT);
+const comPag=r=>r.comision_pagada!==undefined&&r.comision_pagada!==""?r2(num(r.comision_pagada)):(String(r.fecha_cobrado||"").replace("-","").trim()?comDe(r):0);
+const comPen=r=>Math.max(0,r2(comDe(r)-comPag(r)));
+const estTxt=r=>{const c=comDe(r),p=comPag(r);return c<=0?"Sin comisión":comPen(r)<=0?"Pagada"+(r.comision_no?" · "+r.comision_no:""):p>0?"Parcial · resta "+$c(comPen(r))+(r.comision_no?" · "+r.comision_no:""):"Pendiente"};
 const ini=n=>(n||"?").trim().split(/\s+/).slice(0,2).map(w=>w[0]).join("").toUpperCase();
 const vib=()=>navigator.vibrate&&navigator.vibrate(10);
 function toast(t){const e=$("toast");e.textContent=t;e.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove("on"),2600)}
@@ -224,15 +261,15 @@ try{if(localStorage.getItem("qb-tema")==="dark")document.documentElement.dataset
 /* ---- Datos ---- */
 async function cargar(manual){
   $("sync").classList.add("fa-spin");
-  try{const res=await fetch(URL_API,{redirect:"follow"});datos=await res.json();try{localStorage.setItem("qb-cache",JSON.stringify(datos))}catch(e){}if(manual)toast("Datos actualizados")}
+  try{const[res,rp]=await Promise.all([fetch(URL_API,{redirect:"follow"}),fetch(URL_API+"?action=pagos",{redirect:"follow"}).catch(()=>null)]);const d=await res.json();if(!Array.isArray(d))throw new Error("Respuesta inesperada");datos=d;try{const j=rp&&await rp.json();if(j&&j.status==="success"){pagosCom=j.pagos||[];credito=num(j.saldo_a_favor)}}catch(e){}try{localStorage.setItem("qb-cache",JSON.stringify(datos))}catch(e){}if(manual)toast("Datos actualizados")}
   catch(err){try{const c=localStorage.getItem("qb-cache");if(c&&!datos.length){datos=JSON.parse(c);toast("Sin conexión: últimos datos guardados")}else toast("No se pudo conectar. Revisa tu internet.")}catch(e){toast("No se pudo conectar.")}}
   $("sync").classList.remove("fa-spin");anios();todo();
 }
 const delAnio=()=>datos.filter(r=>{const e=ent(r);return e&&e.getFullYear()===anio});
 function anios(){const s=new Set(datos.map(r=>{const e=ent(r);return e&&e.getFullYear()}).filter(Boolean));s.add(new Date().getFullYear());const a=[...s].sort((x,y)=>y-x);if(!a.includes(anio))anio=a[0];$("anio").innerHTML=a.map(y=>`<option ${y===anio?"selected":""}>${y}</option>`).join("")}
-function todo(){inicio();render();pintarCal();resumen()}
-async function api(accion,extra){await fetch(URL_API,{method:"POST",body:JSON.stringify({accion,...extra})})}
-const pl=r=>({folio:r.folio,nombre:r.nombre,mes_renta:r.mes_renta,telefono:r.telefono,hospedaje:r.hospedaje,evento:r.evento,fecha_entrada:aISO(r.fecha_entrada),fecha_salida:aISO(r.fecha_salida),total_venta:r.total_venta,anticipo1:r.anticipo1,fecha_anticipo1:aISO(r.fecha_anticipo1,true),anticipo2:r.anticipo2,fecha_anticipo2:aISO(r.fecha_anticipo2,true),saldo:saldoDe(r),comision:r.comision,fecha_cobrado:aISO(r.fecha_cobrado),comision_no:r.comision_no,telefono_2:r.telefono_2,anotaciones:r.anotaciones});
+function todo(){inicio();render();pintarCal();resumen();renderCom();renderHist()}
+async function api(accion,extra){const r=await fetch(URL_API,{method:"POST",body:JSON.stringify({accion,...extra})});let j;try{j=await r.json()}catch(e){throw new Error("El servidor no respondió bien. Revisa que el Apps Script esté publicado.")}if(j.status!=="success")throw new Error(j.message||"Error del servidor");return j}
+const pl=r=>({folio:r.folio,nombre:r.nombre,mes_renta:r.mes_renta,telefono:r.telefono,hospedaje:r.hospedaje,evento:r.evento,fecha_entrada:aISO(r.fecha_entrada),fecha_salida:aISO(r.fecha_salida),total_venta:r.total_venta,anticipo1:r.anticipo1,fecha_anticipo1:aISO(r.fecha_anticipo1,true),anticipo2:r.anticipo2,fecha_anticipo2:aISO(r.fecha_anticipo2,true),saldo:saldoDe(r),telefono_2:r.telefono_2,anotaciones:r.anotaciones});
 const buscar=f=>datos.find(r=>String(r.folio)===String(f));
 
 /* ---- Inicio ---- */
@@ -275,7 +312,7 @@ function tarjeta(x){
   ${String(x.anotaciones||"").trim()?`<div class="note"><i class="fas fa-note-sticky" style="color:var(--wood)"></i> ${esc(x.anotaciones)}</div>`:""}
   <div class="money"><div><span>Total</span><b>${$$(t)}</b></div><div><span>Pagado</span><b style="color:var(--ok)">${$$(p)}</b></div><div><span>Saldo</span><b style="color:${s>0?"var(--bad)":"var(--ok)"}">${$$(s)}</b></div></div>
   <div class="pbar"><i style="width:${t?Math.min(100,p/t*100):0}%"></i></div>
-  <div class="acts">${tel?`<button class="a1" onclick="whats('${x.folio}')" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i> Chat</button><a href="tel:${tel}" class="a2" style="display:flex;align-items:center;justify-content:center;border-radius:12px;text-decoration:none;flex:0 0 48px" aria-label="Llamar"><i class="fas fa-phone"></i></a>`:""}${s>0?`<button class="a3" onclick="abrirAbono('${x.folio}')"><i class="fas fa-coins"></i> Abono</button>`:""}<button class="a2" onclick="abrirEditar('${x.folio}')"><i class="fas fa-pen"></i> Editar</button></div></div>`;
+  ${cmr(x)}<div class="acts">${tel?`<button class="a1" onclick="whats('${x.folio}')" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i> Chat</button><a href="tel:${tel}" class="a2" style="display:flex;align-items:center;justify-content:center;border-radius:12px;text-decoration:none;flex:0 0 48px" aria-label="Llamar"><i class="fas fa-phone"></i></a>`:""}${s>0?`<button class="a3" onclick="abrirAbono('${x.folio}')"><i class="fas fa-coins"></i> Abono</button>`:""}<button class="a2" onclick="abrirEditar('${x.folio}')"><i class="fas fa-pen"></i> Editar</button></div></div>`;
 }
 /* ---- WhatsApp: elige qué mandar ---- */
 const DEPOSITO=1000;
@@ -311,10 +348,11 @@ const abTodo=()=>$("ab-m").value=saldoDe(buscar($("ab-f").value));
 const abMitad=()=>$("ab-m").value=Math.round(saldoDe(buscar($("ab-f").value))/2);
 async function abonar(){
   const r=buscar($("ab-f").value),m=num($("ab-m").value);if(!r||m<=0){toast("Escribe un monto válido");return}
+  if(m>saldoDe(r)+0.005&&!confirm("El abono ("+$c(m)+") es mayor al saldo ("+$c(saldoDe(r))+"). ¿Registrarlo de todos modos?"))return;
   const p=pl(r),h=iso(new Date());
   if(!num(r.anticipo1)){p.anticipo1=m;p.fecha_anticipo1=h}else{p.anticipo2=num(r.anticipo2)+m;p.fecha_anticipo2=h}
   p.saldo=Math.max(0,num(r.total_venta)-num(p.anticipo1)-num(p.anticipo2));
-  try{await api("actualizar",{payload:p});cerrar("m-ab");toast("Abono registrado");cargar()}catch(e){toast("No se pudo guardar: "+e)}
+  try{await api("actualizar",{payload:p});cerrar("m-ab");toast("Abono registrado");cargar()}catch(e){toast("No se pudo guardar: "+(e.message||e))}
 }
 
 /* ---- Calendario ---- */
@@ -360,14 +398,14 @@ function resumen(){
   const v=Array(12).fill(0),r=delAnio();r.forEach(x=>{const e=ent(x);if(e)v[e.getMonth()]+=num(x.total_venta)});
   const mx=Math.max(...v,1),cm=new Date().getMonth();
   $("chart").innerHTML=v.map((n,i)=>`<div class="${i===cm&&anio===new Date().getFullYear()?"cur":""}"><em>${n?Math.round(n/1000)+"k":""}</em><i style="height:${n/mx*100}%"></i>${MC[i][0].toUpperCase()}</div>`).join("");
-  const com=r.reduce((s,x)=>s+num(x.comision),0),ev=r.filter(x=>x.evento).length,ho=r.filter(x=>x.hospedaje).length,tot=r.reduce((s,x)=>s+num(x.total_venta),0),pr=r.length?tot/r.length:0;
+  const com=r.reduce((s,x)=>s+comDe(x),0),ev=r.filter(x=>x.evento).length,ho=r.filter(x=>x.hospedaje).length,tot=r.reduce((s,x)=>s+num(x.total_venta),0),pr=r.length?tot/r.length:0;
   const best=v.indexOf(mx);
   $("res").innerHTML=`<div class="money"><div><span>Reservas</span><b>${r.length}</b></div><div><span>Con evento</span><b>${ev}</b></div><div><span>Hospedaje</span><b>${ho}</b></div></div><div class="money"><div><span>Ticket promedio</span><b>${$$(pr)}</b></div><div><span>Comisiones</span><b>${$$(com)}</b></div><div><span>Mejor mes</span><b>${tot?cap(MC[best]):"—"}</b></div></div>`;
 }
 
 /* ---- Formulario ---- */
 $("f-mes").innerHTML=MESES.map(m=>`<option value="${m}">${cap(m)}</option>`).join("");
-function saldo(){$("f-saldo").value=Math.max(0,num($("f-total").value)-num($("f-a1").value)-num($("f-a2").value)).toFixed(2)}
+function saldo(){$("f-saldo").value=Math.max(0,num($("f-total").value)-num($("f-a1").value)-num($("f-a2").value)).toFixed(2);$("f-com").value=r2(num($("f-total").value)*COM_PCT).toFixed(2)}
 function autoMes(){const d=aFecha($("f-ent").value);if(d)$("f-mes").value=MESES[d.getMonth()]}
 function revisar(){
   const e=aFecha($("f-ent").value),s=aFecha($("f-sal").value)||e,w=$("f-warn"),fol=$("f-folio").value;w.style.display="none";if(!e)return;
@@ -378,7 +416,7 @@ function revisar(){
 function abrirNuevo(fecha){
   $("m-t").textContent="Nueva reservación";$("form").reset();$("f-folio").value="";$("btn-d").style.display="none";
   if(fecha){$("f-ent").value=fecha;$("f-sal").value=fecha;autoMes()}else $("f-mes").value=MESES[new Date().getMonth()];
-  $("f-warn").style.display="none";saldo();$("m-form").classList.add("on");
+  $("f-warn").style.display="none";saldo();$("f-comp").value="0.00";$("f-comst").value="Pendiente";$("m-form").classList.add("on");
 }
 function abrirEditar(f){
   const r=buscar(f);if(!r)return;$("m-t").textContent="Folio "+f;$("f-folio").value=r.folio;$("btn-d").style.display="";
@@ -386,22 +424,22 @@ function abrirEditar(f){
   set("f-nombre",r.nombre);set("f-tel",r.telefono);set("f-tel2",r.telefono_2);set("f-hosp",r.hospedaje);set("f-evt",r.evento);
   $("f-mes").value=(r.mes_renta||"").toLowerCase()||MESES[new Date().getMonth()];
   set("f-ent",aISO(r.fecha_entrada));set("f-sal",aISO(r.fecha_salida));set("f-total",r.total_venta);set("f-a1",r.anticipo1);set("f-a2",r.anticipo2);
-  set("f-fa1",aISO(r.fecha_anticipo1,true));set("f-fa2",aISO(r.fecha_anticipo2,true));set("f-com",r.comision);set("f-fc",aISO(r.fecha_cobrado));set("f-comno",r.comision_no);set("f-notas",r.anotaciones);
+  set("f-fa1",aISO(r.fecha_anticipo1,true));set("f-fa2",aISO(r.fecha_anticipo2,true));set("f-notas",r.anotaciones);$("f-comp").value=comPag(r).toFixed(2);$("f-comst").value=estTxt(r);
   saldo();revisar();$("m-form").classList.add("on");
 }
 async function guardar(ev){
   ev.preventDefault();const b=$("btn-g");b.disabled=true;b.textContent="Guardando…";const folio=$("f-folio").value,v=id=>$(id).value;
-  const payload={folio,nombre:v("f-nombre").trim(),mes_renta:v("f-mes"),telefono:v("f-tel"),hospedaje:v("f-hosp"),evento:v("f-evt"),fecha_entrada:v("f-ent"),fecha_salida:v("f-sal"),total_venta:v("f-total"),anticipo1:v("f-a1"),fecha_anticipo1:v("f-fa1"),anticipo2:v("f-a2"),fecha_anticipo2:v("f-fa2"),saldo:v("f-saldo"),comision:v("f-com"),fecha_cobrado:v("f-fc"),comision_no:v("f-comno"),telefono_2:v("f-tel2"),anotaciones:v("f-notas").trim()};
-  try{await api(folio?"actualizar":"crear",{payload});cerrar("m-form");toast(folio?"Reservación actualizada":"Reservación guardada");await cargar()}catch(e){toast("No se pudo guardar: "+e)}
+  const payload={folio,nombre:v("f-nombre").trim(),mes_renta:v("f-mes"),telefono:v("f-tel"),hospedaje:v("f-hosp"),evento:v("f-evt"),fecha_entrada:v("f-ent"),fecha_salida:v("f-sal"),total_venta:v("f-total"),anticipo1:v("f-a1"),fecha_anticipo1:v("f-fa1"),anticipo2:v("f-a2"),fecha_anticipo2:v("f-fa2"),saldo:v("f-saldo"),telefono_2:v("f-tel2"),anotaciones:v("f-notas").trim()};
+  try{await api(folio?"actualizar":"crear",{payload});cerrar("m-form");toast(folio?"Reservación actualizada":"Reservación guardada");await cargar()}catch(e){toast("No se pudo guardar: "+(e.message||e))}
   b.disabled=false;b.textContent="Guardar";
 }
 async function eliminar(){
   const f=$("f-folio").value;if(!f||!confirm("¿Eliminar la reservación #"+f+"? No se puede deshacer."))return;
-  try{await api("eliminar",{folio:f});cerrar("m-form");toast("Reservación eliminada");cargar()}catch(e){toast("No se pudo eliminar: "+e)}
+  try{await api("eliminar",{folio:f});cerrar("m-form");toast("Reservación eliminada");cargar()}catch(e){toast("No se pudo eliminar: "+(e.message||e))}
 }
 function csv(){
-  const c=["folio","nombre","mes_renta","telefono","hospedaje","evento","fecha_entrada","fecha_salida","total_venta","anticipo1","anticipo2","saldo","comision","anotaciones"];
-  const l=[c.join(",")].concat(delAnio().map(r=>c.map(k=>'"'+String(k==="saldo"?saldoDe(r):(r[k]??"")).replace(/"/g,'""')+'"').join(",")));
+  const c=["folio","nombre","mes_renta","telefono","hospedaje","evento","fecha_entrada","fecha_salida","total_venta","anticipo1","anticipo2","saldo","comision","comision_pagada","comision_pendiente","anotaciones"];
+  const l=[c.join(",")].concat(delAnio().map(r=>c.map(k=>'"'+String(k==="saldo"?saldoDe(r):k==="comision"?comDe(r):k==="comision_pagada"?comPag(r):k==="comision_pendiente"?comPen(r):(r[k]??"")).replace(/"/g,'""')+'"').join(",")));
   const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\ufeff"+l.join("\n")],{type:"text/csv"}));a.download="rentas-"+anio+".csv";a.click();
 }
 
@@ -434,13 +472,75 @@ const nImg=()=>"disponibilidad-"+$("d-mes").selectedOptions[0].textContent.toLow
 function bajar(){const a=document.createElement("a");a.href=$("cv").toDataURL("image/png");a.download=nImg();a.click();toast("Imagen descargada")}
 function compartir(){$("cv").toBlob(async b=>{const f=new File([b],nImg(),{type:"image/png"});if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f],title:"Disponibilidad Quinta Bugambilia"})}catch(e){}}else{bajar()}},"image/png")}
 
+/* ---- Comisiones ---- */
+function cmr(x){const c=comDe(x);if(c<=0)return"";const pen=comPen(x),p=comPag(x),k=pen<=0?["ok","Pagada"]:p>0?["a","Parcial"]:["p","Pendiente"];
+  return `<div class="cmr"><i class="fas fa-percent"></i>Comisión 20%<span class="st ${k[0]}">${k[1]}</span><b>${$c(pen>0&&p>0?pen:c)}</b></div>`}
+const ordenFifo=(a,b)=>((ent(a)||new Date(8.64e15))-(ent(b)||new Date(8.64e15)))||(num(a.folio)-num(b.folio));
+function totCom(){const h=hoy0();let real=0,fut=0,cob=0,nr=0;datos.forEach(r=>{const pen=comPen(r);cob+=comPag(r);if(pen<=0)return;const e=ent(r);if(e&&e>h)fut+=pen;else{real+=pen;nr++}});return{real,fut,cob,nr}}
+/* Misma lógica que el Apps Script: los pagos se aplican a las comisiones más antiguas primero */
+function asignarPago(tickets,pool,hoy,incluirFuturas){
+  const cola=tickets.filter(t=>t.pendiente>0.004&&(incluirFuturas||!t.entrada||t.entrada<=hoy)).sort((a,b)=>(a.entrada||"9999").localeCompare(b.entrada||"9999")||(Number(a.folio)-Number(b.folio)));
+  let resto=r2(pool);const aplic=[];
+  for(const t of cola){if(resto<=0)break;const x=r2(Math.min(resto,t.pendiente));if(x<=0)continue;resto=r2(resto-x);aplic.push({folio:t.folio,nombre:t.nombre,monto:x,liquida:x>=t.pendiente-0.004,resta:r2(t.pendiente-x)})}
+  return{aplic,sobrante:resto};
+}
+function renderCom(){
+  const t=totCom(),tot=t.cob+t.real+t.fut;
+  $("k-cp").textContent=$c(t.real);$("k-cp2").textContent=t.nr?t.nr+" reserva"+(t.nr===1?"":"s")+" pendiente"+(t.nr===1?"":"s")+(credito>0?" · saldo a favor "+$c(credito):""):"Todo cobrado"+(credito>0?" · saldo a favor "+$c(credito):"");
+  $("c-p").textContent=$c(t.real);$("c-c").textContent=$c(t.cob);$("c-f").textContent=$c(t.fut);$("c-b").style.width=(tot?Math.min(100,t.cob/tot*100):0)+"%";
+  const fv=$("c-fav");fv.style.display=credito>0?"block":"none";fv.innerHTML=`<i class="fas fa-piggy-bank"></i> Saldo a favor: <b>${$c(credito)}</b> · se suma al siguiente pago`;
+  let r=datos.filter(x=>comDe(x)>0);
+  if(cfil==="pen")r=r.filter(x=>comPen(x)>0).sort(ordenFifo);else if(cfil==="pag")r=r.filter(x=>comPen(x)<=0).sort((a,b)=>ordenFifo(b,a));else r.sort(ordenFifo);
+  $("c-cnt").textContent=r.length+" reserva"+(r.length===1?"":"s")+" · resta "+$c(r.reduce((s,x)=>s+comPen(x),0))+(cfil==="pen"?" · se cobran de la más antigua a la más nueva":"");
+  $("c-list").innerHTML=r.length?r.map(tarjCom).join(""):`<div class="empty"><i class="fas fa-circle-check"></i>Sin comisiones en este filtro.</div>`;
+}
+function tarjCom(x){
+  const c=comDe(x),p=comPag(x),pen=comPen(x),e=ent(x),fut=e&&e>hoy0(),k=pen<=0?["ok","Pagada"]:p>0?["par","Parcial"]:["bad","Pendiente"];
+  return `<div class="rc ${pen>0?"debe":""}"><div class="rh"><span class="av">${esc(ini(x.nombre))}</span><div><div class="rn">${esc(x.nombre||"Sin nombre")}</div><div class="rm">Folio ${esc(x.folio)} · ${e?fmtF(e):"Sin fecha"}${fut?" · aún no se realiza":""}</div></div><span class="badge ${k[0]}">${k[1]}</span></div>
+  <div class="tags"><span class="tag"><i class="fas fa-receipt"></i>Venta ${$c(x.total_venta)}</span>${x.comision_no?`<span class="tag bl">${esc(x.comision_no)}</span>`:""}</div>
+  <div class="money"><div><span>Comisión</span><b>${$c(c)}</b></div><div><span>Cobrado</span><b style="color:var(--ok)">${$c(p)}</b></div><div><span>Resta</span><b style="color:${pen>0?"var(--bad)":"var(--ok)"}">${$c(pen)}</b></div></div>
+  <div class="pbar"><i style="width:${c?Math.min(100,p/c*100):0}%"></i></div></div>`;
+}
+$("c-chips").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;vib();cfil=b.dataset.c;document.querySelectorAll("#c-chips .chip").forEach(c=>c.classList.toggle("on",c===b));renderCom()});
+function renderHist(){
+  const h=pagosCom.slice().reverse(),vig=pagosCom.filter(p=>p.estado!=="anulado");$("c-anular").style.display=vig.length?"":"none";
+  $("c-hist").innerHTML=h.length?h.map(p=>{const an=p.estado==="anulado",d=aFecha(p.fecha);
+    return `<div class="hp ${an?"an":""}"><div class="t"><span class="rn">${esc(p.clave)}${an?" · anulado":""}</span><b>+${$c(p.monto)}</b></div><div class="d">${d?fmtF(d):""} · aplicado ${$c(p.aplicado)}${p.saldo_a_favor>0&&!an?" · quedó a favor "+$c(p.saldo_a_favor):""}${p.notas?" · "+esc(p.notas):""}<br>${(p.detalle||[]).map(x=>"#"+esc(x.f)+" "+esc(String(x.n||"").split(" ")[0])+" "+$c(x.m)).join(" · ")}</div></div>`}).join(""):`<div class="empty"><i class="fas fa-receipt"></i>Aún no hay pagos registrados.</div>`;
+}
+function abrirPago(){
+  $("pg-m").value="";$("pg-n").value="";$("pg-f").value=iso(new Date());$("pg-fut").checked=false;
+  $("pg-i").textContent=credito>0?"Tienes "+$c(credito)+" a favor; se suma a este pago.":"El pago se aplica primero a las comisiones más antiguas.";
+  prevPago();$("m-pago").classList.add("on");
+}
+function prevPago(){
+  const e=$("pg-prev"),m=num($("pg-m").value),pool=r2(m+credito);if(pool<=0){e.style.display="none";return}
+  const tk=datos.map(r=>({folio:r.folio,nombre:r.nombre,entrada:aISO(r.fecha_entrada),pendiente:comPen(r)}));
+  const res=asignarPago(tk,pool,iso(new Date()),$("pg-fut").checked);
+  let h=res.aplic.map(a=>`<div><span>${esc(a.nombre)} <small>#${esc(a.folio)}</small></span><b>${a.liquida?"Liquida":"Abona"} ${$c(a.monto)}${a.liquida?"":" · resta "+$c(a.resta)}</b></div>`).join("");
+  if(!res.aplic.length)h='<div><span>No hay comisiones pendientes por cobrar'+($("pg-fut").checked?"":" (de reservas ya realizadas)")+'</span></div>';
+  if(res.sobrante>0)h+=`<div class="fav"><span>Saldo a favor</span><b>${$c(res.sobrante)}</b></div>`;
+  h+=`<div class="tot"><span>Se aplica</span><b>${$c(r2(pool-res.sobrante))}</b></div>`;e.innerHTML=h;e.style.display="block";
+}
+async function guardarPago(){
+  const monto=num($("pg-m").value),fecha=$("pg-f").value;if(monto<=0&&credito<=0){toast("Escribe el monto recibido");return}if(!fecha){toast("Indica la fecha");return}
+  if(busy)return;busy=true;const b=$("pg-b");b.disabled=true;b.textContent="Aplicando…";
+  try{const r=await api("pagar_comision",{payload:{monto,fecha,notas:$("pg-n").value.trim(),incluir_futuras:$("pg-fut").checked}});
+    cerrar("m-pago");toast(r.saldo_a_favor>0?r.clave+" aplicado · saldo a favor "+$c(r.saldo_a_favor):r.clave+" aplicado");await cargar()}
+  catch(e){toast("No se pudo guardar: "+(e.message||e))}
+  busy=false;b.disabled=false;b.textContent="Aplicar pago";
+}
+async function anularPago(){
+  const v=pagosCom.filter(p=>p.estado!=="anulado"),u=v[v.length-1];if(!u||busy||!confirm("¿Anular el pago "+u.clave+" por "+$c(u.monto)+"? Las comisiones vuelven a quedar como antes."))return;
+  busy=true;try{await api("anular_pago_comision",{});toast(u.clave+" anulado");await cargar()}catch(e){toast("No se pudo anular: "+(e.message||e))}busy=false;
+}
+
 /* ---- Navegación ---- */
 function go(v){document.querySelectorAll("#nav button[data-v]").forEach(x=>x.classList.toggle("on",x.dataset.v===v));document.querySelectorAll(".view").forEach(x=>x.classList.toggle("on",x.id==="v-"+v));scrollTo(0,0)}
 $("nav").addEventListener("click",e=>{const b=e.target.closest("button[data-v]");if(b){vib();go(b.dataset.v)}});
 document.querySelectorAll(".modal").forEach(m=>m.addEventListener("click",e=>{if(e.target===m)m.classList.remove("on")}));
 $("hoy").textContent=new Date().toLocaleDateString("es-MX",{weekday:"long",day:"numeric",month:"long"});
 try{const c=localStorage.getItem("qb-cache");if(c){datos=JSON.parse(c);anios();todo()}}catch(e){}
-const MAPA={calendario:"cal",reservas:"lista",resumen:"res",inicio:"ini"};
+const MAPA={calendario:"cal",reservas:"lista",comisiones:"com",resumen:"ini",inicio:"ini"};
 function porHash(){const v=MAPA[location.hash.slice(1)];if(v)go(v)}
 window.addEventListener("hashchange",porHash);porHash();
 cargar();
