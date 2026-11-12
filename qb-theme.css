@@ -1,0 +1,74 @@
+/* ============================================================
+   Quinta Bugambilia · tema compartido
+   Mármol de fondo, verde palo verde, madera de mezquite,
+   azul alberca y magenta bugambilia solo para lo pendiente.
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Instrument+Sans:wght@400..700&display=swap');
+
+:root{
+  --f-disp:'Bricolage Grotesque','Instrument Sans',system-ui,sans-serif;
+  --f-body:'Instrument Sans',system-ui,-apple-system,sans-serif;
+  --bg:#f1f0eb;
+  --card:#fcfcfa;
+  --mar:linear-gradient(160deg,#ffffff 0%,#f6f5f1 60%,#fbfbf9 100%);
+  --deep:#1b4a3a;          /* superficies verdes con texto blanco */
+  --ink:#1b4a3a;           /* verde para texto/íconos */
+  --text:#262c2a;
+  --muted:#6b7471;
+  --line:#e2e0d7;
+  --wood:#8d5b38;
+  --wood2:#efe3d3;
+  --blue:#1d77a0;
+  --blue2:#dcedf4;
+  --ok:#1b4a3a;
+  --ok2:#dcebe3;
+  --bad:#b0275f;           /* bugambilia: pendiente / por cobrar */
+  --bad2:#f9e2ec;
+  --sh:0 1px 2px rgba(30,40,36,.05),0 10px 26px -14px rgba(30,40,36,.22);
+}
+:root[data-theme=dark]{
+  --bg:#0f1613;--card:#17211c;
+  --mar:linear-gradient(160deg,#1c2822,#17211c);
+  --deep:#1d5543;--ink:#8fd3ae;--text:#e6ece8;--muted:#93a29b;--line:#26332d;
+  --wood:#dba878;--wood2:#2d241b;--blue:#79bde0;--blue2:#15303c;
+  --ok:#8fd3ae;--ok2:#18302a;--bad:#f28db5;--bad2:#3a1828;--sh:none;
+}
+
+/* ---------- base ---------- */
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{background:var(--bg);-webkit-text-size-adjust:100%}
+body{font-family:var(--f-body);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+input,select,textarea,button{font-family:inherit}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+h1,h2,h3,h4,.serif,.brand,.big,.kc b,.cal-s b,.st b,.sec h3,.sh h3,.bx h4{font-family:var(--f-disp);letter-spacing:-.02em}
+.hero .big,.hero h1,.kc b,.cal-s b,.bx h4,.sec h3,.sh h3,.cd .cn{font-family:var(--f-disp);letter-spacing:-.02em}
+.sec,.evh h4,.sbar b,.big-in input,h1{font-family:var(--f-disp);letter-spacing:-.02em}
+.brand small{font-family:var(--f-body);letter-spacing:0}
+
+/* ---------- encabezado con botón de menú ---------- */
+.top{display:flex;align-items:center;gap:10px;justify-content:flex-start}
+.top .brand{flex:1;min-width:0}
+.ibtn{width:42px;height:42px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--ink);display:inline-flex;align-items:center;justify-content:center;text-decoration:none;box-shadow:var(--sh)}
+.top .brand{font-size:19px;line-height:1.08}
+.top .ibtn{margin-left:4px;width:38px;height:38px;border-radius:13px}
+.top .ibtn.home{width:42px;height:42px;border-radius:14px}
+.top .ibtn.home{margin:0;background:var(--deep);color:#fff;border-color:transparent}
+
+/* ---------- superficies ---------- */
+.hero{background:radial-gradient(circle at 100% 0,rgba(255,255,255,.12),transparent 46%),var(--deep);border-radius:28px;box-shadow:var(--sh)}
+.kc,.bx,.rc,.mini,.deb,.cd:not(.void){box-shadow:var(--sh)}
+.rc{border-radius:24px}
+.kc,.bx{border-radius:22px}
+.chip{border-radius:999px}
+.sheet{border-radius:30px 30px 0 0}
+.btn,.btn-w,.acts button,.acts a{border-radius:15px}
+.modal{backdrop-filter:blur(3px)}
+
+/* ---------- barra inferior flotante ---------- */
+.nav{left:50%;transform:translateX(-50%);width:calc(100% - 24px);max-width:496px;bottom:calc(env(safe-area-inset-bottom) + 10px);padding:6px;border:1px solid var(--line);border-radius:28px;background:color-mix(in srgb,var(--card) 90%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:0 14px 34px -14px rgba(20,30,26,.4)}
+.nav button{border-radius:20px;font-size:10.5px}
+.nav button.on{color:var(--ink);background:var(--ok2)}
+.nav .plus{background:var(--wood);color:#fff;margin:-26px 6px 0}
+
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
